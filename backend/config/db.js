@@ -1,4 +1,8 @@
+const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+
+//load env config
+dotenv.config();
 
 const connectDB = async () => {
   try {
@@ -9,6 +13,7 @@ const connectDB = async () => {
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error(`Error: ${error.message}`);
+    console.log('MongoDB URI:', process.env.MONGO_URI)
     process.exit(1);
   }
 };

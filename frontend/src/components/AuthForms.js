@@ -9,13 +9,34 @@ export const AuthForms = () => {
     email: '',
     password: '',
     name: '',
-    role: 'student'
+    role: 'student',
+    otp: ''  // New OTP state
   });
   const [error, setError] = useState('');
+  const [otpSent, setOtpSent] = useState(false);  // Flag for OTP sent
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleOtpRequest = async () => {
+    setError('');
+    try {
+      const response = await fetch(`${apiUrl}/api/auth/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      setOtpSent(true);  // Mark OTP as sent
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -29,7 +50,7 @@ export const AuthForms = () => {
         body: JSON.stringify(isLogin ? {
           email: formData.email,
           password: formData.password
-        } : formData)
+        } : { ...formData, otp: formData.otp })  // Send OTP in registration
       });
 
       const data = await response.json();
@@ -111,20 +132,48 @@ export const AuthForms = () => {
           </div>
 
           {!isLogin && (
-            <div>
-              <label htmlFor="role" className="block text-gray-300 text-sm font-medium">Role</label>
-              <select
-                id="role"
-                name="role"
-                className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-3 px-4 shadow-sm focus:ring-2 focus:ring-purple-500 focus:outline-none"
-                value={formData.role}
-                onChange={handleChange}
-              >
-                <option value="student">Student</option>
-                <option value="professor">Professor</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
+            <>
+              <div>
+                <label htmlFor="role" className="block text-gray-300 text-sm font-medium">Role</label>
+                <select
+                  id="role"
+                  name="role"
+                  className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-3 px-4 shadow-sm focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                  value={formData.role}
+                  onChange={handleChange}
+                >
+                  <option value="student">Student</option>
+                  <option value="professor">Professor</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              {/* OTP Request Button */}
+              <div>
+                <button
+                  type="button"
+                  onClick={handleOtpRequest}
+                  className="w-full py-3 px-6 bg-purple-600 text-white rounded-lg"
+                >
+                  Send OTP
+                </button>
+              </div>
+               {/* OTP Input Field */}
+               {otpSent && (
+                <div>
+                  <label htmlFor="otp" className="block text-gray-300 text-sm font-medium">Enter OTP</label>
+                  <input
+                    id="otp"
+                    name="otp"
+                    type="text"
+                    required
+                    className="mt-1 block w-full rounded-lg border border-gray-600 bg-gray-800 text-white py-3 px-4 placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                    placeholder="Enter OTP"
+                    value={formData.otp}
+                    onChange={handleChange}
+                  />
+                </div>
+              )}
+            </>
           )}
 
           <div>
