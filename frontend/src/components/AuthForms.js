@@ -1,21 +1,19 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
 export const AuthForms = () => {
-  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
-
+  const { login, register, sendOtp, error: authError } = useAuth();
+  
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     name: '',
     role: 'student',
-    otp: ''  // New OTP state
+    otp: ''
   });
   const [error, setError] = useState('');
-  const [otpSent, setOtpSent] = useState(false);  // Flag for OTP sent
-
-  const navigate = useNavigate();
+  const [otpSent, setOtpSent] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,16 +22,8 @@ export const AuthForms = () => {
   const handleOtpRequest = async () => {
     setError('');
     try {
-      const response = await fetch(`${apiUrl}/api/auth/send-otp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email })
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
-      setOtpSent(true);  // Mark OTP as sent
+      await sendOtp(formData.email);
+      setOtpSent(true);
     } catch (err) {
       setError(err.message);
     }
@@ -42,29 +32,12 @@ export const AuthForms = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
     try {
-      const response = await fetch(`${apiUrl}/api/auth/${isLogin ? 'login' : 'register'}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(isLogin ? {
-          email: formData.email,
-          password: formData.password
-        } : { ...formData, otp: formData.otp })  // Send OTP in registration
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message);
+      if (isLogin) {
+        await login(formData.email, formData.password);
+      } else {
+        await register(formData);
       }
-
-      // Store token
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      // Redirect based on role
-      navigate(data.user.role === 'student' ? '/dashboard' : '/admin');
     } catch (err) {
       setError(err.message);
     }
@@ -80,16 +53,18 @@ export const AuthForms = () => {
           <p className="text-gray-300 mt-2">{isLogin ? 'Sign in to your account' : 'Create a new account'}</p>
         </div>
 
-        {error && (
+        {(error || authError) && (
           <div className="bg-red-500 text-white text-center p-2 mt-4 rounded-lg shadow">
-            {error}
+            {error || authError}
           </div>
         )}
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {!isLogin && (
             <div>
-              <label htmlFor="name" className="block text-gray-300 text-sm font-medium">Full Name</label>
+              <label htmlFor="name" className="block text-gray-300 text-sm font-medium">
+                Full Name
+              </label>
               <input
                 id="name"
                 name="name"
@@ -104,7 +79,9 @@ export const AuthForms = () => {
           )}
 
           <div>
-            <label htmlFor="email" className="block text-gray-300 text-sm font-medium">Email address</label>
+            <label htmlFor="email" className="block text-gray-300 text-sm font-medium">
+              Email address
+            </label>
             <input
               id="email"
               name="email"
@@ -118,7 +95,9 @@ export const AuthForms = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-gray-300 text-sm font-medium">Password</label>
+            <label htmlFor="password" className="block text-gray-300 text-sm font-medium">
+              Password
+            </label>
             <input
               id="password"
               name="password"
@@ -134,7 +113,9 @@ export const AuthForms = () => {
           {!isLogin && (
             <>
               <div>
-                <label htmlFor="role" className="block text-gray-300 text-sm font-medium">Role</label>
+                <label htmlFor="role" className="block text-gray-300 text-sm font-medium">
+                  Role
+                </label>
                 <select
                   id="role"
                   name="role"
@@ -147,20 +128,22 @@ export const AuthForms = () => {
                   <option value="admin">Admin</option>
                 </select>
               </div>
-              {/* OTP Request Button */}
+
               <div>
                 <button
                   type="button"
                   onClick={handleOtpRequest}
-                  className="w-full py-3 px-6 bg-purple-600 text-white rounded-lg"
+                  className="w-full py-3 px-6 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-300"
                 >
                   Send OTP
                 </button>
               </div>
-               {/* OTP Input Field */}
-               {otpSent && (
+
+              {otpSent && (
                 <div>
-                  <label htmlFor="otp" className="block text-gray-300 text-sm font-medium">Enter OTP</label>
+                  <label htmlFor="otp" className="block text-gray-300 text-sm font-medium">
+                    Enter OTP
+                  </label>
                   <input
                     id="otp"
                     name="otp"

@@ -76,6 +76,44 @@ const authController = {
     }
   },
 
+  // Add this to your existing authController object
+  validate: async (req, res) => {
+    try {
+      // Get token from header
+      const token = req.headers.authorization?.split(' ')[1];
+      
+      if (!token) {
+        return res.status(401).json({ message: 'Authentication token missing' });
+      }
+  
+      // Verify token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      
+      // Find user
+      const user = await User.findById(decoded.userId).select('-password');
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      res.json({
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        }
+      });
+    } catch (error) {
+      if (error.name === 'JsonWebTokenError') {
+        return res.status(401).json({ message: 'Invalid token' });
+      }
+      if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({ message: 'Token expired' });
+      }
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  },
   login: async (req, res) => {
     try {
       const { email, password } = req.body;
