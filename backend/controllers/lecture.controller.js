@@ -10,7 +10,7 @@ const getUpcomingLectures = async (req, res) => {
       date: { $gte: currentDate },
       status: 'scheduled'
     })
-    .populate('instructor', 'name email department')
+    .populate('instructor', 'name email')
     .sort({ date: 1 });
 
     // Transform data to match frontend requirements
@@ -26,7 +26,7 @@ const getUpcomingLectures = async (req, res) => {
       meetLink: lecture.meetLink,
       capacity: lecture.capacity,
       registeredCount: lecture.registeredUsers.length,
-      department: lecture.department,
+     
       tags: lecture.tags || [], 
       isRegistered: lecture.registeredUsers.includes(req.user.userId)
     }));
@@ -45,7 +45,7 @@ const getPastLectures = async (req, res) => {
       date: { $lt: currentDate },
       status: 'completed'
     })
-    .populate('instructor', 'name email department')
+    .populate('instructor', 'name email')
     .sort({ date: -1 });
 
     const transformedLectures = lectures.map(lecture => ({
@@ -60,7 +60,7 @@ const getPastLectures = async (req, res) => {
       meetLink: lecture.meetLink,
       capacity: lecture.capacity,
       registeredCount: lecture.registeredUsers.length,
-      department: lecture.department,
+     
       tags: lecture.tags,
       recording: lecture.recording
     }));
@@ -90,7 +90,7 @@ const getScheduledTalks = async (req, res) => {
       meetLink: lecture.meetLink,
       capacity: lecture.capacity,
       registeredCount: lecture.registeredUsers.length,
-      department: lecture.department,
+    
       tags: lecture.tags
     }));
 
@@ -104,7 +104,7 @@ const getScheduledTalks = async (req, res) => {
 const createLecture = async (req, res) => {
   try {
     // Basic field validation
-    const requiredFields = ['title', 'description', 'date', 'time', 'mode', 'department', 'capacity'];
+    const requiredFields = ['title', 'description', 'date', 'time', 'mode', 'capacity'];
     for (const field of requiredFields) {
       if (!req.body[field]) {
         throw new CustomError(`Missing required field: ${field}`, StatusCodes.BAD_REQUEST);
@@ -126,7 +126,7 @@ const createLecture = async (req, res) => {
       time: req.body.time,
       duration: parseInt(req.body.duration) || 60, // Default to 60 minutes
       mode: req.body.mode,
-      department: req.body.department,
+    
       capacity: parseInt(req.body.capacity),
       status: 'scheduled',
       registeredUsers: []
@@ -146,10 +146,7 @@ const createLecture = async (req, res) => {
     }
 
     // Validate department
-    if (!['CSE', 'ECE', 'MME', 'CCE'].includes(lectureData.department)) {
-      throw new CustomError('Invalid department', StatusCodes.BAD_REQUEST);
-    }
-
+    
     // Validate and process capacity
     if (isNaN(lectureData.capacity) || lectureData.capacity < 1) {
       throw new CustomError('Capacity must be a positive number', StatusCodes.BAD_REQUEST);
@@ -172,7 +169,7 @@ const createLecture = async (req, res) => {
     const lecture = await Lecture.create(lectureData);
     
     // Populate instructor details for the response
-    await lecture.populate('instructor', 'name email department');
+    await lecture.populate('instructor', 'name email');
 
     // Return formatted response
     res.status(StatusCodes.CREATED).json({
@@ -188,7 +185,7 @@ const createLecture = async (req, res) => {
         venue: lecture.venue,
         meetLink: lecture.meetLink,
         capacity: lecture.capacity,
-        department: lecture.department,
+        
         prerequisites: lecture.prerequisites,
         tags: lecture.tags,
         registeredCount: 0,
@@ -239,7 +236,7 @@ const registerForLecture = async (req, res) => {
       meetLink: lecture.meetLink,
       capacity: lecture.capacity,
       registeredCount: lecture.registeredUsers.length,
-      department: lecture.department,
+     
       tags: lecture.tags,
       isRegistered: true
     });

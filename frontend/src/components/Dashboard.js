@@ -121,7 +121,7 @@ const Dashboard = () => {
                 <h2 className="text-3xl font-bold text-white">{user?.name}</h2>
                 <div className="flex flex-wrap gap-4 text-gray-300">
                   <span className="flex items-center">✉️ {user?.email}</span>
-                  <span className="flex items-center">📚 {user?.department}</span>
+                  {/* <span className="flex items-center">📚 {user?.department}</span> */}
                   <span className="flex items-center">🎓 {user?.rollNumber}</span>
                 </div>
               </div>

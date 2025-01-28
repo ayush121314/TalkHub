@@ -60,11 +60,7 @@ const lectureSchema = new mongoose.Schema({
   }],
   
   // Additional information
-  department: {
-    type: String,
-    required: [true, 'Please specify the department'],
-    enum: ['CSE', 'ECE', 'MME', 'CCE']
-  },
+  
   prerequisites: [{
     type: String,
     trim: true

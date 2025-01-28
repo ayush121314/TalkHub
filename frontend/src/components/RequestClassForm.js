@@ -1,5 +1,5 @@
-// NewRequestClassForm.js
 import React, { useState } from 'react';
+import { FaCalendarAlt, FaClock, FaTags, FaUsers, FaLink, FaMapMarkerAlt } from 'react-icons/fa';
 
 const NewRequestClassForm = ({ onClose, onSubmit }) => {
   const [mode, setMode] = useState('online');
@@ -14,7 +14,6 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
     capacity: '',
     prerequisites: '',
     materials: '',
-    department: '',
     tags: '',
   });
 
@@ -26,7 +25,7 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    const now = new Date(); // Current date and time
+    const now = new Date();
     const selectedDate = new Date(`${formData.date}T${formData.time}`);
   
     if (selectedDate <= now) {
@@ -60,159 +59,197 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
       console.error('Failed to submit talk request:', err);
     }
   };
-  
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex justify-center items-center p-4 z-50 backdrop-blur-sm">
+    <div className="fixed inset-0 bg-black/70 flex justify-center items-center p-4 z-50 backdrop-blur-sm">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md bg-gray-900 rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh]"
+        className="w-full max-w-2xl bg-gray-900 rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh] p-8 transition-transform transform hover:scale-105"
       >
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6 rounded-t-2xl">
-          <h3 className="text-2xl font-bold text-white">Schedule a Talk</h3>
-          <p className="text-blue-100">Share your knowledge with peers</p>
+          <h3 className="text-4xl font-extrabold text-white">Schedule a Talk</h3>
+          <p className="text-blue-100 text-lg">Share your knowledge with peers</p>
         </div>
 
-        <div className="p-6 space-y-4">
-          <div className="space-y-4">
-            <label className="block text-sm font-medium text-gray-300">Title</label>
+        <div className="space-y-6 mt-6">
+          {/* Title */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 flex items-center">
+              <span className="mr-2"><FaTags /></span> Title
+            </label>
             <input
               type="text"
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-xl bg-gray-800 border-gray-700 text-white"
+              className="w-full p-4 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+              placeholder="Enter your talk title"
               required
             />
+          </div>
 
-            <label className="block text-sm font-medium text-gray-300">Description</label>
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 flex items-center">
+              <span className="mr-2"><FaTags /></span> Description
+            </label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-xl bg-gray-800 border-gray-700 text-white"
-              rows="3"
+              className="w-full p-4 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+              rows="4"
+              placeholder="Describe your talk in brief"
               required
             />
+          </div>
 
+          {/* Mode */}
+          <div>
             <label className="block text-sm font-medium text-gray-300">Mode</label>
             <div className="flex space-x-4">
               <button
                 type="button"
                 onClick={() => setMode('online')}
-                className={`px-4 py-2 rounded-lg ${
-                  mode === 'online' ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-300'
-                }`}
+                className={`px-6 py-3 rounded-lg text-white text-lg font-semibold transition duration-200 ease-in-out ${mode === 'online' ? 'bg-purple-600' : 'bg-gray-800 hover:bg-gray-700'}`}
               >
                 Online
               </button>
               <button
                 type="button"
                 onClick={() => setMode('offline')}
-                className={`px-4 py-2 rounded-lg ${
-                  mode === 'offline' ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-300'
-                }`}
+                className={`px-6 py-3 rounded-lg text-white text-lg font-semibold transition duration-200 ease-in-out ${mode === 'offline' ? 'bg-purple-600' : 'bg-gray-800 hover:bg-gray-700'}`}
               >
                 Offline
               </button>
             </div>
+          </div>
 
-            {mode === 'offline' ? (
-              <>
-                <label className="block text-sm font-medium text-gray-300">Venue</label>
-                <input
-                  type="text"
-                  name="venue"
-                  value={formData.venue}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded-xl bg-gray-800 border-gray-700 text-white"
-                  required
-                />
-              </>
-            ) : (
-              <>
-                <label className="block text-sm font-medium text-gray-300">Meeting Link</label>
-                <input
-                  type="url"
-                  name="meetLink"
-                  value={formData.meetLink}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border rounded-xl bg-gray-800 border-gray-700 text-white"
-                  required
-                />
-              </>
-            )}
+          {/* Venue or Link */}
+          {mode === 'offline' ? (
+            <div>
+              <label className="block text-sm font-medium text-gray-300 flex items-center">
+                <span className="mr-2"><FaMapMarkerAlt /></span> Venue
+              </label>
+              <input
+                type="text"
+                name="venue"
+                value={formData.venue}
+                onChange={handleInputChange}
+                className="w-full p-4 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+                placeholder="Enter the venue"
+                required
+              />
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-medium text-gray-300 flex items-center">
+                <span className="mr-2"><FaLink /></span> Meeting Link
+              </label>
+              <input
+                type="url"
+                name="meetLink"
+                value={formData.meetLink}
+                onChange={handleInputChange}
+                className="w-full p-4 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+                placeholder="Paste your meeting link"
+                required
+              />
+            </div>
+          )}
 
-            <label className="block text-sm font-medium text-gray-300">Date</label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-xl bg-gray-800 border-gray-700 text-white"
-              min={new Date().toISOString().split('T')[0]}
-              required
-            />
+          {/* Date and Time */}
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 flex items-center">
+                <span className="mr-2"><FaCalendarAlt /></span> Date
+              </label>
+              <input
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleInputChange}
+                className="w-full p-4 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+                min={new Date().toISOString().split('T')[0]}
+                required
+              />
+            </div>
 
-            <label className="block text-sm font-medium text-gray-300">Time</label>
-            <input
-              type="time"
-              name="time"
-              value={formData.time}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-xl bg-gray-800 border-gray-700 text-white"
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-300 flex items-center">
+                <span className="mr-2"><FaClock /></span> Time
+              </label>
+              <input
+                type="time"
+                name="time"
+                value={formData.time}
+                onChange={handleInputChange}
+                className="w-full p-4 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+                required
+              />
+            </div>
+          </div>
 
-            <label className="block text-sm font-medium text-gray-300">Department</label>
-            <select
-              name="department"
-              value={formData.department}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-xl bg-gray-800 border-gray-700 text-white"
-              required
-            >
-              <option value="">Select Department</option>
-              <option value="CSE">Computer Science</option>
-              <option value="ECE">Electronics</option>
-              <option value="MME">Mechanical</option>
-              <option value="CCE">Communication</option>
-            </select>
-
-            <label className="block text-sm font-medium text-gray-300">Tags</label>
-            <input
-              type="text"
-              name="tags"
-              value={formData.tags}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded-xl bg-gray-800 border-gray-700 text-white"
-              placeholder="Comma-separated tags"
-              required
-            />
-
-            <label className="block text-sm font-medium text-gray-300">Capacity</label>
+          {/* Duration */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 flex items-center">
+              <span className="mr-2"><FaClock /></span> Duration (in minutes)
+            </label>
             <input
               type="number"
-              name="capacity"
-              value={formData.capacity}
+              name="duration"
+              value={formData.duration}
               onChange={handleInputChange}
-              className="w-full p-3 border rounded-xl bg-gray-800 border-gray-700 text-white"
+              className="w-full p-4 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
               min="1"
               required
             />
           </div>
 
+          {/* Tags */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 flex items-center">
+              <span className="mr-2"><FaTags /></span> Tags
+            </label>
+            <input
+              type="text"
+              name="tags"
+              value={formData.tags}
+              onChange={handleInputChange}
+              className="w-full p-4 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+              placeholder="Comma-separated tags"
+              required
+            />
+          </div>
+
+          {/* Capacity */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 flex items-center">
+              <span className="mr-2"><FaUsers /></span> Capacity
+            </label>
+            <input
+              type="number"
+              name="capacity"
+              value={formData.capacity}
+              onChange={handleInputChange}
+              className="w-full p-4 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+              min="1"
+              required
+            />
+          </div>
+
+          {/* Buttons */}
           <div className="flex justify-end space-x-4 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 bg-gray-800 text-gray-200 rounded-xl hover:bg-gray-700 transition-colors"
+              className="px-6 py-3 bg-gray-800 text-gray-200 rounded-xl hover:bg-gray-700 transition-colors duration-200 ease-in-out"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:opacity-90 transition-opacity"
+              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:opacity-90 transition-opacity duration-200 ease-in-out"
             >
               Submit
             </button>
