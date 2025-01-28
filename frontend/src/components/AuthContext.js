@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Check for existing token and validate it on mount
   useEffect(() => {
     const validateToken = async () => {
       const token = localStorage.getItem('token');
@@ -19,7 +18,7 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
         return;
       }
-
+      
       try {
         const response = await fetch(`${apiUrl}/api/auth/validate`, {
           headers: {
@@ -32,12 +31,9 @@ export const AuthProvider = ({ children }) => {
           setUser(data.user);
           handleRoleNavigation(data.user.role);
         } else {
-          // If token is invalid, remove it
-          localStorage.removeItem('token');
         }
       } catch (err) {
         console.error('Token validation error:', err);
-        localStorage.removeItem('token');
       }
       
       setIsLoading(false);
@@ -128,16 +124,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Create the context value object with all the necessary values and functions
+  const contextValue = {
+    user,
+    isLoading,
+    error,
+    login,
+    register,
+    logout,
+    sendOtp
+  };
+
   return (
-    <AuthContext.Provider value={{
-      user,
-      isLoading,
-      error,
-      login,
-      register,
-      logout,
-      sendOtp
-    }}>
+    <AuthContext.Provider value={contextValue}>
       {!isLoading && children}
     </AuthContext.Provider>
   );
@@ -150,3 +149,5 @@ export const useAuth = () => {
   }
   return context;
 };
+
+export default AuthContext;

@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const errorHandlerMiddleware = require('./middleware/error-handler');
 
 // Initialize express
 const app = express();
@@ -18,13 +19,11 @@ app.use(express.json());
 
 // Define Routes
 app.use('/api/auth', require('./routes/auth.routes'));
-app.use('/api/users', require('./routes/userRoutes')); 
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/lectures', require('./routes/lecture.routes'));
 
-// Error handling middleware (Add this)
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
-});
+// Error handling middleware
+app.use(errorHandlerMiddleware);
 
 // Start server
 const PORT = process.env.PORT || 5000;
