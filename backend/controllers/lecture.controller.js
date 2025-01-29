@@ -202,53 +202,121 @@ const createLecture = async (req, res) => {
     );
   }
 };
-// Register for a lecture
-const registerForLecture = async (req, res) => {
-  try {
-    const { lectureId } = req.params;
-    const userId = req.user.userId;
 
-    const lecture = await Lecture.findById(lectureId);
+const getLectureById = async (req, res) => {
+  try {
+    const lecture = await Lecture.findById(req.params.id)
+      .populate('instructor', 'name email title')
+      .populate('registeredUsers', 'name email');
     
     if (!lecture) {
       throw new CustomError('Lecture not found', StatusCodes.NOT_FOUND);
     }
 
-    if (!lecture.isRegistrationOpen()) {
-      throw new CustomError('Registration is closed for this lecture', StatusCodes.BAD_REQUEST);
-    }
-
-    if (lecture.registeredUsers.includes(userId)) {
-      throw new CustomError('Already registered for this lecture', StatusCodes.BAD_REQUEST);
-    }
-
-    lecture.registeredUsers.push(userId);
-    await lecture.save();
-
-    res.status(StatusCodes.OK).json({
+    // Transform data to match frontend requirements
+    const transformedLecture = {
       id: lecture._id,
       title: lecture.title,
       description: lecture.description,
+      instructor: {
+        name: lecture.instructor.name,
+        email: lecture.instructor.email,
+        title: lecture.instructor.title
+      },
+      date: lecture.date,
+      time: lecture.time,
+      duration: lecture.duration,
+      mode: lecture.mode,
+      venue: lecture.venue,
+      meetLink: lecture.meetLink,
+      capacity: lecture.capacity,
+      prerequisites: lecture.prerequisites,
+      tags: lecture.tags,
+      status: lecture.status,
+      recording: lecture.recording,
+      registeredUsers: lecture.registeredUsers.map(user => user._id),
+    };
+
+    res.status(StatusCodes.OK).json(transformedLecture);
+  } catch (error) {
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError('Failed to fetch lecture details', StatusCodes.INTERNAL_SERVER_ERROR);
+  }
+};
+
+// Register for lecture
+const registerForLecture = async (req, res) => {
+  try {
+    const lecture = await Lecture.findById(req.params.id);
+    
+    if (!lecture) {
+      throw new CustomError('Lecture not found', StatusCodes.NOT_FOUND);
+    }
+
+    // Check if lecture is still open for registration
+    if (lecture.status !== 'scheduled') {
+      throw new CustomError('Lecture is not open for registration', StatusCodes.BAD_REQUEST);
+    }
+
+    // Check if lecture date hasn't passed
+    if (new Date(lecture.date) < new Date()) {
+      throw new CustomError('Cannot register for past lectures', StatusCodes.BAD_REQUEST);
+    }
+
+    // Check capacity
+    if (lecture.registeredUsers.length >= lecture.capacity) {
+      throw new CustomError('Lecture is at full capacity', StatusCodes.BAD_REQUEST);
+    }
+
+    // Check if user is already registered
+    if (lecture.registeredUsers.includes(req.user.userId)) {
+      throw new CustomError('Already registered for this lecture', StatusCodes.BAD_REQUEST);
+    }
+
+    // Register user
+    lecture.registeredUsers.push(req.user.userId);
+    await lecture.save();
+
+    // Return updated lecture details
+    await lecture.populate('instructor', 'name email title');
+    
+    const transformedLecture = {
+      id: lecture._id,
+      title: lecture.title,
+      description: lecture.description,
+      instructor: {
+        name: lecture.instructor.name,
+        email: lecture.instructor.email,
+        title: lecture.instructor.title
+      },
       date: lecture.date,
       time: lecture.time,
       mode: lecture.mode,
       venue: lecture.venue,
       meetLink: lecture.meetLink,
       capacity: lecture.capacity,
-      registeredCount: lecture.registeredUsers.length,
-     
+      prerequisites: lecture.prerequisites,
       tags: lecture.tags,
-      isRegistered: true
-    });
+      status: lecture.status,
+      registeredUsers: lecture.registeredUsers,
+    };
+
+    res.status(StatusCodes.OK).json(transformedLecture);
   } catch (error) {
-    throw new CustomError(error.message, error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR);
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new CustomError('Failed to register for lecture', StatusCodes.INTERNAL_SERVER_ERROR);
   }
 };
-
 module.exports = {
   getUpcomingLectures,
   getPastLectures,
   getScheduledTalks,
   createLecture,
-  registerForLecture
+  getLectureById,
+  registerForLecture,
+
 };

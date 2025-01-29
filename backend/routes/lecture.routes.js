@@ -6,6 +6,7 @@ const {
   getPastLectures,
   getScheduledTalks,
   createLecture,
+  getLectureById,
   registerForLecture
 } = require('../controllers/lecture.controller');
 
@@ -16,11 +17,12 @@ router.use(authMiddleware);
 router.get('/upcoming', getUpcomingLectures);
 router.get('/past', getPastLectures);
 router.get('/scheduled', getScheduledTalks);
+router.get('/:id', getLectureById);
 
 // Create lecture
 router.post('/request', createLecture);
 
 // Register for lecture
-router.post('/:lectureId/register', registerForLecture);
+router.post('/:id/register', registerForLecture);
 
 module.exports = router;
