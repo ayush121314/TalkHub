@@ -14,7 +14,7 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
     capacity: '',
     prerequisites: '',
     materials: '',
-    tags: '',
+    tags: '', 
   });
 
   const handleInputChange = (e) => {

@@ -26,7 +26,6 @@ const getUpcomingLectures = async (req, res) => {
       meetLink: lecture.meetLink,
       capacity: lecture.capacity,
       registeredCount: lecture.registeredUsers.length,
-     
       tags: lecture.tags || [], 
       isRegistered: lecture.registeredUsers.includes(req.user.userId)
     }));
