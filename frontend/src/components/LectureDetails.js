@@ -47,10 +47,23 @@ const LectureDetails = () => {
   };
 
   const handleRecordingUpdate = async () => {
-    if (!recordingLink) {
+    // Trim the link to remove any whitespace
+    const trimmedLink = recordingLink.trim();
+  
+    // Validate link is not empty and looks like a valid URL
+    if (!trimmedLink) {
+      // Optional: set an error message for the user
       return;
     }
-    const success = await handleRecordingLinkUpdate(recordingLink);
+  
+    // Optional: basic URL validation
+    const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+    if (!urlPattern.test(trimmedLink)) {
+      // Optional: set an error message about invalid URL format
+      return;
+    }
+  
+    const success = await handleRecordingLinkUpdate(trimmedLink);
     if (success) {
       setRecordingLink('');
       setIsEditing(false);

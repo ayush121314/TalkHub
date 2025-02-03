@@ -1,232 +1,275 @@
+import React from 'react';
+import { 
+  FileText, 
+  Video, 
+  Plus, 
+  Trash2, 
+  UserCircle, 
+  Link as LinkIcon 
+} from 'lucide-react';
+
 const LectureSidebar = ({
-    lecture,
-    user,
-    uploadedDocuments,
-    uploadedRecordingLink,
-    handleRegistration,
-    registrationLoading,
-    registrationError,
-    selectedFile,
-    handleFileChange,
-    handleUploadFile,
-    deleteDocument,
-    recordingLink,
-    setRecordingLink,
-    handleRecordingUpdate,
-    deleteRecordingLink,
-    isEditing,
-    setIsEditing,
-    uploadingDoc,
-    uploadingRec
-  }) => {
-    const isUserRegistered = lecture.registeredUsers?.includes(user.id);
-    const isRegistrationOpen = lecture.registeredUsers?.length < lecture.capacity &&
-      lecture.status === 'scheduled' &&
-      new Date(lecture.date) > new Date();
-  
-    const isInstructor = user.name === lecture.instructor?.name;
-  
-    return (
-      <div className="lg:col-span-1">
-        {/* Instructor Info */}
-        <div className="bg-gray-800 rounded-xl p-6 shadow-xl mb-6">
-          <h2 className="text-2xl font-semibold text-white mb-4">Instructor</h2>
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center">
-              <span className="text-white text-2xl">
-                {lecture.instructor?.name?.charAt(0).toUpperCase()}
-              </span>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-white">{lecture.instructor?.name}</h3>
-              <p className="text-gray-400">{lecture.instructor?.title}</p>
-            </div>
+  lecture,
+  user,
+  uploadedDocuments,
+  uploadedRecordingLink,
+  handleRegistration,
+  registrationLoading,
+  registrationError,
+  selectedFile,
+  handleFileChange,
+  handleUploadFile,
+  deleteDocument,
+  recordingLink,
+  setRecordingLink,
+  handleRecordingUpdate,
+  deleteRecordingLink,
+  isEditing,
+  setIsEditing,
+  uploadingDoc,
+  uploadingRec
+}) => {
+  const isUserRegistered = lecture.registeredUsers?.includes(user.id);
+  const isRegistrationOpen = lecture.registeredUsers?.length < lecture.capacity &&
+    lecture.status === 'scheduled' &&
+    new Date(lecture.date) > new Date();
+  const isInstructor = user.name === lecture.instructor?.name;
+
+  return (
+    <div className="space-y-6">
+      {/* Instructor Profile Card */}
+      <div className="bg-gray-800/60 backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-lg">
+        <div className="flex items-center space-x-4 mb-4">
+          <UserCircle 
+            className="w-12 h-12 text-purple-500" 
+            strokeWidth={1.5} 
+          />
+          <div>
+            <h3 className="text-xl font-semibold text-white">
+              {lecture.instructor?.name}
+            </h3>
+            <p className="text-gray-400 text-sm">
+              {lecture.instructor?.title}
+            </p>
           </div>
         </div>
-  
-        {/* Meeting Link for Online Lectures */}
+      </div>
+
+      {/* Registration & Meeting Section */}
+      <div className="space-y-6">
         {lecture.mode === 'online' && lecture.meetLink && isUserRegistered && (
-          <div className="bg-gray-800 rounded-xl p-6 shadow-xl mb-6">
-            <h2 className="text-2xl font-semibold text-white mb-4">Meeting Link</h2>
+          <div className="bg-blue-900/30 backdrop-blur-md rounded-2xl p-5 border border-blue-800/50">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-white">Meeting Link</h2>
+              <LinkIcon className="w-5 h-5 text-blue-400" />
+            </div>
             <a
               href={lecture.meetLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-center"
+              className="w-full block text-center px-4 py-3 bg-blue-600/80 hover:bg-blue-600 text-white rounded-xl transition-colors"
             >
               Join Meeting
             </a>
-            <p className="mt-4 text-sm text-gray-400">
-              The meeting link will be active 15 minutes before the scheduled time.
-            </p>
           </div>
         )}
-  
-        {/* Registration Section */}
-        <div className="bg-gray-800 rounded-xl p-6 shadow-xl mb-6">
-          <h2 className="text-2xl font-semibold text-white mb-4">Registration</h2>
+
+        <div className="bg-gray-800/60 backdrop-blur-md rounded-2xl p-5 border border-gray-700">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-white">Registration</h2>
+          </div>
           {isRegistrationOpen ? (
-            <>
-              <button
-                onClick={handleRegistration}
-                disabled={isUserRegistered || registrationLoading}
-                className={`w-full px-6 py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2 ${
-                  isUserRegistered
-                    ? 'bg-green-600 cursor-not-allowed'
-                    : registrationLoading
-                    ? 'bg-gray-600 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:opacity-90'
-                }`}
-              >
-                {registrationLoading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    Processing...
-                  </>
-                ) : isUserRegistered ? (
-                  '✓ Registered'
-                ) : (
-                  'Register for Lecture'
-                )}
-              </button>
-              {registrationError && (
-                <p className="mt-2 text-sm text-red-400">{registrationError}</p>
+            <button
+              onClick={handleRegistration}
+              disabled={isUserRegistered || registrationLoading}
+              className={`w-full px-4 py-3 rounded-xl font-semibold text-white flex items-center justify-center space-x-2 ${
+                isUserRegistered
+                  ? 'bg-green-600/80 cursor-not-allowed'
+                  : registrationLoading
+                  ? 'bg-gray-600/80 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-purple-600/80 to-blue-600/80 hover:opacity-90'
+              }`}
+            >
+              {registrationLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <span>Processing...</span>
+                </>
+              ) : isUserRegistered ? (
+                '✓ Registered'
+              ) : (
+                'Register for Lecture'
               )}
-            </>
+            </button>
           ) : (
-            <p className="text-yellow-400">Registration is not available</p>
+            <p className="text-yellow-400 text-center">
+              Registration is not available
+            </p>
           )}
         </div>
-  
-        {/* Resources Section */}
-        <div className="bg-gray-800 rounded-xl p-6 shadow-xl mb-6">
-          <h2 className="text-2xl font-semibold text-white mb-4">Resources</h2>
-          
-          {/* Document Upload Section */}
+      </div>
+
+      {/* Resources Section */}
+      <div className="bg-gray-800/60 backdrop-blur-md rounded-2xl p-6 border border-gray-700 space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-white">Resources</h2>
+        </div>
+
+        {/* Document Upload & List */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-medium text-white flex items-center">
+              <FileText className="w-5 h-5 mr-2 text-blue-400" />
+              Documents
+            </h3>
+            {isInstructor && (
+              <button
+                onClick={() => document.getElementById('fileUpload').click()}
+                className="text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                <Plus className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+
           {isInstructor && (
-            <div className="mb-4">
-              <label className="text-gray-300 block mb-2">Upload Document</label>
-              <input
-                type="file"
-                accept=".pdf,.ppt,.pptx,.doc,.docx"
-                onChange={handleFileChange}
-                className="w-full p-2 bg-gray-700 text-white rounded"
-              />
+            <input
+              id="fileUpload"
+              type="file"
+              accept=".pdf,.ppt,.pptx,.doc,.docx"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          )}
+
+          {selectedFile && isInstructor && (
+            <div className="flex items-center justify-between bg-gray-700 p-3 rounded-lg mb-4">
+              <span className="text-white text-sm truncate max-w-[200px]">
+                {selectedFile.name}
+              </span>
               <button
                 onClick={handleUploadFile}
-                disabled={uploadingDoc || !selectedFile}
-                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                disabled={uploadingDoc}
+                className="text-blue-400 hover:text-blue-300"
               >
                 {uploadingDoc ? 'Uploading...' : 'Upload'}
               </button>
             </div>
           )}
-  
-          {/* Documents List */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-2">Documents</h3>
+
+          <div className="space-y-2">
             {uploadedDocuments?.length > 0 ? (
-              <ul className="space-y-2">
-                {uploadedDocuments.map((doc) => (
-                  <li key={doc._id} className="flex justify-between items-center">
-                    <a
-                      href={doc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:underline"
+              uploadedDocuments.map((doc) => (
+                <div
+                  key={doc._id}
+                  className="flex items-center justify-between bg-gray-700/50 p-3 rounded-lg"
+                >
+                  <a
+                    href={doc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:underline flex items-center"
+                  >
+                    <FileText className="w-4 h-4 mr-2" />
+                    {doc.name}
+                  </a>
+                  {isInstructor && (
+                    <button
+                      onClick={() => deleteDocument(doc._id)}
+                      className="text-red-400 hover:text-red-300"
                     >
-                      {doc.name}
-                    </a>
-                    {isInstructor && (
-                      <button
-                        onClick={() => deleteDocument(doc._id)}
-                        className="ml-2 px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-                      >
-                        Delete
-                      </button>
-                    )}
-                  </li>
-                ))}
-              </ul>
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              ))
             ) : (
-              <p className="text-gray-400">No documents uploaded yet</p>
+              <p className="text-gray-400 text-center">No documents uploaded</p>
             )}
           </div>
-  
-          {/* Recording Links Section */}
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-semibold text-white">Recording Links</h3>
-              {isInstructor && (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  Add Link
-                </button>
-              )}
-            </div>
-  
-            {isInstructor && isEditing && (
-              <div className="mb-4">
-                <input
-                  type="text"
-                  value={recordingLink}
-                  onChange={(e) => setRecordingLink(e.target.value)}
-                  placeholder="Enter recording URL"
-                  className="w-full p-2 mb-2 bg-gray-700 text-white rounded"
-                />
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleRecordingUpdate}
-                    disabled={uploadingRec || !recordingLink}
-                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
-                  >
-                    {uploadingRec ? 'Saving...' : 'Save'}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsEditing(false);
-                      setRecordingLink('');
-                    }}
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
+        </div>
+
+        {/* Recording Links */}
+        <div className="mt-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-medium text-white flex items-center">
+              <Video className="w-5 h-5 mr-2 text-green-400" />
+              Recordings
+            </h3>
+            {isInstructor && (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="text-green-400 hover:text-green-300 transition-colors"
+              >
+                <Plus className="w-5 h-5" />
+              </button>
             )}
-  
+          </div>
+
+          {isInstructor && isEditing && (
+            <div className="bg-gray-700/50 p-3 rounded-lg mb-4 space-y-3">
+              <input
+                type="text"
+                value={recordingLink}
+                onChange={(e) => setRecordingLink(e.target.value)}
+                placeholder="Enter recording URL"
+                className="w-full bg-gray-800 p-2 rounded-md text-white"
+              />
+              <div className="flex space-x-2">
+                <button
+                  onClick={handleRecordingUpdate}
+                  disabled={uploadingRec || !recordingLink}
+                  className="px-3 py-2 bg-green-600/80 text-white rounded-lg flex-1"
+                >
+                  {uploadingRec ? 'Saving...' : 'Save'}
+                </button>
+                <button
+                  onClick={() => {
+                    setIsEditing(false);
+                    setRecordingLink('');
+                  }}
+                  className="px-3 py-2 bg-red-600/80 text-white rounded-lg flex-1"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-2">
             {uploadedRecordingLink?.length > 0 ? (
-              <ul className="space-y-2">
-                {uploadedRecordingLink.map((rec) => (
-                  <li key={rec._id} className="flex justify-between items-center">
-                    <a
-                      href={rec.recording.startsWith('http') ? rec.recording : `https://${rec.recording}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:underline"
+              uploadedRecordingLink.map((rec) => (
+                <div
+                  key={rec._id}
+                  className="flex items-center justify-between bg-gray-700/50 p-3 rounded-lg"
+                >
+                  <a
+                    href={rec.recording.startsWith('http') ? rec.recording : `https://${rec.recording}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green-400 hover:underline flex items-center"
+                  >
+                    <Video className="w-4 h-4 mr-2" />
+                    Recording Link
+                  </a>
+                  {isInstructor && (
+                    <button
+                      onClick={() => deleteRecordingLink(rec._id)}
+                      className="text-red-400 hover:text-red-300"
                     >
-                      Recording Link
-                    </a>
-                    {isInstructor && (
-                      <button
-                        onClick={() => deleteRecordingLink(rec._id)}
-                        className="ml-2 px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-                      >
-                        Delete
-                      </button>
-                    )}
-                  </li>
-                ))}
-              </ul>
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              ))
             ) : (
-              <p className="text-gray-400">No recording links available</p>
+              <p className="text-gray-400 text-center">No recordings available</p>
             )}
           </div>
         </div>
       </div>
-    );
-  };
-  
-  export default LectureSidebar;
+    </div>
+  );
+};
+
+export default LectureSidebar;
