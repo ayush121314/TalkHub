@@ -110,9 +110,28 @@ const createLecture = async (req, res) => {
       }
     }
 
-    // Validate date is in the future
+    // Validate date and time
     const lectureDate = new Date(req.body.date);
-    if (lectureDate < new Date()) {
+    const currentDate = new Date();
+
+    if (lectureDate.toDateString() === currentDate.toDateString()) {
+      // If the date is today, validate the time
+      const [lectureHour, lectureMinute] = req.body.time.split(':').map(Number);
+      const lectureTime = new Date(
+        lectureDate.getFullYear(),
+        lectureDate.getMonth(),
+        lectureDate.getDate(),
+        lectureHour,
+        lectureMinute
+      );
+
+      if (lectureTime <= currentDate) {
+        throw new CustomError(
+          'Lecture time must be in the future if the date is today',
+          StatusCodes.BAD_REQUEST
+        );
+      }
+    } else if (lectureDate < currentDate) {
       throw new CustomError('Lecture date must be in the future', StatusCodes.BAD_REQUEST);
     }
 
@@ -125,7 +144,6 @@ const createLecture = async (req, res) => {
       time: req.body.time,
       duration: parseInt(req.body.duration) || 60, // Default to 60 minutes
       mode: req.body.mode,
-    
       capacity: parseInt(req.body.capacity),
       status: 'scheduled',
       registeredUsers: []
@@ -144,8 +162,6 @@ const createLecture = async (req, res) => {
       lectureData.venue = req.body.venue.trim();
     }
 
-    // Validate department
-    
     // Validate and process capacity
     if (isNaN(lectureData.capacity) || lectureData.capacity < 1) {
       throw new CustomError('Capacity must be a positive number', StatusCodes.BAD_REQUEST);
@@ -184,7 +200,6 @@ const createLecture = async (req, res) => {
         venue: lecture.venue,
         meetLink: lecture.meetLink,
         capacity: lecture.capacity,
-        
         prerequisites: lecture.prerequisites,
         tags: lecture.tags,
         registeredCount: 0,

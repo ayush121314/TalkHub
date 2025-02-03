@@ -14,25 +14,37 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
     capacity: '',
     prerequisites: '',
     materials: '',
-    tags: '', 
+    tags: '',
   });
+
+  const [showCalendar, setShowCalendar] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split('T')[0];
+
+  const handleDateClick = (e) => {
+    e.preventDefault();
+    setShowCalendar(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const now = new Date();
-    const selectedDate = new Date(`${formData.date}T${formData.time}`);
-  
-    if (selectedDate <= now) {
-      alert('Lecture date and time must be in the future.');
+    
+    const selectedDate = new Date(formData.date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (selectedDate <= today) {
+      alert('Please select a future date for the lecture.');
       return;
     }
-  
+    
     try {
       const token = localStorage.getItem('token');
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
@@ -59,6 +71,49 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
       console.error('Failed to submit talk request:', err);
     }
   };
+
+  const DateInput = () => (
+    <div className="relative">
+      <label className="block text-sm font-medium text-gray-300 flex items-center">
+        <span className="mr-2"><FaCalendarAlt /></span> Date
+      </label>
+      <div className="relative">
+        <input
+          type="date"
+          name="date"
+          value={formData.date}
+          onChange={handleInputChange}
+          min={minDate}
+          className="w-full p-4 pl-12 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out appearance-none"
+          required
+          style={{
+            colorScheme: 'dark'
+          }}
+        />
+        <FaCalendarAlt 
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" 
+          size={20}
+        />
+      </div>
+      {showCalendar && (
+        <div className="absolute z-10 mt-2 p-4 bg-gray-800 rounded-xl shadow-xl border border-gray-700">
+          <div className="calendar-popup">
+            {/* Calendar header styling added here */}
+            <input
+              type="date"
+              value={formData.date}
+              onChange={handleInputChange}
+              min={minDate}
+              className="w-full p-2 border rounded-lg bg-gray-700 border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                colorScheme: 'dark'
+              }}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 bg-black/70 flex justify-center items-center p-4 z-50 backdrop-blur-sm">
@@ -104,7 +159,7 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
             />
           </div>
 
-          {/* Mode */}
+          {/* Mode Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-300">Mode</label>
             <div className="flex space-x-4">
@@ -160,37 +215,30 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
 
           {/* Date and Time */}
           <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 flex items-center">
-                <span className="mr-2"><FaCalendarAlt /></span> Date
-              </label>
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleInputChange}
-                className="w-full p-4 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
-                min={new Date().toISOString().split('T')[0]}
-                required
-              />
-            </div>
+            <DateInput />
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 flex items-center">
-                <span className="mr-2"><FaClock /></span> Time
+              <label className="block text-sm font-medium text-white flex items-center">
+                <span className="mr-2 text-white"><FaClock /></span> Time
               </label>
-              <input
-                type="time"
-                name="time"
-                value={formData.time}
-                onChange={handleInputChange}
-                className="w-full p-4 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
-                required
-              />
+              <div className="relative">
+                <input
+                  type="time"
+                  name="time"
+                  value={formData.time}
+                  onChange={handleInputChange}
+                  className="w-full p-4 pl-12 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+                  required
+                />
+                <FaClock 
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white pointer-events-none" 
+                  size={20}
+                />
+              </div>
             </div>
           </div>
 
-          {/* Duration */}
+          {/* Rest of the form fields remain the same */}
           <div>
             <label className="block text-sm font-medium text-gray-300 flex items-center">
               <span className="mr-2"><FaClock /></span> Duration (in minutes)
@@ -206,7 +254,6 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
             />
           </div>
 
-          {/* Tags */}
           <div>
             <label className="block text-sm font-medium text-gray-300 flex items-center">
               <span className="mr-2"><FaTags /></span> Tags
@@ -222,7 +269,6 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
             />
           </div>
 
-          {/* Capacity */}
           <div>
             <label className="block text-sm font-medium text-gray-300 flex items-center">
               <span className="mr-2"><FaUsers /></span> Capacity
@@ -238,7 +284,7 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
             />
           </div>
 
-          {/* Buttons */}
+          {/* Submit and Cancel buttons */}
           <div className="flex justify-end space-x-4 pt-4">
             <button
               type="button"
