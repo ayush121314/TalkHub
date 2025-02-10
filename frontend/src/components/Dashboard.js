@@ -14,10 +14,12 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [notificationMessage, setNotificationMessage] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
+
 
   useEffect(() => {
     fetchLectureData();
@@ -69,22 +71,19 @@ const Dashboard = () => {
 
   const TabButton = ({ icon, label, tab }) => (
     <button
-      onClick={() => setActiveTab(tab)}
-      className={`text-white p-3 flex items-center justify-center gap-2 rounded-xl transition-colors ${
-        activeTab === tab ? 'bg-purple-600' : 'hover:bg-gray-700'
+      onClick={() => {
+        setActiveTab(tab);
+        setIsSidebarOpen(false);
+      }}
+      className={`w-full text-left p-4 flex items-center space-x-3 hover:bg-gray-700 rounded-lg transition-colors ${
+        activeTab === tab ? 'bg-gray-700' : ''
       }`}
     >
-      {icon} {label}
+      <span className="text-xl">{icon}</span>
+      <span className="text-gray-300">{label}</span>
     </button>
   );
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -105,89 +104,124 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 pt-16 pb-24">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-between items-start">
-            <div className="flex items-center space-x-8">
-              <div className="w-32 h-32 rounded-full bg-gray-800 p-1 shadow-xl">
-                <div className="w-full h-full rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
-                  <span className="text-white text-6xl">
-                    {user?.name?.charAt(0)?.toUpperCase()}
-                  </span>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold text-white">{user?.name}</h2>
-                <div className="flex flex-wrap gap-4 text-gray-300">
-                  <span className="flex items-center">✉️ {user?.email}</span>
-                  {/* <span className="flex items-center">📚 {user?.department}</span> */}
-                  <span className="flex items-center">🎓 {user?.rollNumber}</span>
-                </div>
-              </div>
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 w-full bg-gray-800 p-4 flex justify-between items-center z-40">
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="text-white hover:text-purple-400 transition-colors"
+        >
+          ☰
+        </button>
+        <button
+          onClick={() => setShowRequestForm(true)}
+          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+        >
+          ➕ Schedule Talk
+        </button>
+      </div>
+
+      {/* Sidebar */}
+      <div
+        className={`fixed inset-y-0 left-0 w-64 bg-gray-800 transform transition-transform duration-300 ease-in-out z-50 ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:translate-x-0`}
+      >
+        {/* Profile Section */}
+        <div className="p-6 border-b border-gray-700">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
+              <span className="text-white text-3xl">
+                {user?.name?.charAt(0)?.toUpperCase()}
+              </span>
             </div>
-            <button
-              onClick={logout}
-              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Logout
-            </button>
+            <div className="text-center">
+              <h2 className="text-white font-semibold text-lg">{user?.name}</h2>
+              <p className="text-gray-400 text-sm">{user?.email}</p>
+              <p className="text-gray-400 text-sm mt-1">🎓 {user?.rollNumber}</p>
+            </div>
           </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="p-4 space-y-2">
+          <TabButton icon="📅" label="Upcoming Lectures" tab="upcoming" />
+          <TabButton icon="⏰" label="Past Lectures" tab="past" />
+          <TabButton icon="👥" label="My Scheduled Talks" tab="scheduled" />
+        </nav>
+
+        {/* Logout Button */}
+        <div className="absolute bottom-0 w-full p-4 border-t border-gray-700">
+          <button
+            onClick={logout}
+            className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-600/30 text-red-400 rounded-lg hover:bg-red-600/40 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>Logout</span>
+          </button>
         </div>
       </div>
 
+      {/* Overlay for mobile sidebar */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 -mt-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-3">
-            <button
-              onClick={() => setShowRequestForm(true)}
-              className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-2xl flex items-center justify-center font-semibold hover:opacity-90 transition-opacity"
-            >
-              ➕ Schedule a Talk
-            </button>
-          </div>
-
-          <div className="lg:col-span-3">
-            <div className="grid grid-cols-3 gap-4 bg-gray-800 p-1 rounded-xl mb-6">
-              <TabButton icon="📅" label="Upcoming Lectures" tab="upcoming" />
-              <TabButton icon="⏰" label="Past Lectures" tab="past" />
-              <TabButton icon="👥" label="My Scheduled Talks" tab="scheduled" />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {activeTab === 'upcoming' && upcomingLectures.map((lecture) => (
-                <LectureCard key={lecture.id} lecture={lecture} isPast={false} onClick={handleLectureClick} />
-              ))}
-              {activeTab === 'past' && pastLectures.map((lecture) => (
-                <LectureCard key={lecture.id} lecture={lecture} isPast={true} onClick={handleLectureClick} />
-              ))}
-              {activeTab === 'scheduled' && scheduledTalks.map((lecture) => (
-                <LectureCard key={lecture.id} lecture={lecture} isPast={false} onClick={handleLectureClick} />
-              ))}
-
-              {/* Empty State Messages */}
-              {activeTab === 'upcoming' && upcomingLectures.length === 0 && (
-                <div className="lg:col-span-3 text-center py-12 text-gray-400">
-                  No upcoming lectures available at the moment.
-                </div>
-              )}
-              {activeTab === 'past' && pastLectures.length === 0 && (
-                <div className="lg:col-span-3 text-center py-12 text-gray-400">
-                  No past lectures found.
-                </div>
-              )}
-              {activeTab === 'scheduled' && scheduledTalks.length === 0 && (
-                <div className="lg:col-span-3 text-center py-12 text-gray-400">
-                  You haven't scheduled any talks yet.
-                </div>
-              )}
-            </div>
-          </div>
+      <div className="md:ml-64 p-6 pt-24 md:pt-6">
+        {/* Desktop Schedule Button */}
+        <div className="hidden md:block mb-8">
+          <button
+            onClick={() => setShowRequestForm(true)}
+            className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:opacity-90 transition-opacity shadow-lg"
+          >
+            ➕ Schedule New Talk
+          </button>
         </div>
+
+        {/* Lecture Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {activeTab === 'upcoming' && upcomingLectures.map((lecture) => (
+            <LectureCard key={lecture.id} lecture={lecture} isPast={false} onClick={handleLectureClick} />
+          ))}
+          {activeTab === 'past' && pastLectures.map((lecture) => (
+            <LectureCard key={lecture.id} lecture={lecture} isPast={true} onClick={handleLectureClick} />
+          ))}
+          {activeTab === 'scheduled' && scheduledTalks.map((lecture) => (
+            <LectureCard key={lecture.id} lecture={lecture} isPast={false} onClick={handleLectureClick} />
+          ))}
+
+          {/* Empty States */}
+          {activeTab === 'upcoming' && upcomingLectures.length === 0 && (
+            <div className="col-span-full text-center py-12 text-gray-400">
+              No upcoming lectures scheduled
+            </div>
+          )}
+          {activeTab === 'past' && pastLectures.length === 0 && (
+            <div className="col-span-full text-center py-12 text-gray-400">
+              No past lectures available
+            </div>
+          )}
+          {activeTab === 'scheduled' && scheduledTalks.length === 0 && (
+            <div className="col-span-full text-center py-12 text-gray-400">
+              You haven't scheduled any talks yet
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile FAB */}
+      <div className="md:hidden fixed bottom-6 right-6">
+        <button
+          onClick={() => setShowRequestForm(true)}
+          className="p-4 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 transition-colors"
+        >
+          ➕
+        </button>
       </div>
 
       {/* Notification Toast */}
