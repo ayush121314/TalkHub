@@ -57,11 +57,11 @@ const LectureDetails = () => {
     }
   
     // Optional: basic URL validation
-    const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-    if (!urlPattern.test(trimmedLink)) {
-      // Optional: set an error message about invalid URL format
-      return;
-    }
+    // const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+    // if (!urlPattern.test(trimmedLink)) {
+    //   // Optional: set an error message about invalid URL format
+    //   return;
+    // }
   
     const success = await handleRecordingLinkUpdate(trimmedLink);
     if (success) {
