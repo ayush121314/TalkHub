@@ -16,6 +16,7 @@ export const AuthForms = () => {
   });
   const [error, setError] = useState('');
   const [otpSent, setOtpSent] = useState(false);
+  const [isSendingOtp, setIsSendingOtp] = useState(false); // New loading state
 
   useEffect(() => {
     if (authError) setError(authError);
@@ -24,21 +25,25 @@ export const AuthForms = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const handleError = (err) => {
     setError(err.message);
-    setTimeout(() => {
-      setError(' '); 
-    }, 2000);
+    setTimeout(() => setError(''), 2000);
   };
+
   const handleOtpRequest = async () => {
     setError('');
+    setIsSendingOtp(true);
     try {
       await sendOtp(formData.email);
       setOtpSent(true);
     } catch (err) {
       handleError(err);
+    } finally {
+      setIsSendingOtp(false);
     }
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -179,37 +184,69 @@ export const AuthForms = () => {
                   animate={{ opacity: 1 }}
                   className="flex flex-col gap-4"
                 >
-                  <button
-                    type="button"
-                    onClick={handleOtpRequest}
-                    className="w-full py-3 px-6 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-gray-100 transition-all duration-300 flex items-center justify-center gap-2 hover:gap-3"
-                  >
-                    {otpSent ? (
-                      <>
-                        <CheckCircle className="w-5 h-5 text-green-400" />
-                        Send OTP Again!
-                      </>
-                    ) : (
-                      'Send Verification OTP'
-                    )}
-                  </button>
 
-                  {otpSent && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                    >
-                      <input
-                        name="otp"
-                        type="text"
-                        required
-                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-white/20 outline-none transition-all duration-300 placeholder:text-gray-400/60 text-gray-100"
-                        placeholder="Enter 6-digit OTP"
-                        value={formData.otp}
-                        onChange={handleChange}
-                      />
-                    </motion.div>
-                  )}
+{!otpSent && (
+      <button
+        type="button"
+        onClick={handleOtpRequest}
+        disabled={isSendingOtp}
+        className="w-full py-3 px-6 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-gray-100 transition-all duration-300 flex items-center justify-center gap-2 hover:gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isSendingOtp ? (
+          <>
+            <svg 
+              className="animate-spin h-5 w-5 text-white" 
+              xmlns="http://www.w3.org/2000/svg" 
+              fill="none" 
+              viewBox="0 0 24 24"
+            >
+              <circle 
+                className="opacity-25" 
+                cx="12" 
+                cy="12" 
+                r="10" 
+                stroke="currentColor" 
+                strokeWidth="4"
+              />
+              <path 
+                className="opacity-75" 
+                fill="currentColor" 
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+            Sending...
+          </>
+        ) : (
+          'Send Verification OTP'
+        )}
+      </button>
+    )}
+
+    {otpSent && (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <input
+          name="otp"
+          type="text"
+          required
+          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-white/20 outline-none transition-all duration-300 placeholder:text-gray-400/60 text-gray-100"
+          placeholder="Enter 6-digit OTP"
+          value={formData.otp}
+          onChange={handleChange}
+        />
+        <button
+          type="button"
+          onClick={handleOtpRequest}
+          disabled={isSendingOtp}
+          className="mt-2 text-sm text-purple-400 hover:text-purple-300 disabled:opacity-50"
+        >
+          {isSendingOtp ? 'Resending...' : 'Resend OTP'}
+        </button>
+      </motion.div>
+    )}
+
                 </motion.div>
               </motion.div>
             )}
