@@ -12,7 +12,7 @@ const useLectureData = (lectureId) => {
   const [isEditing, setIsEditing] = useState(false);
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadingRec, setUploadingRec] = useState(false);
-
+  const [recordingLink, setRecordingLink] = useState('');
   const { user } = useAuth();
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
 
@@ -108,15 +108,21 @@ const useLectureData = (lectureId) => {
   };
 
   const handleRecordingLinkUpdate = async (recordingLink) => {
-    if (!recordingLink) {
-      setError('Please enter a valid link.');
-      return false;
-    }
+    // Add URL validation
+    // try {
+    //   const url = new URL(recordingLink.trim());
+    //   if (!url.protocol.startsWith('http')) {
+    //     throw new Error('Invalid URL: Must start with http:// or https://');
+    //   }
+    // } catch (err) {
+    //   setError('Please enter a valid URL starting with http:// or https://');
+    //   return false;
+    // }
 
     try {
       setUploadingRec(true);
       setError(null);
-
+    
       const token = localStorage.getItem('token');
       const response = await fetch(`${apiUrl}/api/recordings/upload`, {
         method: 'POST',
@@ -126,7 +132,7 @@ const useLectureData = (lectureId) => {
         },
         body: JSON.stringify({
           lectureId,
-          recording: recordingLink
+          recordingLink: recordingLink.trim()
         }),
       });
 
@@ -137,6 +143,8 @@ const useLectureData = (lectureId) => {
 
       const data = await response.json();
       setUploadedRecordingLink(prevRecs => [...prevRecs, data]);
+      setRecordingLink(''); // Clear input after successful upload
+      setIsEditing(false); // Close the edit form
       return true;
     } catch (err) {
       setError(err.message);
@@ -145,6 +153,7 @@ const useLectureData = (lectureId) => {
       setUploadingRec(false);
     }
   };
+
 
   const deleteDocument = async (documentId) => {
     try {
@@ -242,7 +251,9 @@ const useLectureData = (lectureId) => {
     isEditing,
     setIsEditing,
     uploadingDoc,
-    uploadingRec
+    uploadingRec,
+    recordingLink,
+    setRecordingLink,
   };
 };
 

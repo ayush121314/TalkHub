@@ -16,7 +16,7 @@ exports.uploadRecording = async (req, res) => {
 
         const recorLink = new Recording({
             recording: recordingLink,
-            lectureId,
+            lectureId:lectureId
         });
 
         await recorLink.save();
