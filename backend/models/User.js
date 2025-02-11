@@ -19,6 +19,16 @@ const userSchema = new mongoose.Schema({
     enum: ['student', 'professor', 'admin'],
     default: 'student'
   },
+  profile: {
+    profilePic: String,
+    linkedinProfile: String,
+    personalWebsite: String,
+    organization: String,
+    speakerBio: String,
+    socialMediaHandle1: String,
+    socialMediaHandle2: String,
+    additionalInfo: String
+  },
   createdAt: {
     type: Date,
     default: Date.now

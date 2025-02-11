@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import RequestClassForm from './RequestClassForm';
 import LectureCard from './LectureCard';
+import ProfileForm from './ProfileForm';
 
 const Dashboard = () => {
   const [showRequestForm, setShowRequestForm] = useState(false);
@@ -15,15 +16,43 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
+  const [showProfileForm, setShowProfileForm] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
 
+  const handleProfileClick = () => {
+    setActiveTab('profile'); // Change the active tab to "profile"
+  };
 
   useEffect(() => {
     fetchLectureData();
   }, []);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${apiUrl}/api/users/profile`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch profile');
+        const profile = await response.json();
+        setUserProfile(profile);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        showNotification('Error loading profile data');
+      }
+    };
+    fetchUserProfile();
+  }, []);
+
 
   const fetchLectureData = async () => {
     try {
@@ -32,7 +61,7 @@ const Dashboard = () => {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       };
-  
+
       const [upcomingRes, pastRes, scheduledRes] = await Promise.all([
         fetch(`${apiUrl}/api/lectures/upcoming`, { headers }),
         fetch(`${apiUrl}/api/lectures/past`, { headers }),
@@ -75,15 +104,13 @@ const Dashboard = () => {
         setActiveTab(tab);
         setIsSidebarOpen(false);
       }}
-      className={`w-full text-left p-4 flex items-center space-x-3 hover:bg-gray-700 rounded-lg transition-colors ${
-        activeTab === tab ? 'bg-gray-700' : ''
-      }`}
+      className={`w-full text-left p-4 flex items-center space-x-3 hover:bg-gray-700 rounded-lg transition-colors ${activeTab === tab ? 'bg-gray-700' : ''
+        }`}
     >
       <span className="text-xl">{icon}</span>
       <span className="text-gray-300">{label}</span>
     </button>
   );
-
 
   if (error) {
     return (
@@ -122,18 +149,30 @@ const Dashboard = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 w-64 bg-gray-800 transform transition-transform duration-300 ease-in-out z-50 ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0`}
+        className={`fixed inset-y-0 left-0 w-64 bg-gray-800 transform transition-transform duration-300 ease-in-out z-50 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } md:translate-x-0`}
       >
         {/* Profile Section */}
         <div className="p-6 border-b border-gray-700">
           <div className="flex flex-col items-center space-y-4">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
-              <span className="text-white text-3xl">
-                {user?.name?.charAt(0)?.toUpperCase()}
-              </span>
+            {/* Clickable Profile Icon */}
+            <div
+              className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-r from-purple-500 to-blue-500 cursor-pointer"
+              onClick={handleProfileClick}
+            >
+              {userProfile?.profile?.profilePic ? (
+                <img
+                  src={userProfile.profile.profilePic}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-white text-3xl">
+                  {user?.name?.charAt(0)?.toUpperCase()}
+                </span>
+              )}
             </div>
+
             <div className="text-center">
               <h2 className="text-white font-semibold text-lg">{user?.name}</h2>
               <p className="text-gray-400 text-sm">{user?.email}</p>
@@ -147,6 +186,7 @@ const Dashboard = () => {
           <TabButton icon="📅" label="Upcoming Lectures" tab="upcoming" />
           <TabButton icon="⏰" label="Past Lectures" tab="past" />
           <TabButton icon="👥" label="My Scheduled Talks" tab="scheduled" />
+          <TabButton icon="👤" label="My Profile" tab="profile" />
         </nav>
 
         {/* Logout Button */}
@@ -182,6 +222,123 @@ const Dashboard = () => {
             ➕ Schedule New Talk
           </button>
         </div>
+        {activeTab === 'profile' && (
+          <div className="max-w-2xl mx-auto bg-gray-800 rounded-xl p-6">
+            <h2 className="text-2xl font-bold text-white mb-6 text-center">Profile Information</h2>
+
+            {/* Profile Image Section */}
+            {userProfile?.profile?.profilePic ? (
+              <div className="flex justify-center mb-6">
+                <img
+                  src={userProfile.profile.profilePic}
+                  alt="Profile"
+                  className="w-32 h-32 rounded-full object-cover border-4 border-purple-500"
+                />
+              </div>
+            ) : (
+              <div className="flex justify-center mb-6">
+                <div className="w-32 h-32 flex items-center justify-center rounded-full bg-gray-700 text-4xl font-bold text-white">
+                  {userProfile?.name?.charAt(0)?.toUpperCase()}
+                </div>
+              </div>
+            )}
+
+            {userProfile ? (
+              <div className="space-y-4">
+                {/* Bio */}
+                {userProfile.profile?.speakerBio!=="null" && userProfile.profile.speakerBio.trim() !== "" && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-purple-400">Bio</h3>
+                    <p className="text-gray-300">{userProfile.profile.speakerBio}</p>
+                  </div>
+                )}
+
+                {/* Organization (Fix Added) */}
+                {userProfile.profile?.organization!=="null" && userProfile.profile.organization.trim() !== "" && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-purple-400">Organization</h3>
+                    <p className="text-gray-300">{userProfile.profile.organization}</p>
+                  </div>
+                )}
+
+                {/* LinkedIn */}
+                {userProfile.profile?.linkedinProfile!=="null" && userProfile.profile.linkedinProfile.trim() !== "" && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-purple-400">LinkedIn</h3>
+                    <a
+                      href={userProfile.profile.linkedinProfile}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:underline"
+                    >
+                      View Profile
+                    </a>
+                  </div>
+                )}
+
+                {/* Personal Website */}
+                {userProfile.profile?.personalWebsite!=="null" && userProfile.profile.personalWebsite.trim() !== "" && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-purple-400">Website</h3>
+                    <a
+                      href={userProfile.profile.personalWebsite}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:underline"
+                    >
+                      Visit Website
+                    </a>
+                  </div>
+                )}
+
+                {userProfile.profile?.socialMediaHandle1!=="null" && userProfile.profile.socialMediaHandle1.trim() !== "" && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-purple-400">Social Media Handle (1)</h3>
+                    <a
+                      href={userProfile.profile.socialMediaHandle1}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:underline"
+                    >
+                      Visit
+                    </a>
+                  </div>
+                )}
+
+                {userProfile.profile?.socialMediaHandle2!=="null" && userProfile.profile.socialMediaHandle2.trim() !== "" && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-purple-400">Social Media Handle (2)</h3>
+                    <a
+                      href={userProfile.profile.socialMediaHandle2}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:underline"
+                    >
+                      Visit
+                    </a>
+                  </div>
+                )}
+
+                {/* Additional Info */}
+                {userProfile.profile?.additionalInfo!=="null" && userProfile.profile.additionalInfo.trim() !== "" && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-purple-400">Additional Information</h3>
+                    <p className="text-gray-300">{userProfile.profile.additionalInfo}</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="text-gray-400">No profile information available</p>
+            )}
+
+            <button
+              onClick={() => setShowProfileForm(true)}
+              className="mt-6 px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
+            >
+              Edit Profile
+            </button>
+          </div>
+        )}
 
         {/* Lecture Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -239,6 +396,16 @@ const Dashboard = () => {
             setScheduledTalks(prev => [...prev, newTalk]);
             setShowRequestForm(false);
             showNotification('Talk request submitted successfully!');
+          }}
+        />
+      )}
+      {showProfileForm && (
+        <ProfileForm
+          onClose={() => setShowProfileForm(false)}
+          user={userProfile}
+          onUpdate={(updatedProfile) => {
+            setUserProfile(updatedProfile);
+            showNotification('Profile updated successfully!');
           }}
         />
       )}
