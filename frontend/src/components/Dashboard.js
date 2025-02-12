@@ -246,7 +246,7 @@ const Dashboard = () => {
             {userProfile ? (
               <div className="space-y-4">
                 {/* Bio */}
-                {userProfile.profile?.speakerBio!=="null" && userProfile.profile.speakerBio.trim() !== "" && (
+                {userProfile.profile?.speakerBio && userProfile.profile?.speakerBio!=="null" && userProfile.profile.speakerBio.trim() !== "" && (
                   <div>
                     <h3 className="text-lg font-semibold text-purple-400">Bio</h3>
                     <p className="text-gray-300">{userProfile.profile.speakerBio}</p>
@@ -254,7 +254,7 @@ const Dashboard = () => {
                 )}
 
                 {/* Organization (Fix Added) */}
-                {userProfile.profile?.organization!=="null" && userProfile.profile.organization.trim() !== "" && (
+                {userProfile.profile?.organization && userProfile.profile?.organization!=="null" && userProfile.profile.organization.trim() !== "" && (
                   <div>
                     <h3 className="text-lg font-semibold text-purple-400">Organization</h3>
                     <p className="text-gray-300">{userProfile.profile.organization}</p>
@@ -262,7 +262,7 @@ const Dashboard = () => {
                 )}
 
                 {/* LinkedIn */}
-                {userProfile.profile?.linkedinProfile!=="null" && userProfile.profile.linkedinProfile.trim() !== "" && (
+                {userProfile.profile?.linkedinProfile && userProfile.profile?.linkedinProfile!=="null" && userProfile.profile.linkedinProfile.trim() !== "" && (
                   <div>
                     <h3 className="text-lg font-semibold text-purple-400">LinkedIn</h3>
                     <a
@@ -277,7 +277,7 @@ const Dashboard = () => {
                 )}
 
                 {/* Personal Website */}
-                {userProfile.profile?.personalWebsite!=="null" && userProfile.profile.personalWebsite.trim() !== "" && (
+                {userProfile.profile?.personalWebsite && userProfile.profile?.personalWebsite!=="null" && userProfile.profile.personalWebsite.trim() !== "" && (
                   <div>
                     <h3 className="text-lg font-semibold text-purple-400">Website</h3>
                     <a
@@ -291,7 +291,7 @@ const Dashboard = () => {
                   </div>
                 )}
 
-                {userProfile.profile?.socialMediaHandle1!=="null" && userProfile.profile.socialMediaHandle1.trim() !== "" && (
+                {userProfile.profile?.socialMediaHandle1 && userProfile.profile?.socialMediaHandle1!=="null" && userProfile.profile.socialMediaHandle1.trim() !== "" && (
                   <div>
                     <h3 className="text-lg font-semibold text-purple-400">Social Media Handle (1)</h3>
                     <a
@@ -305,7 +305,7 @@ const Dashboard = () => {
                   </div>
                 )}
 
-                {userProfile.profile?.socialMediaHandle2!=="null" && userProfile.profile.socialMediaHandle2.trim() !== "" && (
+                {userProfile.profile?.socialMediaHandle2 && userProfile.profile?.socialMediaHandle2!=="null" && userProfile.profile.socialMediaHandle2.trim() !== "" && (
                   <div>
                     <h3 className="text-lg font-semibold text-purple-400">Social Media Handle (2)</h3>
                     <a
@@ -320,7 +320,7 @@ const Dashboard = () => {
                 )}
 
                 {/* Additional Info */}
-                {userProfile.profile?.additionalInfo!=="null" && userProfile.profile.additionalInfo.trim() !== "" && (
+                {userProfile.profile?.additionalInfo && userProfile.profile?.additionalInfo!=="null" && userProfile.profile.additionalInfo.trim() !== "" && (
                   <div>
                     <h3 className="text-lg font-semibold text-purple-400">Additional Information</h3>
                     <p className="text-gray-300">{userProfile.profile.additionalInfo}</p>
