@@ -7,7 +7,8 @@ const ProfileForm = ({ onClose, user, onUpdate }) => {
         personalWebsite: '',
         organization: '',
         speakerBio: '',
-        socialMediaHandles: '',
+        socialMediaHandle1:'',
+        socialMediaHandle2:'',
         additionalInfo: ''
     });
     const [preview, setPreview] = useState(null);
@@ -46,16 +47,6 @@ const ProfileForm = ({ onClose, user, onUpdate }) => {
         setPreview(null);
     };
 
-    const handleSocialMediaChange = (platform, value) => {
-        setFormData((prev) => ({
-            ...prev,
-            socialMediaHandles: {
-                ...(prev.socialMediaHandles || {}),  // Ensure it's an object
-                [platform]: value
-            }
-        }));
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -63,7 +54,7 @@ const ProfileForm = ({ onClose, user, onUpdate }) => {
             const formPayload = new FormData();
             if (formData.profileImage) {
                 formPayload.append('profileImage', formData.profileImage);
-            } else {
+            } else if (formData.profileImage === null) {
                 formPayload.append('removeProfileImage', 'true');
             }
             // Append all fields, ensuring empty fields are sent as null

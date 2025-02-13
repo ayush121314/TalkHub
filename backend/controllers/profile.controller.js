@@ -33,6 +33,11 @@ const updateProfile = async (req, res) => {
 
     let updateData = { profile: { ...existingUser.profile } }; // Merge existing data
 
+    // **Handle Profile Picture Removal**
+    if (req.body.removeProfileImage === "true") {
+      updateData.profile.profilePic = null;
+    }
+
     if (req.file) {
       try {
         const b64 = Buffer.from(req.file.buffer).toString("base64");
@@ -53,7 +58,7 @@ const updateProfile = async (req, res) => {
       }
     }
 
-    const fields = ["linkedinProfile", "personalWebsite", "organization", "speakerBio", "additionalInfo","socialMediaHandle1","socialMediaHandle2"];
+    const fields = ["linkedinProfile", "personalWebsite", "organization", "speakerBio", "additionalInfo", "socialMediaHandle1", "socialMediaHandle2"];
     fields.forEach((field) => {
       if (req.body[field]) {
         updateData.profile[field] = req.body[field];
@@ -70,7 +75,7 @@ const updateProfile = async (req, res) => {
       console.log("🚨 User Not Found");
       return res.status(404).json({ message: "User not found" });
     }
-    
+
     res.json(user);
   } catch (error) {
     console.error("🔥 Error in updateProfile:", error);
