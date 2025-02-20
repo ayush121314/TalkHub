@@ -41,8 +41,7 @@ const getPastLectures = async (req, res) => {
   try {
     const currentDate = new Date();
     const lectures = await Lecture.find({
-      date: { $lt: currentDate },
-      status: 'completed'
+      date: { $lt: currentDate }
     })
     .populate('instructor', 'name email')
     .sort({ date: -1 });
