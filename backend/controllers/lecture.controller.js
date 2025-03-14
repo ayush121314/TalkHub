@@ -21,6 +21,7 @@ const getUpcomingLectures = async (req, res) => {
       instructor: lecture.instructor.name,
       date: lecture.date,
       time: lecture.time,
+      duration: lecture.duration || 60, // Add duration with default value
       mode: lecture.mode,
       venue: lecture.venue,
       meetLink: lecture.meetLink,
@@ -53,12 +54,12 @@ const getPastLectures = async (req, res) => {
       instructor: lecture.instructor.name,
       date: lecture.date,
       time: lecture.time,
+      duration: lecture.duration || 60, // Add duration with default value
       mode: lecture.mode,
       venue: lecture.venue,
       meetLink: lecture.meetLink,
       capacity: lecture.capacity,
       registeredCount: lecture.registeredUsers.length,
-     
       tags: lecture.tags,
       recording: lecture.recording
     }));
@@ -83,12 +84,12 @@ const getScheduledTalks = async (req, res) => {
       description: lecture.description,
       date: lecture.date,
       time: lecture.time,
+      duration: lecture.duration || 60, // Add duration with default value
       mode: lecture.mode,
       venue: lecture.venue,
       meetLink: lecture.meetLink,
       capacity: lecture.capacity,
       registeredCount: lecture.registeredUsers.length,
-    
       tags: lecture.tags
     }));
 
@@ -219,12 +220,27 @@ const createLecture = async (req, res) => {
 const getLectureById = async (req, res) => {
   try {
     const lecture = await Lecture.findById(req.params.id)
-      .populate('instructor', 'name email title')
+      .populate({
+        path: 'instructor',
+        select: 'name email role profile'
+      })
       .populate('registeredUsers', 'name email');
     
     if (!lecture) {
       throw new CustomError('Lecture not found', StatusCodes.NOT_FOUND);
     }
+
+    // Helper function to get instructor title
+    const getInstructorTitle = (role) => {
+      switch (role) {
+        case 'professor':
+          return 'Professor';
+        case 'student':
+          return 'Student Instructor';
+        default:
+          return 'Instructor';
+      }
+    };
 
     // Transform data to match frontend requirements
     const transformedLecture = {
@@ -232,9 +248,21 @@ const getLectureById = async (req, res) => {
       title: lecture.title,
       description: lecture.description,
       instructor: {
+        id: lecture.instructor._id,
         name: lecture.instructor.name,
         email: lecture.instructor.email,
-        title: lecture.instructor.title
+        role: lecture.instructor.role,
+        title: getInstructorTitle(lecture.instructor.role),
+        profile: {
+          profilePic: lecture.instructor.profile?.profilePic || null,
+          linkedinProfile: lecture.instructor.profile?.linkedinProfile || null,
+          personalWebsite: lecture.instructor.profile?.personalWebsite || null,
+          organization: lecture.instructor.profile?.organization || null,
+          speakerBio: lecture.instructor.profile?.speakerBio || null,
+          socialMediaHandle1: lecture.instructor.profile?.socialMediaHandle1 || null,
+          socialMediaHandle2: lecture.instructor.profile?.socialMediaHandle2 || null,
+          additionalInfo: lecture.instructor.profile?.additionalInfo || null
+        }
       },
       date: lecture.date,
       time: lecture.time,
@@ -247,7 +275,7 @@ const getLectureById = async (req, res) => {
       tags: lecture.tags,
       status: lecture.status,
       recording: lecture.recording,
-      registeredUsers: lecture.registeredUsers.map(user => user._id),
+      registeredUsers: lecture.registeredUsers.map(user => user._id)
     };
 
     res.status(StatusCodes.OK).json(transformedLecture);

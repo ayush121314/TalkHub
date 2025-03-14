@@ -1,6 +1,37 @@
 import React from 'react';
+import { 
+  FileText, 
+  Video, 
+  Plus, 
+  Trash2, 
+  UserCircle, 
+  Link as LinkIcon 
+} from 'lucide-react';
+import InstructorProfile from './InstructorProfile';
 
 const LectureContent = ({ lecture }) => {
+  // Structure instructor data from the backend response
+  const instructorData = lecture.instructor ? {
+    name: lecture.instructor.name,
+    title: lecture.instructor.title || 'Instructor',
+    email: lecture.instructor.email,
+    role: lecture.instructor.role,
+    profilePic: lecture.instructor.profile?.profilePic,
+    linkedinProfile: lecture.instructor.profile?.linkedinProfile,
+    personalWebsite: lecture.instructor.profile?.personalWebsite,
+    organization: lecture.instructor.profile?.organization,
+    speakerBio: lecture.instructor.profile?.speakerBio,
+    socialMediaHandle1: lecture.instructor.profile?.socialMediaHandle1,
+    socialMediaHandle2: lecture.instructor.profile?.socialMediaHandle2,
+    additionalInfo: lecture.instructor.profile?.additionalInfo
+  } : null;
+
+  // For debugging - remove in production
+  console.log('Raw Instructor Data:', lecture.instructor);
+  console.log('Raw Profile Data:', lecture.instructor?.profile);
+  console.log('Processed Instructor Data:', instructorData);
+  console.log('Speaker Bio:', instructorData?.speakerBio);
+
   return (
     <div className="lg:col-span-2">
       <div className="bg-gray-800 rounded-xl p-6 shadow-xl mb-6">
@@ -67,6 +98,19 @@ const LectureContent = ({ lecture }) => {
           </div>
         )}
       </div>
+
+      {/* Instructor Profile Section */}
+      {instructorData && (
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold text-white mb-6 flex items-center gap-2">
+            <span className="text-xl">
+              {instructorData.role === 'student' ? '👨‍🎓' : '👨‍🏫'}
+            </span>
+            Meet Your {instructorData.title}
+          </h2>
+          <InstructorProfile instructor={instructorData} />
+        </div>
+      )}
     </div>
   );
 };

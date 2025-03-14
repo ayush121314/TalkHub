@@ -38,7 +38,7 @@ const LectureSidebar = ({
   return (
     <div className="space-y-6">
       {/* Instructor Profile Card */}
-      <div className="bg-gray-800/60 backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-lg">
+      {/* <div className="bg-gray-800/60 backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-lg">
         <div className="flex items-center space-x-4 mb-4">
           <UserCircle 
             className="w-12 h-12 text-purple-500" 
@@ -53,7 +53,7 @@ const LectureSidebar = ({
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Registration & Meeting Section */}
       <div className="space-y-6">
