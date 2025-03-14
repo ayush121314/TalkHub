@@ -137,7 +137,7 @@ const LectureCard = ({ lecture, isPast, onClick }) => {
             </div>
             <div>
               <div className="text-xs text-slate-400 mb-0.5">Location</div>
-              <div className="text-sm text-slate-200 line-clamp-2">{lecture.venue || 'Online Session'}</div>
+              <div className="text-sm text-slate-200 line-clamp-2">{lecture.venue || 'Online'}</div>
             </div>
           </div>
           
