@@ -132,7 +132,9 @@ const InstructorProfile = ({ instructor }) => {
           </p>
         </div>
       )}
+      <div></div>
     </div>
+    
   );
 };
 
