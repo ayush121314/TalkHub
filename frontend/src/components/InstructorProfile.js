@@ -40,7 +40,7 @@ const InstructorProfile = ({ instructor }) => {
             {instructor.title && (
               <p className="text-xl text-purple-300 font-medium">{instructor.title}</p>
             )}
-            {instructor.organization && (
+            {instructor.organization!='null' && (
               <div className="flex items-center gap-2 text-gray-300 justify-center md:justify-start">
                 <MapPin className="w-4 h-4" />
                 <span>{instructor.organization}</span>
@@ -51,7 +51,7 @@ const InstructorProfile = ({ instructor }) => {
       </div>
 
       {/* Bio Section */}
-      {instructor.speakerBio && (
+      {instructor.speakerBio!='null' && (
         <div className="mb-8">
           <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-purple-400" />
@@ -65,7 +65,7 @@ const InstructorProfile = ({ instructor }) => {
 
       {/* Contact & Social Links */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {instructor.linkedinProfile && (
+        {instructor.linkedinProfile!='null' && (
           <a
             href={instructor.linkedinProfile}
             target="_blank"
@@ -77,7 +77,7 @@ const InstructorProfile = ({ instructor }) => {
           </a>
         )}
         
-        {instructor.personalWebsite && (
+        {instructor.personalWebsite!='null' && (
           <a
             href={instructor.personalWebsite}
             target="_blank"
@@ -89,26 +89,26 @@ const InstructorProfile = ({ instructor }) => {
           </a>
         )}
         
-        {instructor.socialMediaHandle1 && (
+        {instructor.socialMediaHandle1!='null' && (
           <a
-            href={`https://twitter.com/${instructor.socialMediaHandle1}`}
+            href={`${instructor.socialMediaHandle1}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 px-4 py-3 bg-sky-900/20 hover:bg-sky-900/30 rounded-xl text-sky-300 transition-colors border border-sky-900/50 group"
           >
-            <Twitter className="w-5 h-5 group-hover:text-sky-400 transition-colors" />
-            <span>Twitter</span>
+            <div className="w-5 h-5 group-hover:text-sky-400 transition-colors" />
+            <span>Social Media</span>
           </a>
         )}
         
-        {instructor.socialMediaHandle2 && (
+        {instructor.socialMediaHandle2!='null' && (
           <a
-            href={`https://instagram.com/${instructor.socialMediaHandle2}`}
+            href={`${instructor.socialMediaHandle2}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 px-4 py-3 bg-pink-900/20 hover:bg-pink-900/30 rounded-xl text-pink-300 transition-colors border border-pink-900/50 group"
           >
-            <Instagram className="w-5 h-5 group-hover:text-pink-400 transition-colors" />
+            <div className="w-5 h-5 group-hover:text-pink-400 transition-colors" />
             <span>Instagram</span>
           </a>
         )}
@@ -125,16 +125,14 @@ const InstructorProfile = ({ instructor }) => {
       </div>
 
       {/* Additional Info */}
-      {instructor.additionalInfo && (
+      {instructor.additionalInfo!='null' && (
         <div className="mt-8 p-6 bg-gray-800/30 rounded-xl border border-gray-700">
           <p className="text-gray-400 text-sm italic leading-relaxed">
             {instructor.additionalInfo}
           </p>
         </div>
       )}
-      <div></div>
     </div>
-    
   );
 };
 
