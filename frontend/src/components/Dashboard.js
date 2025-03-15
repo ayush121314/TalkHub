@@ -8,7 +8,10 @@ import ProfileForm from './ProfileForm';
 
 const Dashboard = () => {
   const [showRequestForm, setShowRequestForm] = useState(false);
-  const [activeTab, setActiveTab] = useState('upcoming');
+  const [activeTab, setActiveTab] = useState(() => {
+    // Retrieve the active tab from localStorage or default to 'upcoming'
+    return localStorage.getItem('activeTab') || 'upcoming';
+  });
   const [upcomingLectures, setUpcomingLectures] = useState([]);
   const [pastLectures, setPastLectures] = useState([]);
   const [scheduledTalks, setScheduledTalks] = useState([]);
@@ -26,6 +29,11 @@ const Dashboard = () => {
   const handleProfileClick = () => {
     setActiveTab('profile'); // Change the active tab to "profile"
   };
+
+  // Save active tab to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('activeTab', activeTab);
+  }, [activeTab]);
 
   useEffect(() => {
     fetchLectureData();
@@ -340,9 +348,17 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Lecture Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {activeTab === 'upcoming' && upcomingLectures.map((lecture) => (
+          {/* Loading state for Upcoming lectures */}
+          {activeTab === 'upcoming' && loading && (
+            <div className="col-span-full flex flex-col items-center justify-center py-16">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-400 mb-4"></div>
+              <p className="text-lg text-indigo-300">Loading upcoming lectures...</p>
+            </div>
+          )}
+
+          {/* Display Upcoming Lectures */}
+          {activeTab === 'upcoming' && !loading && upcomingLectures.map((lecture) => (
             <LectureCard 
               key={lecture.id} 
               lecture={lecture} 
@@ -351,7 +367,17 @@ const Dashboard = () => {
               isUserRegistered={lecture.isRegistered || false}
             />
           ))}
-          {activeTab === 'past' && pastLectures.map((lecture) => (
+
+          {/* Loading state for Past lectures */}
+          {activeTab === 'past' && loading && (
+            <div className="col-span-full flex flex-col items-center justify-center py-16">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-400 mb-4"></div>
+              <p className="text-lg text-indigo-300">Loading past lectures...</p>
+            </div>
+          )}
+
+          {/* Display Past Lectures */}
+          {activeTab === 'past' && !loading && pastLectures.map((lecture) => (
             <LectureCard 
               key={lecture.id} 
               lecture={lecture} 
@@ -360,7 +386,17 @@ const Dashboard = () => {
               isUserRegistered={lecture.isRegistered || false} 
             />
           ))}
-          {activeTab === 'scheduled' && scheduledTalks.map((lecture) => (
+
+          {/* Loading state for Scheduled talks */}
+          {activeTab === 'scheduled' && loading && (
+            <div className="col-span-full flex flex-col items-center justify-center py-16">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-400 mb-4"></div>
+              <p className="text-lg text-indigo-300">Loading your scheduled talks...</p>
+            </div>
+          )}
+
+          {/* Display Scheduled Talks */}
+          {activeTab === 'scheduled' && !loading && scheduledTalks.map((lecture) => (
             <LectureCard 
               key={lecture.id} 
               lecture={lecture} 
@@ -370,18 +406,18 @@ const Dashboard = () => {
             />
           ))}
 
-          {/* Empty States */}
-          {activeTab === 'upcoming' && upcomingLectures.length === 0 && (
+          {/* Empty States - Only show these when not loading */}
+          {activeTab === 'upcoming' && !loading && upcomingLectures.length === 0 && (
             <div className="col-span-full text-center py-12 text-gray-400">
               No upcoming lectures scheduled
             </div>
           )}
-          {activeTab === 'past' && pastLectures.length === 0 && (
+          {activeTab === 'past' && !loading && pastLectures.length === 0 && (
             <div className="col-span-full text-center py-12 text-gray-400">
               No past lectures available
             </div>
           )}
-          {activeTab === 'scheduled' && scheduledTalks.length === 0 && (
+          {activeTab === 'scheduled' && !loading && scheduledTalks.length === 0 && (
             <div className="col-span-full text-center py-12 text-gray-400">
               You haven't scheduled any talks yet
             </div>
