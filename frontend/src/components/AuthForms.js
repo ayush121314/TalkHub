@@ -260,6 +260,18 @@ export const AuthForms = () => {
           >
             {isLogin ? 'Sign In' : 'Get Started'}
           </motion.button>
+
+          {/* Add Forgot Password link - only visible on login form */}
+          {isLogin && (
+            <div className="text-center mt-4">
+              <button
+                onClick={() => window.location.href = '/forgot-password'}
+                className="text-purple-400 hover:text-purple-300 transition-colors duration-300 text-sm"
+              >
+                Forgot your password?
+              </button>
+            </div>
+          )}
         </form>
 
         <motion.div className="text-center mt-6 relative z-10">
