@@ -5,7 +5,8 @@ import {
   Plus, 
   Trash2, 
   UserCircle, 
-  Link as LinkIcon 
+  Link as LinkIcon,
+  Users
 } from 'lucide-react';
 
 const LectureSidebar = ({
@@ -34,6 +35,9 @@ const LectureSidebar = ({
     lecture.status === 'scheduled' &&
     new Date(lecture.date) > new Date();
   const isInstructor = user.name === lecture.instructor?.name;
+  
+  // Check if lecture is past
+  const isPastLecture = new Date(lecture.date) < new Date();
 
   return (
     <div className="space-y-6">
@@ -57,7 +61,7 @@ const LectureSidebar = ({
 
       {/* Registration & Meeting Section */}
       <div className="space-y-6">
-        {lecture.mode === 'online' && lecture.meetLink && isUserRegistered && (
+        {lecture.mode === 'online' && lecture.meetLink && isUserRegistered && !isPastLecture && (
           <div className="bg-blue-900/30 backdrop-blur-md rounded-2xl p-5 border border-blue-800/50">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-white">Meeting Link</h2>
@@ -74,39 +78,57 @@ const LectureSidebar = ({
           </div>
         )}
 
-        <div className="bg-gray-800/60 backdrop-blur-md rounded-2xl p-5 border border-gray-700">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-white">Registration</h2>
+        {/* Show registration section for upcoming lectures, show attendee count for past lectures */}
+        {!isPastLecture ? (
+          <div className="bg-gray-800/60 backdrop-blur-md rounded-2xl p-5 border border-gray-700">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-white">Registration</h2>
+            </div>
+            {isRegistrationOpen ? (
+              <button
+                onClick={handleRegistration}
+                disabled={isUserRegistered || registrationLoading}
+                className={`w-full px-4 py-3 rounded-xl font-semibold text-white flex items-center justify-center space-x-2 ${
+                  isUserRegistered
+                    ? 'bg-green-600/80 cursor-not-allowed'
+                    : registrationLoading
+                    ? 'bg-gray-600/80 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-purple-600/80 to-blue-600/80 hover:opacity-90'
+                }`}
+              >
+                {registrationLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <span>Processing...</span>
+                  </>
+                ) : isUserRegistered ? (
+                  '✓ Registered'
+                ) : (
+                  'Register for Lecture'
+                )}
+              </button>
+            ) : (
+              <p className="text-yellow-400 text-center">
+                Registration is not available
+              </p>
+            )}
           </div>
-          {isRegistrationOpen ? (
-            <button
-              onClick={handleRegistration}
-              disabled={isUserRegistered || registrationLoading}
-              className={`w-full px-4 py-3 rounded-xl font-semibold text-white flex items-center justify-center space-x-2 ${
-                isUserRegistered
-                  ? 'bg-green-600/80 cursor-not-allowed'
-                  : registrationLoading
-                  ? 'bg-gray-600/80 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-purple-600/80 to-blue-600/80 hover:opacity-90'
-              }`}
-            >
-              {registrationLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  <span>Processing...</span>
-                </>
-              ) : isUserRegistered ? (
-                '✓ Registered'
-              ) : (
-                'Register for Lecture'
-              )}
-            </button>
-          ) : (
-            <p className="text-yellow-400 text-center">
-              Registration is not available
-            </p>
-          )}
-        </div>
+        ) : (
+          <div className="bg-gray-800/60 backdrop-blur-md rounded-2xl p-5 border border-gray-700">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-white">Attendance</h2>
+              <Users className="w-5 h-5 text-blue-400" />
+            </div>
+            <div className="bg-gray-700/50 p-4 rounded-xl">
+              <div className="flex flex-col items-center justify-center">
+                <div className="text-3xl font-bold text-white mb-1">
+                  {lecture.registeredUsers?.length || 0}
+                </div>
+                <div className="text-gray-400 text-sm">Live Attendees</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Resources Section */}

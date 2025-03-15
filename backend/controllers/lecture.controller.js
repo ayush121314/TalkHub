@@ -61,7 +61,8 @@ const getPastLectures = async (req, res) => {
       capacity: lecture.capacity,
       registeredCount: lecture.registeredUsers.length,
       tags: lecture.tags,
-      recording: lecture.recording
+      recording: lecture.recording,
+      isRegistered: lecture.registeredUsers.includes(req.user.userId)
     }));
 
     res.status(StatusCodes.OK).json(transformedLectures);
@@ -90,7 +91,8 @@ const getScheduledTalks = async (req, res) => {
       meetLink: lecture.meetLink,
       capacity: lecture.capacity,
       registeredCount: lecture.registeredUsers.length,
-      tags: lecture.tags
+      tags: lecture.tags,
+      isRegistered: lecture.registeredUsers.includes(req.user.userId)
     }));
 
     res.status(StatusCodes.OK).json(transformedLectures);

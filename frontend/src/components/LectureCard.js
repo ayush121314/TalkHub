@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Clock, MapPin, Video, User, Star, BookOpen } from 'lucide-react';
+import { Calendar, Clock, MapPin, Video, User, Star, BookOpen, Users, Check } from 'lucide-react';
 
-const LectureCard = ({ lecture, isPast, onClick }) => {
-  // Calculate capacity percentage for progress bar
-  const capacityPercentage = Math.min(100, (lecture.registeredCount / lecture.capacity) * 100);
+const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
+  // Calculate capacity percentage for progress bar - only for upcoming lectures
+  const capacityPercentage = isPast ? 100 : Math.min(100, (lecture.registeredCount / lecture.capacity) * 100);
   
   // Status label based on lecture availability
   const getStatusLabel = () => {
@@ -85,13 +85,15 @@ const LectureCard = ({ lecture, isPast, onClick }) => {
         </div>
       </div>
 
-      {/* Capacity bar with improved styling */}
-      <div className="w-full h-2 bg-slate-800">
-        <div 
-          className={`h-full ${getProgressColor()} transition-all duration-300`}
-          style={{ width: `${capacityPercentage}%` }}
-        />
-      </div>
+      {/* Capacity bar with improved styling - only show for non-past lectures */}
+      {!isPast && (
+        <div className="w-full h-2 bg-slate-800">
+          <div 
+            className={`h-full ${getProgressColor()} transition-all duration-300`}
+            style={{ width: `${capacityPercentage}%` }}
+          />
+        </div>
+      )}
 
       {/* Content section with improved layout */}
       <div className="p-5">
@@ -155,13 +157,23 @@ const LectureCard = ({ lecture, isPast, onClick }) => {
           </div>
         </div>
         
-        {/* Capacity indicator */}
-        <div className="flex justify-between items-center mb-4 text-xs">
-          <div className="text-slate-400">Capacity</div>
-          <div className="text-slate-300 font-medium">
-            {lecture.registeredCount} / {lecture.capacity}
+        {/* Capacity indicator - only for non-past lectures */}
+        {!isPast ? (
+          <div className="flex justify-between items-center mb-4 text-xs">
+            <div className="text-slate-400">Capacity</div>
+            <div className="text-slate-300 font-medium">
+              {lecture.registeredCount} / {lecture.capacity}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex justify-between items-center mb-4 text-xs">
+            <div className="text-slate-400">Live Attendees</div>
+            <div className="text-slate-300 font-medium flex items-center">
+              <Users size={14} className="text-sky-400 mr-1" /> 
+              {lecture.registeredCount || 0}
+            </div>
+          </div>
+        )}
        
         {/* Action button with improved styling */}
         {isPast && lecture.recording ? (
@@ -176,14 +188,25 @@ const LectureCard = ({ lecture, isPast, onClick }) => {
         ) : !isPast && (
           <button
             className={`flex items-center justify-center gap-2 w-full py-2.5 px-4 ${
-              lecture.registeredCount >= lecture.capacity 
+              isUserRegistered
+                ? 'bg-green-600/80 text-white' 
+                : lecture.registeredCount >= lecture.capacity 
                 ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' 
                 : 'bg-gradient-to-r from-sky-600 to-violet-600 hover:from-sky-500 hover:to-violet-500 text-white shadow-lg'
             } rounded-lg font-medium transition-all`}
-            disabled={lecture.registeredCount >= lecture.capacity}
+            disabled={isUserRegistered || lecture.registeredCount >= lecture.capacity}
           >
-            <Star size={16} />
-            {lecture.registeredCount >= lecture.capacity ? 'Join Waitlist' : 'Register Now'}
+            {isUserRegistered ? (
+              <>
+                <Check size={16} />
+                Registered
+              </>
+            ) : (
+              <>
+                <Star size={16} />
+                {lecture.registeredCount >= lecture.capacity ? 'Join Waitlist' : 'Register Now'}
+              </>
+            )}
           </button>
         )}
       </div>

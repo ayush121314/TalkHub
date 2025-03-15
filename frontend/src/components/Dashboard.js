@@ -343,13 +343,31 @@ const Dashboard = () => {
         {/* Lecture Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {activeTab === 'upcoming' && upcomingLectures.map((lecture) => (
-            <LectureCard key={lecture.id} lecture={lecture} isPast={false} onClick={handleLectureClick} />
+            <LectureCard 
+              key={lecture.id} 
+              lecture={lecture} 
+              isPast={false} 
+              onClick={handleLectureClick} 
+              isUserRegistered={lecture.isRegistered || false}
+            />
           ))}
           {activeTab === 'past' && pastLectures.map((lecture) => (
-            <LectureCard key={lecture.id} lecture={lecture} isPast={true} onClick={handleLectureClick} />
+            <LectureCard 
+              key={lecture.id} 
+              lecture={lecture} 
+              isPast={true} 
+              onClick={handleLectureClick}
+              isUserRegistered={lecture.isRegistered || false} 
+            />
           ))}
           {activeTab === 'scheduled' && scheduledTalks.map((lecture) => (
-            <LectureCard key={lecture.id} lecture={lecture} isPast={false} onClick={handleLectureClick} />
+            <LectureCard 
+              key={lecture.id} 
+              lecture={lecture} 
+              isPast={false} 
+              onClick={handleLectureClick}
+              isUserRegistered={lecture.isRegistered || false} 
+            />
           ))}
 
           {/* Empty States */}
