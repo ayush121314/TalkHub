@@ -322,20 +322,48 @@ const registerForLecture = async (req, res) => {
     lecture.registeredUsers.push(req.user.userId);
     await lecture.save();
 
-    // Return updated lecture details
-    await lecture.populate('instructor', 'name email title');
+    // Return updated lecture details with full instructor profile
+    await lecture.populate({
+      path: 'instructor',
+      select: 'name email role profile'
+    });
+    
+    // Helper function to get instructor title
+    const getInstructorTitle = (role) => {
+      switch (role) {
+        case 'professor':
+          return 'Professor';
+        case 'student':
+          return 'Student Instructor';
+        default:
+          return 'Instructor';
+      }
+    };
     
     const transformedLecture = {
       id: lecture._id,
       title: lecture.title,
       description: lecture.description,
       instructor: {
+        id: lecture.instructor._id,
         name: lecture.instructor.name,
         email: lecture.instructor.email,
-        title: lecture.instructor.title
+        role: lecture.instructor.role,
+        title: getInstructorTitle(lecture.instructor.role),
+        profile: {
+          profilePic: lecture.instructor.profile?.profilePic || null,
+          linkedinProfile: lecture.instructor.profile?.linkedinProfile || null,
+          personalWebsite: lecture.instructor.profile?.personalWebsite || null,
+          organization: lecture.instructor.profile?.organization || null,
+          speakerBio: lecture.instructor.profile?.speakerBio || null,
+          socialMediaHandle1: lecture.instructor.profile?.socialMediaHandle1 || null,
+          socialMediaHandle2: lecture.instructor.profile?.socialMediaHandle2 || null,
+          additionalInfo: lecture.instructor.profile?.additionalInfo || null
+        }
       },
       date: lecture.date,
       time: lecture.time,
+      duration: lecture.duration,
       mode: lecture.mode,
       venue: lecture.venue,
       meetLink: lecture.meetLink,
@@ -354,6 +382,7 @@ const registerForLecture = async (req, res) => {
     throw new CustomError('Failed to register for lecture', StatusCodes.INTERNAL_SERVER_ERROR);
   }
 };
+
 module.exports = {
   getUpcomingLectures,
   getPastLectures,
@@ -361,5 +390,4 @@ module.exports = {
   createLecture,
   getLectureById,
   registerForLecture,
-
 };
