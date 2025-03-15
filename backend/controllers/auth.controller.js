@@ -171,6 +171,24 @@ const authController = {
         to: email,
         subject: 'Your OTP Code',
         text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f7f9fc; border-radius: 10px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h1 style="color: #5e35b1;">TalkHub</h1>
+            </div>
+            <div style="background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <h2 style="color: #333; margin-top: 0;">Your OTP Code</h2>
+              <p style="color: #555; font-size: 16px;">Your OTP code is:</p>
+              <div style="background-color: #f0f4f8; padding: 15px; border-radius: 5px; text-align: center; margin: 20px 0;">
+                <span style="font-size: 24px; font-weight: bold; letter-spacing: 5px; color: #5e35b1;">${otp}</span>
+              </div>
+              <p style="color: #555; font-size: 16px;">This code is valid for 5 minutes. If you did not request this, please ignore this email.</p>
+            </div>
+            <div style="text-align: center; margin-top: 20px; color: #888; font-size: 14px;">
+              <p>© ${new Date().getFullYear()} TalkHub. All rights reserved.</p>
+            </div>
+          </div>
+        `,
       };
 
       // Send the email
