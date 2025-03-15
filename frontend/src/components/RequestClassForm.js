@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaCalendarAlt, FaClock, FaTags, FaUsers, FaLink, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaCalendarAlt, FaClock, FaTags, FaUsers, FaLink, FaMapMarkerAlt, FaBookOpen } from 'react-icons/fa';
 
 const NewRequestClassForm = ({ onClose, onSubmit }) => {
   const [mode, setMode] = useState('online');
@@ -58,6 +58,7 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
           ...formData,
           mode,
           tags: formData.tags.split(',').map((tag) => tag.trim()),
+          prerequisites: formData.prerequisites.split(',').map((prereq) => prereq.trim()),
         }),
       });
   
@@ -252,6 +253,22 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
               min="1"
               required
             />
+          </div>
+
+          {/* Prerequisites - NEW FIELD */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 flex items-center">
+              <span className="mr-2"><FaBookOpen /></span> Prerequisites
+            </label>
+            <input
+              type="text"
+              name="prerequisites"
+              value={formData.prerequisites}
+              onChange={handleInputChange}
+              className="w-full p-4 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
+              placeholder="Comma-separated prerequisites (e.g. Basic JavaScript, HTML, CSS)"
+            />
+            <p className="text-xs text-gray-400 mt-1">List any prior knowledge or requirements for attendees</p>
           </div>
 
           <div>
