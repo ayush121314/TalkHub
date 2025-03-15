@@ -124,6 +124,63 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // New function to request password reset (sends OTP to email)
+  const resetPasswordRequest = async (email) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      
+      return true;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+  
+  // New function to verify OTP for password reset
+  const verifyOtp = async (email, otp) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp })
+      });
+      
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      
+      return data.valid;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+  
+  // New function to reset password with OTP verification
+  const resetPassword = async (email, otp, newPassword) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp, newPassword })
+      });
+      
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      
+      return true;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
   // Create the context value object with all the necessary values and functions
   const contextValue = {
     user,
@@ -132,7 +189,10 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    sendOtp
+    sendOtp,
+    resetPasswordRequest,
+    verifyOtp,
+    resetPassword
   };
 
   return (
