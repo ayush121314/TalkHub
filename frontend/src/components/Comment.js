@@ -168,7 +168,7 @@ const Comment = ({
             <textarea
               value={replyContent}
               onChange={(e) => setReplyContent(e.target.value)}
-              placeholder="Write a reply..."
+              placeholder="Write a reply.."
               className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white resize-none"
               rows={2}
               required
