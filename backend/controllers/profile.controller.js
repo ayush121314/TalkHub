@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const cloudinary = require('../config/cloudinary');
+const { promisify } = require('util');
 
 const getProfile = async (req, res) => {
   try {
@@ -17,88 +18,97 @@ const getProfile = async (req, res) => {
   }
 };
 
+// Helper function to upload to Cloudinary using promises
+const uploadToCloudinary = (fileBuffer, options) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      options,
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    uploadStream.end(fileBuffer);
+  });
+};
+
 const updateProfile = async (req, res) => {
   try {
     if (!req.headers.authorization) {
       return res.status(401).json({ message: "Unauthorized: No token provided" });
     }
+    
     const userId = req.user._id;
-    // Fetch the existing user profile to prevent data loss
+    console.log("Processing profile update for user ID:", userId);
+    
+    // Fetch the existing user profile
     const existingUser = await User.findById(userId);
     if (!existingUser) {
       console.log("🚨 User Not Found");
       return res.status(404).json({ message: "User not found" });
     }
 
-    let updateData = { profile: { ...existingUser.profile } }; // Merge existing data
+    // Start with existing profile data
+    let updateData = { profile: { ...existingUser.profile } };
 
-    // **Handle Profile Picture Removal**
+    // Handle profile picture removal if requested
     if (req.body.removeProfileImage === "true") {
+      console.log("Removing profile image as requested");
       updateData.profile.profilePic = null;
     }
 
-    // Check if a file was uploaded - using express-fileupload now
-    if (req.files && req.files.file) {
-      try {
-        const file = req.files.file;
-        
-        // Using the file data directly with Cloudinary
-        const uploadResponse = await cloudinary.uploader.upload_stream({
-          folder: "profile_pictures",
-          transformation: [
-            { width: 400, height: 400, crop: "fill" },
-            { quality: "auto" },
-          ],
-        }, (error, result) => {
-          if (error) {
-            console.error("🚨 Error uploading to Cloudinary:", error);
-            return res.status(500).json({ message: "Error uploading image" });
-          }
+    // Handle file upload if present
+    let profilePicUrl = null;
+    if (req.files) {
+      // Check for the file either in 'file' or 'profileImage' field
+      const uploadedFile = req.files.file || req.files.profileImage;
+      
+      if (uploadedFile) {
+        console.log("Processing file upload:", uploadedFile.name);
+        try {
+          // Upload to Cloudinary
+          const uploadResult = await uploadToCloudinary(uploadedFile.data, {
+            folder: "profile_pictures",
+            transformation: [
+              { width: 400, height: 400, crop: "fill" },
+              { quality: "auto" }
+            ]
+          });
           
-          // Continue with profile update after successful upload
-          finishProfileUpdate(result.secure_url);
-        }).end(file.data);
-        
-      } catch (error) {
-        console.error("🚨 Error processing file upload:", error);
-        return res.status(500).json({ message: "Error processing file upload" });
-      }
-    } else {
-      // If no file was uploaded, just update the other profile fields
-      finishProfileUpdate();
-    }
-    
-    // Function to finish updating the profile after handling the file upload
-    async function finishProfileUpdate(profilePicUrl = null) {
-      if (profilePicUrl) {
-        updateData.profile.profilePic = profilePicUrl;
-      }
-
-      const fields = ["linkedinProfile", "personalWebsite", "organization", "speakerBio", "additionalInfo", "socialMediaHandle1", "socialMediaHandle2"];
-      fields.forEach((field) => {
-        if (req.body[field]) {
-          updateData.profile[field] = req.body[field];
+          console.log("Cloudinary upload successful:", uploadResult.secure_url);
+          profilePicUrl = uploadResult.secure_url;
+          updateData.profile.profilePic = profilePicUrl;
+        } catch (uploadError) {
+          console.error("🚨 Error uploading to Cloudinary:", uploadError);
+          return res.status(500).json({ message: "Error uploading image" });
         }
-      });
-
-      try {
-        const user = await User.findByIdAndUpdate(
-          userId,
-          { $set: updateData },
-          { new: true, runValidators: true }
-        ).select("-password");
-
-        if (!user) {
-          console.log("🚨 User Not Found");
-          return res.status(404).json({ message: "User not found" });
-        }
-
-        res.json(user);
-      } catch (error) {
-        console.error("🔥 Error updating user:", error);
-        res.status(500).json({ message: "Server error" });
       }
     }
+
+    // Update other profile fields
+    const fields = ["linkedinProfile", "personalWebsite", "organization", "speakerBio", "additionalInfo", "socialMediaHandle1", "socialMediaHandle2"];
+    fields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updateData.profile[field] = req.body[field];
+      }
+    });
+
+    console.log("Updating user profile with data:", JSON.stringify(updateData));
+
+    // Update the user in the database
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      console.log("🚨 User Not Found during update");
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("Profile updated successfully");
+    res.json(updatedUser);
   } catch (error) {
     console.error("🔥 Error in updateProfile:", error);
     res.status(500).json({ message: "Server error" });
