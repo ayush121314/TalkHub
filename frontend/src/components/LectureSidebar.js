@@ -440,7 +440,6 @@ const LectureSidebar = ({
                   <p>No recordings available</p>
                 </div>
               )}
-              <div></div>
             </div>
           </div>
         </div>
