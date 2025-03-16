@@ -21,8 +21,14 @@
     "express-fileupload": "^1.5.1",
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.9.5",
-    "nodemailer": "^6.9.16"
+    "mongoose": "^7.6.3",
+    "nodemailer": "^6.9.16",
+    "whatwg-url": "^13.0.0",
+    "webidl-conversions": "^7.0.0",
+    "punycode": "^2.3.1"
   },
-  "description": ""
+  "description": "",
+  "engines": {
+    "node": ">=16.0.0"
+  }
 }
