@@ -117,13 +117,15 @@ const Comment = ({
         {/* Comment Actions */}
         {!isEditing && (
           <div className="mt-3 flex items-center space-x-4">
-            <button
-              onClick={() => setIsReplying(!isReplying)}
-              className="flex items-center text-xs text-slate-400 hover:text-indigo-400 transition-colors"
-            >
-              <MessageCircle className="w-3.5 h-3.5 mr-1" />
-              Reply
-            </button>
+            {!isReply && (
+              <button
+                onClick={() => setIsReplying(!isReplying)}
+                className="flex items-center text-xs text-slate-400 hover:text-indigo-400 transition-colors"
+              >
+                <MessageCircle className="w-3.5 h-3.5 mr-1" />
+                Reply
+              </button>
+            )}
             
             {isAuthor && (
               <>
