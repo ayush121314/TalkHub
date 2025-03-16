@@ -66,6 +66,13 @@ npm start
 - Access recordings of past lectures.
 - View materials and resources.
 
+### Discussion Forums
+- Each lecture has its own discussion forum.
+- Post comments on lectures to ask questions or share insights.
+- Reply to other users' comments to engage in discussions.
+- Edit or delete your own comments and replies.
+- Interactive UI with user profiles and timestamps.
+
 ### Profile Management
 - Update profile information.
 - Track registered and attended lectures.

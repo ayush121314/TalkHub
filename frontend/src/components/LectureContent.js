@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { 
   BookOpen, 
   Tag, 
@@ -13,8 +13,34 @@ import {
   Layers
 } from 'lucide-react';
 import InstructorProfile from './InstructorProfile';
+import DiscussionForum from './DiscussionForum';
 
 const LectureContent = ({ lecture, openModal }) => {
+  // Add debugging console logs
+  useEffect(() => {
+    console.log("Lecture object:", lecture);
+    console.log("Lecture ID:", lecture?._id);
+    
+    // Enhanced debugging
+    if (!lecture?._id) {
+      console.error("Missing lecture ID in lecture object:", lecture);
+    }
+  }, [lecture]);
+
+  // Ensure we have a lecture object
+  if (!lecture) {
+    return (
+      <div className="bg-gradient-to-br from-slate-900 to-slate-900/70 backdrop-blur-sm rounded-3xl p-8 border border-indigo-900/30 overflow-hidden relative mt-6">
+        <div className="text-center">
+          <p className="text-slate-300">Loading lecture information...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Get the lectureId - try multiple fields that might contain the ID
+  const lectureId = lecture._id || lecture.id || lecture.lectureId;
+
   // Structure instructor data from the backend response
   const instructorData = lecture.instructor ? {
     name: lecture.instructor.name,
@@ -167,6 +193,22 @@ const LectureContent = ({ lecture, openModal }) => {
               </div>
             </div>
           </div>
+        </div>
+      )}
+      
+      {/* Discussion Forum Section */}
+      {console.log("About to render DiscussionForum, lectureId:", lectureId)}
+      {lectureId ? (
+        <DiscussionForum lectureId={lectureId} />
+      ) : (
+        <div className="bg-gradient-to-br from-slate-900 to-slate-900/70 backdrop-blur-sm rounded-3xl p-8 border border-indigo-900/30 overflow-hidden relative mt-6">
+          <div className="flex items-center gap-3 mb-4">
+            <MessageCircle className="h-6 w-6 text-indigo-400" />
+            <h2 className="text-xl font-bold text-white">Discussion Forum</h2>
+          </div>
+          <p className="text-slate-300">
+            Discussion forum will be available once lecture information is loaded.
+          </p>
         </div>
       )}
       

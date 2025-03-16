@@ -26,6 +26,7 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/lectures', require('./routes/lecture.routes'));
 app.use('/api/docs',documentRoutes);
 app.use('/api/recordings',recordingRoutes);
+app.use('/api/comments', require('./routes/comment.routes'));
 
 // Error handling middleware
 app.use(errorHandlerMiddleware);

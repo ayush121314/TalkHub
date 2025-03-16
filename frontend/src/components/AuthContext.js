@@ -31,9 +31,12 @@ export const AuthProvider = ({ children }) => {
           setUser(data.user);
           handleRoleNavigation(data.user.role);
         } else {
+          // Token invalid, clear it
+          localStorage.removeItem('token');
         }
       } catch (err) {
         console.error('Token validation error:', err);
+        localStorage.removeItem('token');
       }
       
       setIsLoading(false);
@@ -186,6 +189,7 @@ export const AuthProvider = ({ children }) => {
     user,
     isLoading,
     error,
+    isAuthenticated: !!user,
     login,
     register,
     logout,
