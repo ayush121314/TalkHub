@@ -19,7 +19,6 @@ const getProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-
     if (!req.headers.authorization) {
       return res.status(401).json({ message: "Unauthorized: No token provided" });
     }
@@ -38,45 +37,68 @@ const updateProfile = async (req, res) => {
       updateData.profile.profilePic = null;
     }
 
-    if (req.file) {
+    // Check if a file was uploaded - using express-fileupload now
+    if (req.files && req.files.file) {
       try {
-        const b64 = Buffer.from(req.file.buffer).toString("base64");
-        let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
-
-        const uploadResponse = await cloudinary.uploader.upload(dataURI, {
+        const file = req.files.file;
+        
+        // Using the file data directly with Cloudinary
+        const uploadResponse = await cloudinary.uploader.upload_stream({
           folder: "profile_pictures",
           transformation: [
             { width: 400, height: 400, crop: "fill" },
             { quality: "auto" },
           ],
-        });
-
-        updateData.profile.profilePic = uploadResponse.secure_url;
+        }, (error, result) => {
+          if (error) {
+            console.error("🚨 Error uploading to Cloudinary:", error);
+            return res.status(500).json({ message: "Error uploading image" });
+          }
+          
+          // Continue with profile update after successful upload
+          finishProfileUpdate(result.secure_url);
+        }).end(file.data);
+        
       } catch (error) {
-        console.error("🚨 Error uploading to Cloudinary:", error);
-        return res.status(500).json({ message: "Error uploading image" });
+        console.error("🚨 Error processing file upload:", error);
+        return res.status(500).json({ message: "Error processing file upload" });
+      }
+    } else {
+      // If no file was uploaded, just update the other profile fields
+      finishProfileUpdate();
+    }
+    
+    // Function to finish updating the profile after handling the file upload
+    async function finishProfileUpdate(profilePicUrl = null) {
+      if (profilePicUrl) {
+        updateData.profile.profilePic = profilePicUrl;
+      }
+
+      const fields = ["linkedinProfile", "personalWebsite", "organization", "speakerBio", "additionalInfo", "socialMediaHandle1", "socialMediaHandle2"];
+      fields.forEach((field) => {
+        if (req.body[field]) {
+          updateData.profile[field] = req.body[field];
+        }
+      });
+
+      try {
+        const user = await User.findByIdAndUpdate(
+          userId,
+          { $set: updateData },
+          { new: true, runValidators: true }
+        ).select("-password");
+
+        if (!user) {
+          console.log("🚨 User Not Found");
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json(user);
+      } catch (error) {
+        console.error("🔥 Error updating user:", error);
+        res.status(500).json({ message: "Server error" });
       }
     }
-
-    const fields = ["linkedinProfile", "personalWebsite", "organization", "speakerBio", "additionalInfo", "socialMediaHandle1", "socialMediaHandle2"];
-    fields.forEach((field) => {
-      if (req.body[field]) {
-        updateData.profile[field] = req.body[field];
-      }
-    });
-
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { $set: updateData },
-      { new: true, runValidators: true }
-    ).select("-password");
-
-    if (!user) {
-      console.log("🚨 User Not Found");
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json(user);
   } catch (error) {
     console.error("🔥 Error in updateProfile:", error);
     res.status(500).json({ message: "Server error" });

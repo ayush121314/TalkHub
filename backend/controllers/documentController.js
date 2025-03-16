@@ -4,10 +4,11 @@ const Document = require("../models/Document");
 // Upload document controller
 exports.uploadDocument = async (req, res) => {
   try {
-    if (!req.file) {
+    if (!req.files || !req.files.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
+    const file = req.files.file;
     const { lectureId } = req.body; // Extract lectureId from request body
 
     if (!lectureId) {
@@ -22,7 +23,7 @@ exports.uploadDocument = async (req, res) => {
 
         // Save document details to DB
         const document = new Document({
-          name: req.file.originalname,
+          name: file.name,
           url: result.secure_url,
           format: result.format,
           lectureId,
@@ -31,8 +32,9 @@ exports.uploadDocument = async (req, res) => {
         await document.save();
         res.status(201).json(document);
       }
-    ).end(req.file.buffer);
+    ).end(file.data); // Use file.data instead of req.file.buffer
   } catch (error) {
+    console.error("Error uploading document:", error);
     res.status(500).json({ error: "Server error" });
   }
 };

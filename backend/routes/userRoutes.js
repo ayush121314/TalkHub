@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middleware/uploadMiddleware');
+const fileUploadMiddleware = require('../middleware/uploadMiddleware');
 const authMiddleware = require('../middleware/auth.middleware');
 const profileMiddleware = require('../middleware/profile.middleware');
 
@@ -17,7 +17,7 @@ router.get('/profile',profileMiddleware, profileController.getProfile);
 
 router.put('/profile',
   profileMiddleware,
-  upload.single('profileImage'),
+  fileUploadMiddleware,
   profileController.updateProfile
 );
 
