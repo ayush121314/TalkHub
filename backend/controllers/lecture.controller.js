@@ -395,7 +395,7 @@ const searchLectures = async (req, res) => {
       });
     }
 
-    console.log(`Received search query: "${query}" from user: ${req.user.userId}`);
+    //console.log(`Received search query: "${query}" from user: ${req.user.userId}`);
 
     // Create a case-insensitive regex pattern for the search query
     const searchPattern = new RegExp(query, 'i');
@@ -406,7 +406,7 @@ const searchLectures = async (req, res) => {
       .populate('instructor', 'name email role')
       .sort({ date: -1 });
     
-    console.log(`Total lectures in the system: ${allLectures.length}`);
+    //console.log(`Total lectures in the system: ${allLectures.length}`);
     
     // Filter results for all matching criteria
     const matchingLectures = allLectures.filter(lecture => {
@@ -423,7 +423,7 @@ const searchLectures = async (req, res) => {
       return titleMatch || descMatch || tagsMatch || instructorMatch;
     });
     
-    console.log(`Found ${matchingLectures.length} total matching lectures`);
+    //console.log(`Found ${matchingLectures.length} total matching lectures`);
     
     // Log the matched instructors to debug
     const instructorsInResults = matchingLectures
@@ -431,7 +431,7 @@ const searchLectures = async (req, res) => {
       .map(l => `${l.instructor.name} (${l.instructor.role || 'unknown role'})`)
       .filter((v, i, a) => a.indexOf(v) === i); // Get unique values
       
-    console.log(`Instructors in results: ${instructorsInResults.join(', ') || 'None'}`);
+    //console.log(`Instructors in results: ${instructorsInResults.join(', ') || 'None'}`);
 
     // Transform the data to match frontend requirements
     const transformedLectures = matchingLectures.map(lecture => ({

@@ -11,16 +11,21 @@ const useSearch = () => {
   // Search lectures
   const searchLectures = async (query) => {
     try {
-      setLoading(true);
+      // Clear previous results and errors first
       setSearchResults([]);
       setError(null);
       setNoResults(false);
-
+      
+      // If empty query, don't search
       if (!query || query.trim() === '') {
-        setLoading(false);
-        setSearchResults([]);
         return;
       }
+      
+      // Set loading true AFTER checking for empty query
+      setLoading(true);
+      
+      // Update the search query
+      setSearchQuery(query);
 
       // Debug logged to help troubleshoot
       console.log(`Searching for: "${query}"`);
@@ -63,16 +68,22 @@ const useSearch = () => {
       const data = await response.json();
       console.log(`Received ${data.length} search results`);
       
-      if (data.length === 0) {
+      // Check for no results - but only set this AFTER loading is complete
+      const hasNoResults = data.length === 0;
+      
+      // Update with the search results
+      setSearchResults(data);
+      
+      // AFTER setting results, now we can set noResults
+      if (hasNoResults) {
         setNoResults(true);
       }
-      
-      setSearchResults(data);
     } catch (error) {
       console.error('Search error:', error);
       setError(error.message || 'Failed to search lectures');
       setSearchResults([]);
     } finally {
+      // Always set loading to false at the end, regardless of success/failure
       setLoading(false);
     }
   };
@@ -82,6 +93,7 @@ const useSearch = () => {
     setSearchQuery('');
     setError(null);
     setNoResults(false);
+    setLoading(false);
   };
 
   return {

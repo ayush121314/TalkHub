@@ -20,9 +20,11 @@ const SearchResults = ({
 }) => {
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <CircularProgress />
-      </Box>
+      <div className="col-span-full flex flex-col items-center justify-center py-16">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-400 mb-4"></div>
+        <p className="text-lg text-purple-300">Searching for lectures...</p>
+        {query && <p className="text-gray-400 mt-2">Looking for "{query}"</p>}
+      </div>
     );
   }
 

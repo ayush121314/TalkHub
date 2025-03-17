@@ -29,8 +29,8 @@ const Dashboard = () => {
   const { 
     searchResults, 
     searchQuery, 
-    isSearching, 
-    searchError, 
+    loading: isSearching, 
+    error: searchError, 
     searchLectures, 
     clearSearch 
   } = useSearch();
