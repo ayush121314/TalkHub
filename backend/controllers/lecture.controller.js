@@ -1,4 +1,5 @@
 const Lecture = require('../models/lecture.model');
+const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors/custom-error');
 
@@ -383,6 +384,84 @@ const registerForLecture = async (req, res) => {
   }
 };
 
+// Search lectures based on query
+const searchLectures = async (req, res) => {
+  try {
+    const { query } = req.query;
+    
+    if (!query) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ 
+        message: 'Search query is required' 
+      });
+    }
+
+    console.log(`Received search query: "${query}" from user: ${req.user.userId}`);
+
+    // Create a case-insensitive regex pattern for the search query
+    const searchPattern = new RegExp(query, 'i');
+    
+    // MUCH SIMPLER APPROACH: Just load all lectures with populated instructors
+    // and filter in-memory - this is more reliable for small to medium datasets
+    let allLectures = await Lecture.find()
+      .populate('instructor', 'name email role')
+      .sort({ date: -1 });
+    
+    console.log(`Total lectures in the system: ${allLectures.length}`);
+    
+    // Filter results for all matching criteria
+    const matchingLectures = allLectures.filter(lecture => {
+      // Match by title, description, or tags
+      const titleMatch = lecture.title && searchPattern.test(lecture.title);
+      const descMatch = lecture.description && searchPattern.test(lecture.description);
+      const tagsMatch = lecture.tags && lecture.tags.some(tag => searchPattern.test(tag));
+      
+      // Match by instructor name
+      const instructorMatch = lecture.instructor && 
+                             lecture.instructor.name && 
+                             searchPattern.test(lecture.instructor.name);
+      
+      return titleMatch || descMatch || tagsMatch || instructorMatch;
+    });
+    
+    console.log(`Found ${matchingLectures.length} total matching lectures`);
+    
+    // Log the matched instructors to debug
+    const instructorsInResults = matchingLectures
+      .filter(l => l.instructor)
+      .map(l => `${l.instructor.name} (${l.instructor.role || 'unknown role'})`)
+      .filter((v, i, a) => a.indexOf(v) === i); // Get unique values
+      
+    console.log(`Instructors in results: ${instructorsInResults.join(', ') || 'None'}`);
+
+    // Transform the data to match frontend requirements
+    const transformedLectures = matchingLectures.map(lecture => ({
+      id: lecture._id,
+      title: lecture.title,
+      description: lecture.description,
+      instructor: lecture.instructor ? lecture.instructor.name : 'Unknown Instructor',
+      date: lecture.date,
+      time: lecture.time,
+      duration: lecture.duration || 60,
+      mode: lecture.mode,
+      venue: lecture.venue || '',
+      meetLink: lecture.meetLink || '',
+      capacity: lecture.capacity,
+      registeredCount: lecture.registeredUsers ? lecture.registeredUsers.length : 0,
+      tags: lecture.tags || [],
+      isRegistered: lecture.registeredUsers ? lecture.registeredUsers.includes(req.user.userId) : false,
+      isPast: new Date(lecture.date) < new Date()
+    }));
+
+    res.status(StatusCodes.OK).json(transformedLectures);
+  } catch (error) {
+    console.error('Search lectures error:', error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ 
+      message: 'Failed to search lectures', 
+      error: error.message 
+    });
+  }
+};
+
 module.exports = {
   getUpcomingLectures,
   getPastLectures,
@@ -390,4 +469,5 @@ module.exports = {
   createLecture,
   getLectureById,
   registerForLecture,
+  searchLectures
 };

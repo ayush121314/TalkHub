@@ -7,7 +7,8 @@ const {
   getScheduledTalks,
   createLecture,
   getLectureById,
-  registerForLecture
+  registerForLecture,
+  searchLectures
 } = require('../controllers/lecture.controller');
 
 // Protect all routes with authentication
@@ -17,6 +18,7 @@ router.use(authMiddleware);
 router.get('/upcoming', getUpcomingLectures);
 router.get('/past', getPastLectures);
 router.get('/scheduled', getScheduledTalks);
+router.get('/search', searchLectures);
 router.get('/:id', getLectureById);
 
 // Create lecture

@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { FaCalendarAlt, FaClock, FaTags, FaUsers, FaLink, FaMapMarkerAlt, FaBookOpen } from 'react-icons/fa';
 
 const NewRequestClassForm = ({ onClose, onSubmit }) => {
   const [mode, setMode] = useState('online');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = useRef(null);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -46,6 +48,7 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
     }
     
     try {
+      setIsSubmitting(true);
       const token = localStorage.getItem('token');
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
       const response = await fetch(`${apiUrl}/api/lectures/request`, {
@@ -70,6 +73,15 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
       onSubmit(newTalk);
     } catch (err) {
       console.error('Failed to submit talk request:', err);
+      alert('Failed to submit your talk request. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleOutsideClick = (e) => {
+    if (formRef.current && !formRef.current.contains(e.target) && !isSubmitting) {
+      onClose();
     }
   };
 
@@ -117,10 +129,15 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
   );
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex justify-center items-center p-4 z-50 backdrop-blur-sm">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-2xl bg-gray-900 rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh] p-8 transition-transform transform hover:scale-105"
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50"
+      onClick={handleOutsideClick}
+    >
+      <form 
+        ref={formRef}
+        onSubmit={handleSubmit} 
+        className="bg-gray-900 rounded-2xl p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900"
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6 rounded-t-2xl">
           <h3 className="text-4xl font-extrabold text-white">Schedule a Talk</h3>
@@ -307,14 +324,26 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
               type="button"
               onClick={onClose}
               className="px-6 py-3 bg-gray-800 text-gray-200 rounded-xl hover:bg-gray-700 transition-colors duration-200 ease-in-out"
+              disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:opacity-90 transition-opacity duration-200 ease-in-out"
+              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:opacity-90 transition-opacity duration-200 ease-in-out flex items-center justify-center min-w-[100px]"
+              disabled={isSubmitting}
             >
-              Submit
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Submitting...
+                </>
+              ) : (
+                'Submit'
+              )}
             </button>
           </div>
         </div>

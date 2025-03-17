@@ -5,6 +5,9 @@ import { useAuth } from './AuthContext';
 import RequestClassForm from './RequestClassForm';
 import LectureCard from './LectureCard';
 import ProfileForm from './ProfileForm';
+import SearchBar from './SearchBar';
+import SearchResults from './SearchResults';
+import useSearch from './useSearch';
 
 const Dashboard = () => {
   const [showRequestForm, setShowRequestForm] = useState(false);
@@ -21,6 +24,16 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showProfileForm, setShowProfileForm] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+
+  // Search state using custom hook
+  const { 
+    searchResults, 
+    searchQuery, 
+    isSearching, 
+    searchError, 
+    searchLectures, 
+    clearSearch 
+  } = useSearch();
 
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -100,6 +113,17 @@ const Dashboard = () => {
   const showNotification = (message) => {
     setNotificationMessage(message);
     setTimeout(() => setNotificationMessage(''), 3000);
+  };
+
+  const handleSearch = (query) => {
+    searchLectures(query);
+    // If we have a search query, switch to the search tab
+    if (query.trim()) {
+      setActiveTab('search');
+    } else if (activeTab === 'search') {
+      // If clearing search and we're on search tab, return to upcoming
+      setActiveTab('upcoming');
+    }
   };
 
   const handleLectureClick = (lectureId) => {
@@ -195,6 +219,7 @@ const Dashboard = () => {
           <TabButton icon="⏰" label="Past Lectures" tab="past" />
           <TabButton icon="👥" label="My Scheduled Talks" tab="scheduled" />
           <TabButton icon="👤" label="My Profile" tab="profile" />
+          {searchQuery && <TabButton icon="🔍" label="Search Results" tab="search" />}
         </nav>
 
         {/* Logout Button */}
@@ -221,15 +246,25 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="md:ml-64 p-6 pt-24 md:pt-6">
-        {/* Desktop Schedule Button */}
-        <div className="hidden md:block mb-8">
+        {/* Desktop Schedule Button and Search Bar */}
+        <div className="hidden md:flex justify-between items-center mb-8">
           <button
             onClick={() => setShowRequestForm(true)}
             className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:opacity-90 transition-opacity shadow-lg"
           >
             ➕ Schedule New Talk
           </button>
+          
+          {/* Search Bar */}
+          <SearchBar onSearch={handleSearch} className="w-1/2 max-w-lg" />
         </div>
+
+        {/* Mobile Search Bar */}
+        <div className="md:hidden mb-6">
+          <SearchBar onSearch={handleSearch} className="w-full" />
+        </div>
+
+        {/* Profile Tab */}
         {activeTab === 'profile' && (
           <div className="max-w-2xl mx-auto bg-gray-800 rounded-xl p-6">
             <h2 className="text-2xl font-bold text-white mb-6 text-center">Profile Information</h2>
@@ -348,81 +383,95 @@ const Dashboard = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Loading state for Upcoming lectures */}
-          {activeTab === 'upcoming' && loading && (
-            <div className="col-span-full flex flex-col items-center justify-center py-16">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-400 mb-4"></div>
-              <p className="text-lg text-indigo-300">Loading upcoming lectures...</p>
-            </div>
-          )}
+        {/* Search Results Tab */}
+        {activeTab === 'search' && (
+          <SearchResults
+            results={searchResults}
+            loading={isSearching}
+            error={searchError}
+            onClick={handleLectureClick}
+            query={searchQuery}
+          />
+        )}
 
-          {/* Display Upcoming Lectures */}
-          {activeTab === 'upcoming' && !loading && upcomingLectures.map((lecture) => (
-            <LectureCard 
-              key={lecture.id} 
-              lecture={lecture} 
-              isPast={false} 
-              onClick={handleLectureClick} 
-              isUserRegistered={lecture.isRegistered || false}
-            />
-          ))}
+        {/* Lecture Grids */}
+        {activeTab !== 'profile' && activeTab !== 'search' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Loading state for Upcoming lectures */}
+            {activeTab === 'upcoming' && loading && (
+              <div className="col-span-full flex flex-col items-center justify-center py-16">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-400 mb-4"></div>
+                <p className="text-lg text-indigo-300">Loading upcoming lectures...</p>
+              </div>
+            )}
 
-          {/* Loading state for Past lectures */}
-          {activeTab === 'past' && loading && (
-            <div className="col-span-full flex flex-col items-center justify-center py-16">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-400 mb-4"></div>
-              <p className="text-lg text-indigo-300">Loading past lectures...</p>
-            </div>
-          )}
+            {/* Display Upcoming Lectures */}
+            {activeTab === 'upcoming' && !loading && upcomingLectures.map((lecture) => (
+              <LectureCard 
+                key={lecture.id} 
+                lecture={lecture} 
+                isPast={false} 
+                onClick={handleLectureClick} 
+                isUserRegistered={lecture.isRegistered || false}
+              />
+            ))}
 
-          {/* Display Past Lectures */}
-          {activeTab === 'past' && !loading && pastLectures.map((lecture) => (
-            <LectureCard 
-              key={lecture.id} 
-              lecture={lecture} 
-              isPast={true} 
-              onClick={handleLectureClick}
-              isUserRegistered={lecture.isRegistered || false} 
-            />
-          ))}
+            {/* Loading state for Past lectures */}
+            {activeTab === 'past' && loading && (
+              <div className="col-span-full flex flex-col items-center justify-center py-16">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-400 mb-4"></div>
+                <p className="text-lg text-indigo-300">Loading past lectures...</p>
+              </div>
+            )}
 
-          {/* Loading state for Scheduled talks */}
-          {activeTab === 'scheduled' && loading && (
-            <div className="col-span-full flex flex-col items-center justify-center py-16">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-400 mb-4"></div>
-              <p className="text-lg text-indigo-300">Loading your scheduled talks...</p>
-            </div>
-          )}
+            {/* Display Past Lectures */}
+            {activeTab === 'past' && !loading && pastLectures.map((lecture) => (
+              <LectureCard 
+                key={lecture.id} 
+                lecture={lecture} 
+                isPast={true} 
+                onClick={handleLectureClick}
+                isUserRegistered={lecture.isRegistered || false} 
+              />
+            ))}
 
-          {/* Display Scheduled Talks */}
-          {activeTab === 'scheduled' && !loading && scheduledTalks.map((lecture) => (
-            <LectureCard 
-              key={lecture.id} 
-              lecture={lecture} 
-              isPast={false} 
-              onClick={handleLectureClick}
-              isUserRegistered={lecture.isRegistered || false} 
-            />
-          ))}
+            {/* Loading state for Scheduled talks */}
+            {activeTab === 'scheduled' && loading && (
+              <div className="col-span-full flex flex-col items-center justify-center py-16">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-400 mb-4"></div>
+                <p className="text-lg text-indigo-300">Loading your scheduled talks...</p>
+              </div>
+            )}
 
-          {/* Empty States - Only show these when not loading */}
-          {activeTab === 'upcoming' && !loading && upcomingLectures.length === 0 && (
-            <div className="col-span-full text-center py-12 text-gray-400">
-              No upcoming lectures scheduled
-            </div>
-          )}
-          {activeTab === 'past' && !loading && pastLectures.length === 0 && (
-            <div className="col-span-full text-center py-12 text-gray-400">
-              No past lectures available
-            </div>
-          )}
-          {activeTab === 'scheduled' && !loading && scheduledTalks.length === 0 && (
-            <div className="col-span-full text-center py-12 text-gray-400">
-              You haven't scheduled any talks yet
-            </div>
-          )}
-        </div>
+            {/* Display Scheduled Talks */}
+            {activeTab === 'scheduled' && !loading && scheduledTalks.map((lecture) => (
+              <LectureCard 
+                key={lecture.id} 
+                lecture={lecture} 
+                isPast={false} 
+                onClick={handleLectureClick}
+                isUserRegistered={lecture.isRegistered || false} 
+              />
+            ))}
+
+            {/* Empty States - Only show these when not loading */}
+            {activeTab === 'upcoming' && !loading && upcomingLectures.length === 0 && (
+              <div className="col-span-full text-center py-12 text-gray-400">
+                No upcoming lectures scheduled
+              </div>
+            )}
+            {activeTab === 'past' && !loading && pastLectures.length === 0 && (
+              <div className="col-span-full text-center py-12 text-gray-400">
+                No past lectures available
+              </div>
+            )}
+            {activeTab === 'scheduled' && !loading && scheduledTalks.length === 0 && (
+              <div className="col-span-full text-center py-12 text-gray-400">
+                You haven't scheduled any talks yet
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Mobile FAB */}
