@@ -1,20 +1,33 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Clock, MapPin, Video, User, Star, BookOpen, Users, Check } from 'lucide-react';
+import { Calendar, Clock, MapPin, Video, User, Star, BookOpen, Users, Check, AlertTriangle, HourglassIcon, XCircle } from 'lucide-react';
 
 const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
+  // Check if this is a talk request
+  const isTalkRequest = lecture.isRequest === true;
+  
   // Calculate capacity percentage for progress bar - only for upcoming lectures
   const capacityPercentage = isPast ? 100 : Math.min(100, (lecture.registeredCount / lecture.capacity) * 100);
   
-  // Status label based on lecture availability
+  // Status label based on lecture availability or request status
   const getStatusLabel = () => {
+    if (isTalkRequest) {
+      return lecture.status === 'pending' ? "PENDING APPROVAL" : 
+             lecture.status === 'rejected' ? "REJECTED" : "APPROVED";
+    }
+    
     if (isPast) return "COMPLETED";
     if (lecture.registeredCount >= lecture.capacity) return "FULL";
     return "AVAILABLE";
   };
   
-  // Status color based on lecture availability
+  // Status color based on lecture availability or request status
   const getStatusColor = () => {
+    if (isTalkRequest) {
+      return lecture.status === 'pending' ? "bg-yellow-600" : 
+             lecture.status === 'rejected' ? "bg-red-600" : "bg-green-600";
+    }
+    
     if (isPast) return "bg-slate-600";
     if (lecture.registeredCount >= lecture.capacity) return "bg-rose-600";
     return "bg-emerald-600";
@@ -22,6 +35,11 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
   
   // Progress bar color based on capacity
   const getProgressColor = () => {
+    if (isTalkRequest) {
+      return lecture.status === 'pending' ? "bg-yellow-500" : 
+             lecture.status === 'rejected' ? "bg-red-500" : "bg-green-500";
+    }
+    
     if (isPast) return "bg-slate-600";
     if (lecture.registeredCount >= lecture.capacity) return "bg-rose-600";
     if (capacityPercentage > 70) return "bg-amber-500";
@@ -30,17 +48,27 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
 
   return (
     <motion.div 
-      whileHover={{ scale: 1.02, y: -4 }}
-      whileTap={{ scale: 0.98 }}
-      onClick={() => onClick(lecture.id)}
-      className="bg-slate-900 rounded-xl shadow-xl overflow-hidden cursor-pointer transition-all border border-slate-800 hover:border-sky-700"
+      whileHover={{ scale: isTalkRequest && lecture.status === 'rejected' ? 1 : 1.02, y: isTalkRequest && lecture.status === 'rejected' ? 0 : -4 }}
+      whileTap={{ scale: isTalkRequest && lecture.status === 'rejected' ? 1 : 0.98 }}
+      onClick={() => {
+        if (!(isTalkRequest && lecture.status === 'rejected')) {
+          onClick(lecture.id);
+        }
+      }}
+      className={`bg-slate-900 rounded-xl shadow-xl overflow-hidden ${
+        isTalkRequest && lecture.status === 'rejected' ? 'cursor-default opacity-80' : 'cursor-pointer hover:border-sky-700'
+      } transition-all border border-slate-800`}
     >
       {/* Header with improved gradient */}
-      <div className="relative bg-gradient-to-r from-sky-800 to-violet-800 p-5">
+      <div className={`relative bg-gradient-to-r ${
+        isTalkRequest && lecture.status === 'pending' ? 'from-yellow-800 to-orange-800' :
+        isTalkRequest && lecture.status === 'rejected' ? 'from-red-800 to-rose-800' :
+        'from-sky-800 to-violet-800'
+      } p-5`}>
         {/* Status ribbon */}
         <div className="absolute -right-12 top-6 transform rotate-45">
           <div className={`w-40 text-center py-1 text-xs font-bold text-white ${getStatusColor()}`}>
-            {}
+            {getStatusLabel()}
           </div>
         </div>
 
@@ -54,9 +82,17 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
               {lecture.mode === 'online' ? 'Online' : 'In-Person'}
             </span>
             
-            {lecture.featured && (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-900 text-amber-300">
-                <Star size={12} className="mr-1" /> Featured
+            {/* Display request status icon */}
+            {isTalkRequest && (
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                ${lecture.status === 'pending' ? 'bg-yellow-900 text-yellow-300' : 
+                  lecture.status === 'rejected' ? 'bg-red-900 text-red-300' : 
+                  'bg-green-900 text-green-300'}`}>
+                {lecture.status === 'pending' ? 
+                  <><HourglassIcon size={12} className="mr-1" /> Pending</> : 
+                  lecture.status === 'rejected' ? 
+                  <><XCircle size={12} className="mr-1" /> Rejected</> : 
+                  <><Check size={12} className="mr-1" /> Approved</>}
               </span>
             )}
           </div>
@@ -90,37 +126,48 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
         <div className="w-full h-2 bg-slate-800">
           <div 
             className={`h-full ${getProgressColor()} transition-all duration-300`}
-            style={{ width: `${capacityPercentage}%` }}
+            style={{ width: isTalkRequest ? (lecture.status === 'pending' ? '50%' : lecture.status === 'rejected' ? '100%' : '100%') : `${capacityPercentage}%` }}
           />
         </div>
       )}
 
       {/* Content section with improved layout */}
       <div className="p-5">
-  {/* Tags row with enhanced styling */}
-  {lecture.tags && lecture.tags.length > 0 && (
-    <div className="mb-4">
-      {/* Tags header */}
-      <div className="flex items-center mb-2">
-        <div className="w-1 h-4 bg-gradient-to-b from-sky-400 to-violet-500 rounded-full mr-2"></div>
-        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Topics</span>
-      </div>
-      
-      {/* Tags container with enhanced visual appeal */}
-      <div className="flex flex-wrap gap-2">
-        {lecture.tags.map((tag, index) => (
-          <span 
-            key={index} 
-            className="px-3 py-1 bg-slate-800/70 text-slate-300 text-xs rounded-full border border-slate-700 
-                      hover:bg-slate-700 hover:border-slate-600 hover:text-white hover:shadow-md 
-                      transition-all duration-200 ease-in-out backdrop-blur-sm"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-    </div>
-  )}
+        {/* Tags row with enhanced styling */}
+        {lecture.tags && lecture.tags.length > 0 && (
+          <div className="mb-4">
+            {/* Tags header */}
+            <div className="flex items-center mb-2">
+              <div className="w-1 h-4 bg-gradient-to-b from-sky-400 to-violet-500 rounded-full mr-2"></div>
+              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Topics</span>
+            </div>
+            
+            {/* Tags container with enhanced visual appeal */}
+            <div className="flex flex-wrap gap-2">
+              {lecture.tags.map((tag, index) => (
+                <span 
+                  key={index} 
+                  className="px-3 py-1 bg-slate-800/70 text-slate-300 text-xs rounded-full border border-slate-700 
+                            hover:bg-slate-700 hover:border-slate-600 hover:text-white hover:shadow-md 
+                            transition-all duration-200 ease-in-out backdrop-blur-sm"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Admin message for rejected requests */}
+        {isTalkRequest && lecture.status === 'rejected' && lecture.adminMessage && (
+          <div className="mb-4 p-3 bg-red-900/30 border border-red-900 rounded-lg">
+            <div className="flex items-center text-red-400 mb-1">
+              <AlertTriangle size={14} className="mr-1" />
+              <span className="text-xs font-semibold">Admin Feedback</span>
+            </div>
+            <p className="text-red-100 text-sm">{lecture.adminMessage}</p>
+          </div>
+        )}
         
         {/* Description with improved text styling */}
         <p className="text-slate-300 text-sm leading-relaxed mb-5 line-clamp-3">
@@ -157,20 +204,34 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
           </div>
         </div>
         
-        {/* Capacity indicator - only for non-past lectures */}
-        {!isPast ? (
+        {/* Capacity indicator - only for non-past lectures and non-requests */}
+        {!isTalkRequest && !isPast ? (
           <div className="flex justify-between items-center mb-4 text-xs">
             <div className="text-slate-400">Capacity</div>
             <div className="text-slate-300 font-medium">
               {lecture.registeredCount} / {lecture.capacity}
             </div>
           </div>
-        ) : (
+        ) : !isTalkRequest && isPast ? (
           <div className="flex justify-between items-center mb-4 text-xs">
             <div className="text-slate-400">Live Attendees</div>
             <div className="text-slate-300 font-medium flex items-center">
               <Users size={14} className="text-sky-400 mr-1" /> 
               {lecture.registeredCount || 0}
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-between items-center mb-4 text-xs">
+            <div className="text-slate-400">Status</div>
+            <div className={`font-medium flex items-center
+              ${lecture.status === 'pending' ? 'text-yellow-300' : 
+                lecture.status === 'rejected' ? 'text-red-300' : 
+                'text-green-300'}`}>
+              {lecture.status === 'pending' ? 
+                <><HourglassIcon size={14} className="mr-1" /> Waiting for approval</> : 
+                lecture.status === 'rejected' ? 
+                <><XCircle size={14} className="mr-1" /> Request rejected</> : 
+                <><Check size={14} className="mr-1" /> Request approved</>}
             </div>
           </div>
         )}
@@ -185,7 +246,7 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
             <BookOpen size={16} />
             Watch Recording
           </a>
-        ) : !isPast && (
+        ) : !isPast && !isTalkRequest ? (
           <button
             className={`flex items-center justify-center gap-2 w-full py-2.5 px-4 ${
               isUserRegistered
@@ -201,13 +262,43 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
                 <Check size={16} />
                 Registered
               </>
+            ) : lecture.registeredCount >= lecture.capacity ? (
+              <>
+                <Users size={16} />
+                Full
+              </>
             ) : (
               <>
-                <Star size={16} />
-                {lecture.registeredCount >= lecture.capacity ? 'Join Waitlist' : 'Register Now'}
+                <Users size={16} />
+                Register Now
               </>
             )}
           </button>
+        ) : isTalkRequest && (
+          <div 
+            className={`flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg font-medium ${
+              lecture.status === 'pending' ? 'bg-yellow-600/80 text-white' : 
+              lecture.status === 'rejected' ? 'bg-slate-700 text-slate-300' : 
+              'bg-green-600/80 text-white'
+            }`}
+          >
+            {lecture.status === 'pending' ? (
+              <>
+                <HourglassIcon size={16} />
+                Awaiting Approval
+              </>
+            ) : lecture.status === 'rejected' ? (
+              <>
+                <XCircle size={16} />
+                Request Rejected
+              </>
+            ) : (
+              <>
+                <Check size={16} />
+                Request Approved
+              </>
+            )}
+          </div>
         )}
       </div>
     </motion.div>

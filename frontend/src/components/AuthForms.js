@@ -172,9 +172,9 @@ export const AuthForms = () => {
                     value={formData.role}
                     onChange={handleChange}
                   >
-                    <option value="student">Student</option>
-                    <option value="professor">Professor</option>
-                    <option value="admin">Administrator</option>
+                    <option value="student">User</option>
+                    {/* <option value="professor">Professor</option>
+                    <option value="admin">Administrator</option> */}
                   </select>
                   <ChevronDown className="absolute right-3 top-10 text-gray-400 w-5 h-5 pointer-events-none" />
                 </div>

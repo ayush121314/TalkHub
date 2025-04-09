@@ -5,6 +5,7 @@ import { AuthProvider } from './components/AuthContext'; // Import AuthProvider
 import Dashboard from './components/Dashboard';
 import LectureDetails from './components/LectureDetails';
 import ForgotPassword from './components/ForgotPassword'; // Import ForgotPassword component
+import AdminPanel from './components/AdminPanel'; // Import new AdminPanel component
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/student" element={<Dashboard />} />
           <Route path="/lecture/:lectureId" element={<LectureDetails />} />
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </AuthProvider>
     </Router>

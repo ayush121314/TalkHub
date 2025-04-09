@@ -69,8 +69,26 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
         throw new Error('Failed to submit talk request');
       }
   
-      const newTalk = await response.json();
-      onSubmit(newTalk);
+      const data = await response.json();
+      
+      // Create a new object with the necessary structure expected by the Dashboard
+      const newTalkRequest = {
+        id: data.talkRequest.id,
+        title: data.talkRequest.title,
+        description: data.talkRequest.description,
+        date: data.talkRequest.date,
+        time: data.talkRequest.time,
+        duration: data.talkRequest.duration,
+        mode: data.talkRequest.mode,
+        venue: data.talkRequest.venue,
+        meetLink: data.talkRequest.meetLink,
+        capacity: data.talkRequest.capacity,
+        tags: data.talkRequest.tags,
+        status: 'pending',
+        isRequest: true
+      };
+      
+      onSubmit(newTalkRequest);
     } catch (err) {
       console.error('Failed to submit talk request:', err);
       alert('Failed to submit your talk request. Please try again.');
@@ -140,8 +158,8 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6 rounded-t-2xl">
-          <h3 className="text-4xl font-extrabold text-white">Schedule a Talk</h3>
-          <p className="text-blue-100 text-lg">Share your knowledge with peers</p>
+          <h3 className="text-4xl font-extrabold text-white">Request a Talk</h3>
+          <p className="text-blue-100 text-lg">Your request will need admin approval before being scheduled</p>
         </div>
 
         <div className="space-y-6 mt-6">
@@ -319,33 +337,27 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
           </div>
 
           {/* Submit and Cancel buttons */}
-          <div className="flex justify-end space-x-4 pt-4">
+          <div className="mt-8 flex justify-end space-x-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 bg-gray-800 text-gray-200 rounded-xl hover:bg-gray-700 transition-colors duration-200 ease-in-out"
-              disabled={isSubmitting}
+              className="px-6 py-3 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:opacity-90 transition-opacity duration-200 ease-in-out flex items-center justify-center min-w-[100px]"
               disabled={isSubmitting}
+              className={`px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:opacity-90 transition-colors ${
+                isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
+              }`}
             >
-              {isSubmitting ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Submitting...
-                </>
-              ) : (
-                'Submit'
-              )}
+              {isSubmitting ? 'Submitting...' : 'Submit Request'}
             </button>
           </div>
+        </div>
+        <div className="mt-4 text-center text-yellow-300 text-sm">
+          <p>Note: Your talk request will be reviewed by an administrator before it's scheduled.</p>
         </div>
       </form>
     </div>

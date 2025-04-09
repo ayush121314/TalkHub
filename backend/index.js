@@ -6,6 +6,7 @@ const connectDB = require('./config/db');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 const documentRoutes = require("./routes/documentRoutes");
 const recordingRoutes = require("./routes/recordingRoutes");
+const adminRoutes = require("./routes/admin.routes");
 
 
 // Initialize express
@@ -35,6 +36,7 @@ app.use('/api/lectures', require('./routes/lecture.routes'));
 app.use('/api/docs',documentRoutes);
 app.use('/api/recordings',recordingRoutes);
 app.use('/api/comments', require('./routes/comment.routes'));
+app.use('/api/admin', adminRoutes);
 
 // Error handling middleware
 app.use(errorHandlerMiddleware);

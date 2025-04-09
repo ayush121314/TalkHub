@@ -1,4 +1,5 @@
 const Lecture = require('../models/lecture.model');
+const TalkRequest = require('../models/talkRequest.model');
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors/custom-error');
@@ -75,34 +76,65 @@ const getPastLectures = async (req, res) => {
 // Get scheduled talks (lectures created by the current user)
 const getScheduledTalks = async (req, res) => {
   try {
+    // Get approved lectures by this user
     const lectures = await Lecture.find({
       instructor: req.user.userId,
       status: { $in: ['scheduled', 'ongoing'] }
     }).sort({ date: 1 });
 
+    // Get pending and rejected talk requests by this user
+    const talkRequests = await TalkRequest.find({
+      requestedBy: req.user.userId,
+      status: { $in: ['pending', 'rejected'] }
+    }).sort({ date: 1 });
+
+    // Transform lectures data
     const transformedLectures = lectures.map(lecture => ({
       id: lecture._id,
       title: lecture.title,
       description: lecture.description,
       date: lecture.date,
       time: lecture.time,
-      duration: lecture.duration || 60, // Add duration with default value
+      duration: lecture.duration || 60,
       mode: lecture.mode,
       venue: lecture.venue,
       meetLink: lecture.meetLink,
       capacity: lecture.capacity,
       registeredCount: lecture.registeredUsers.length,
       tags: lecture.tags,
+      status: 'approved',
       isRegistered: lecture.registeredUsers.includes(req.user.userId)
     }));
 
-    res.status(StatusCodes.OK).json(transformedLectures);
+    // Transform talk requests data
+    const transformedRequests = talkRequests.map(request => ({
+      id: request._id,
+      title: request.title,
+      description: request.description,
+      date: request.date,
+      time: request.time,
+      duration: request.duration || 60,
+      mode: request.mode,
+      venue: request.venue,
+      meetLink: request.meetLink,
+      capacity: request.capacity,
+      tags: request.tags,
+      status: request.status,
+      adminMessage: request.adminMessage,
+      isRequest: true
+    }));
+
+    // Combine and send both
+    const combinedResults = [...transformedLectures, ...transformedRequests];
+    combinedResults.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    res.status(StatusCodes.OK).json(combinedResults);
   } catch (error) {
     throw new CustomError('Failed to fetch scheduled talks', StatusCodes.INTERNAL_SERVER_ERROR);
   }
 };
 
-// Create a new lecture
+// Create a new talk request (instead of directly creating a lecture)
 const createLecture = async (req, res) => {
   try {
     // Basic field validation
@@ -138,85 +170,89 @@ const createLecture = async (req, res) => {
       throw new CustomError('Lecture date must be in the future', StatusCodes.BAD_REQUEST);
     }
 
-    // Set up base lecture data
-    const lectureData = {
+    // Set up base talk request data
+    const requestData = {
       title: req.body.title.trim(),
       description: req.body.description.trim(),
-      instructor: req.user.userId,
+      requestedBy: req.user.userId,
       date: lectureDate,
       time: req.body.time,
       duration: parseInt(req.body.duration) || 60, // Default to 60 minutes
       mode: req.body.mode,
       capacity: parseInt(req.body.capacity),
-      status: 'scheduled',
-      registeredUsers: []
+      status: 'pending'
     };
 
     // Mode-specific validation and fields
-    if (lectureData.mode === 'online') {
+    if (requestData.mode === 'online') {
       if (!req.body.meetLink) {
         throw new CustomError('Meeting link is required for online lectures', StatusCodes.BAD_REQUEST);
       }
-      lectureData.meetLink = req.body.meetLink.trim();
-    } else if (lectureData.mode === 'offline') {
+      requestData.meetLink = req.body.meetLink.trim();
+    } else if (requestData.mode === 'offline') {
       if (!req.body.venue) {
         throw new CustomError('Venue is required for offline lectures', StatusCodes.BAD_REQUEST);
       }
-      lectureData.venue = req.body.venue.trim();
+      requestData.venue = req.body.venue.trim();
     }
 
     // Validate and process capacity
-    if (isNaN(lectureData.capacity) || lectureData.capacity < 1) {
+    if (isNaN(requestData.capacity) || requestData.capacity < 1) {
       throw new CustomError('Capacity must be a positive number', StatusCodes.BAD_REQUEST);
     }
 
     // Process prerequisites if provided
     if (req.body.prerequisites) {
-      lectureData.prerequisites = typeof req.body.prerequisites === 'string' 
+      requestData.prerequisites = typeof req.body.prerequisites === 'string' 
         ? req.body.prerequisites.split(',').map(p => p.trim()).filter(p => p.length > 0)
         : req.body.prerequisites;
     }
 
     // Process tags if provided
     if (req.body.tags) {
-      lectureData.tags = typeof req.body.tags === 'string'
+      requestData.tags = typeof req.body.tags === 'string'
         ? req.body.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
         : req.body.tags;
     }
 
-    const lecture = await Lecture.create(lectureData);
+    // Process materials if provided
+    if (req.body.materials) {
+      requestData.materials = req.body.materials.trim();
+    }
+
+    // Create a new talk request instead of a lecture
+    const talkRequest = await TalkRequest.create(requestData);
     
-    // Populate instructor details for the response
-    await lecture.populate('instructor', 'name email');
+    // Populate requestedBy details for the response
+    await talkRequest.populate('requestedBy', 'name email');
 
     // Return formatted response
     res.status(StatusCodes.CREATED).json({
-      message: 'Lecture created successfully',
-      lecture: {
-        id: lecture._id,
-        title: lecture.title,
-        description: lecture.description,
-        instructor: lecture.instructor.name,
-        date: lecture.date,
-        time: lecture.time,
-        mode: lecture.mode,
-        venue: lecture.venue,
-        meetLink: lecture.meetLink,
-        capacity: lecture.capacity,
-        prerequisites: lecture.prerequisites,
-        tags: lecture.tags,
-        registeredCount: 0,
-        status: lecture.status
+      message: 'Talk request submitted successfully and is pending approval',
+      talkRequest: {
+        id: talkRequest._id,
+        title: talkRequest.title,
+        description: talkRequest.description,
+        instructor: talkRequest.requestedBy.name,
+        date: talkRequest.date,
+        time: talkRequest.time,
+        duration: talkRequest.duration,
+        mode: talkRequest.mode,
+        venue: talkRequest.venue,
+        meetLink: talkRequest.meetLink,
+        capacity: talkRequest.capacity,
+        status: talkRequest.status,
+        tags: talkRequest.tags,
+        prerequisites: talkRequest.prerequisites,
+        materials: talkRequest.materials
       }
     });
   } catch (error) {
     if (error instanceof CustomError) {
-      throw error;
+      res.status(error.statusCode).json({ message: error.message });
+    } else {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to submit talk request', error: error.message });
     }
-    throw new CustomError(
-      error.message || 'Failed to create lecture',
-      error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR
-    );
   }
 };
 
