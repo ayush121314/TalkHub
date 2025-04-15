@@ -83,29 +83,29 @@ const LectureSidebar = ({
     <div className="space-y-6">
       {/* Upcoming Lecture Countdown */}
       {!isPastLecture && countdown.days + countdown.hours + countdown.minutes > 0 && (
-        <div className="bg-gradient-to-br from-indigo-900/40 to-violet-900/40 backdrop-blur-sm rounded-2xl p-6 border border-indigo-800/50 overflow-hidden relative">
-          <div className="absolute -right-20 -top-20 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl"></div>
+        <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative">
+          <div className="absolute -right-20 -top-20 w-40 h-40 bg-blue-100 rounded-full blur-3xl"></div>
           
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Clock className="w-5 h-5 text-indigo-400" />
+              <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                <Clock className="w-5 h-5 text-blue-600" />
                 Starting In
               </h2>
             </div>
             
             <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="bg-indigo-900/50 rounded-xl p-3">
-                <div className="text-3xl font-bold text-white">{countdown.days}</div>
-                <div className="text-indigo-300 text-sm">Days</div>
+              <div className="bg-blue-50 rounded-xl p-3">
+                <div className="text-3xl font-bold text-gray-800">{countdown.days}</div>
+                <div className="text-blue-600 text-sm">Days</div>
               </div>
-              <div className="bg-indigo-900/50 rounded-xl p-3">
-                <div className="text-3xl font-bold text-white">{countdown.hours}</div>
-                <div className="text-indigo-300 text-sm">Hours</div>
+              <div className="bg-blue-50 rounded-xl p-3">
+                <div className="text-3xl font-bold text-gray-800">{countdown.hours}</div>
+                <div className="text-blue-600 text-sm">Hours</div>
               </div>
-              <div className="bg-indigo-900/50 rounded-xl p-3">
-                <div className="text-3xl font-bold text-white">{countdown.minutes}</div>
-                <div className="text-indigo-300 text-sm">Minutes</div>
+              <div className="bg-blue-50 rounded-xl p-3">
+                <div className="text-3xl font-bold text-gray-800">{countdown.minutes}</div>
+                <div className="text-blue-600 text-sm">Minutes</div>
               </div>
             </div>
           </div>
@@ -114,13 +114,13 @@ const LectureSidebar = ({
 
       {/* Meeting Link Section */}
       {lecture.mode === 'online' && lecture.meetLink && isUserRegistered && !isPastLecture && (
-        <div className="bg-gradient-to-br from-blue-900/40 to-sky-900/40 backdrop-blur-sm rounded-2xl p-6 border border-blue-800/50 overflow-hidden relative">
-          <div className="absolute -right-20 -top-20 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative">
+          <div className="absolute -right-20 -top-20 w-40 h-40 bg-blue-100 rounded-full blur-3xl"></div>
           
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <LinkIcon className="w-5 h-5 text-blue-400" />
+              <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                <LinkIcon className="w-5 h-5 text-blue-600" />
                 Meeting Link
               </h2>
             </div>
@@ -129,7 +129,7 @@ const LectureSidebar = ({
               href={lecture.meetLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full block text-center px-4 py-3.5 bg-gradient-to-r from-blue-700 to-sky-700 hover:from-blue-600 hover:to-sky-600 text-white rounded-xl font-medium transition-all shadow-lg"
+              className="w-full block text-center px-4 py-3.5 bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 text-white rounded-xl font-medium transition-all shadow-md"
             >
               Join Meeting
             </a>
@@ -139,13 +139,13 @@ const LectureSidebar = ({
 
       {/* Registration / Attendance Section */}
       {!isPastLecture ? (
-        <div className="bg-gradient-to-br from-violet-900/40 to-purple-900/40 backdrop-blur-sm rounded-2xl p-6 border border-violet-800/50 overflow-hidden relative">
-          <div className="absolute -right-20 -top-20 w-40 h-40 bg-violet-500/10 rounded-full blur-3xl"></div>
+        <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative">
+          <div className="absolute -right-20 -top-20 w-40 h-40 bg-blue-100 rounded-full blur-3xl"></div>
           
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Users className="w-5 h-5 text-violet-400" />
+              <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                <Users className="w-5 h-5 text-blue-600" />
                 Registration
               </h2>
             </div>
@@ -153,12 +153,12 @@ const LectureSidebar = ({
             {/* Capacity bar */}
             <div className="mb-4">
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-violet-300">Capacity</span>
-                <span className="text-white font-medium">{lecture.registeredUsers?.length || 0} / {lecture.capacity}</span>
+                <span className="text-gray-500">Capacity</span>
+                <span className="text-gray-800 font-medium">{lecture.registeredUsers?.length || 0} / {lecture.capacity}</span>
               </div>
-              <div className="w-full h-2 bg-violet-900/50 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-violet-600 to-purple-600 transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-300"
                   style={{ width: `${Math.min(100, (lecture.registeredUsers?.length || 0) / lecture.capacity * 100)}%` }}
                 />
               </div>
@@ -170,10 +170,10 @@ const LectureSidebar = ({
                 disabled={isUserRegistered || registrationLoading}
                 className={`w-full px-4 py-3.5 rounded-xl font-medium text-white flex items-center justify-center gap-2 ${
                   isUserRegistered
-                    ? 'bg-gradient-to-r from-emerald-700 to-teal-700 cursor-default'
+                    ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 cursor-default'
                     : registrationLoading
-                    ? 'bg-slate-700 cursor-wait'
-                    : 'bg-gradient-to-r from-violet-700 to-purple-700 hover:from-violet-600 hover:to-purple-600 shadow-lg shadow-violet-900/20'
+                    ? 'bg-gray-300 cursor-wait'
+                    : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 shadow-md'
                 } transition-all`}
               >
                 {registrationLoading ? (
@@ -194,8 +194,8 @@ const LectureSidebar = ({
                 )}
               </button>
             ) : (
-              <div className="bg-amber-900/30 border border-amber-700/30 rounded-xl p-4 text-center">
-                <div className="flex items-center justify-center gap-2 text-amber-300 mb-1">
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
+                <div className="flex items-center justify-center gap-2 text-amber-600 mb-1">
                   <AlertCircle className="w-5 h-5" />
                   <span className="font-medium">Registration Closed</span>
                 </div>
@@ -213,28 +213,28 @@ const LectureSidebar = ({
           </div>
         </div>
       ) : (
-        <div className="bg-gradient-to-br from-indigo-900/40 to-violet-900/40 backdrop-blur-sm rounded-2xl p-6 border border-indigo-800/50 overflow-hidden relative">
-          <div className="absolute -right-20 -top-20 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl"></div>
+        <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative">
+          <div className="absolute -right-20 -top-20 w-40 h-40 bg-blue-50 rounded-full blur-3xl"></div>
           
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Users className="w-5 h-5 text-indigo-400" />
+              <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                <Users className="w-5 h-5 text-blue-600" />
                 Attendance
               </h2>
             </div>
             
-            <div className="bg-indigo-900/50 rounded-xl p-5">
+            <div className="bg-blue-50 rounded-xl p-5">
               <div className="flex flex-col items-center">
-                <div className="text-4xl font-bold text-white mb-1">
+                <div className="text-4xl font-bold text-gray-800 mb-1">
                   {lecture.registeredUsers?.length || 0}
                 </div>
-                <div className="text-indigo-300">Live Attendees</div>
+                <div className="text-blue-600">Live Attendees</div>
               </div>
             </div>
             
             {isUserRegistered && (
-              <div className="mt-4 bg-emerald-900/30 border border-emerald-800/40 rounded-xl p-3 flex items-center gap-2 justify-center text-emerald-300">
+              <div className="mt-4 bg-green-50 border border-green-200 rounded-xl p-3 flex items-center gap-2 justify-center text-green-600">
                 <Check className="w-4 h-4" />
                 <span className="font-medium">You attended this lecture</span>
               </div>
@@ -244,25 +244,25 @@ const LectureSidebar = ({
       )}
 
       {/* Resources Section */}
-      <div className="bg-gradient-to-br from-slate-900 to-slate-800/70 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 overflow-hidden relative">
-        <div className="absolute -right-20 -top-20 w-40 h-40 bg-slate-500/5 rounded-full blur-3xl"></div>
+      <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative">
+        <div className="absolute -right-20 -top-20 w-40 h-40 bg-blue-50 rounded-full blur-3xl"></div>
         
         <div className="relative space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-white">Resources</h2>
+            <h2 className="text-xl font-semibold text-gray-800">Resources</h2>
           </div>
 
           {/* Document Upload & List */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-white flex items-center gap-2">
-                <FileText className="w-5 h-5 text-blue-400" />
+              <h3 className="text-lg font-medium text-gray-800 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-600" />
                 Documents
               </h3>
               {isInstructor && (
                 <button
                   onClick={() => document.getElementById('fileUpload').click()}
-                  className="p-2 bg-blue-900/30 hover:bg-blue-900/50 text-blue-400 rounded-lg transition-colors border border-blue-900/50"
+                  className="p-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg transition-colors border border-blue-200"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -279,16 +279,24 @@ const LectureSidebar = ({
               />
             )}
 
-            {selectedFile && isInstructor && (
-              <div className="flex items-center justify-between bg-slate-800/80 p-4 rounded-lg mb-4 border border-slate-700/70">
-                <span className="text-white text-sm truncate max-w-[200px] flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                  {selectedFile.name}
-                </span>
+            {selectedFile && (
+              <div className="bg-white p-4 rounded-lg mb-4 space-y-3 border border-blue-100 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <FileText className="w-4 h-4 text-blue-600" />
+                    <span className="text-sm truncate max-w-[200px]">{selectedFile.name}</span>
+                  </div>
+                  <button
+                    onClick={() => document.getElementById('fileUpload').value = null}
+                    className="text-gray-500 hover:text-red-600 p-1 rounded-md hover:bg-gray-100 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
                 <button
                   onClick={handleUploadFile}
                   disabled={uploadingDoc}
-                  className="flex items-center gap-1 px-3 py-1.5 bg-blue-700/80 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors disabled:opacity-70 disabled:hover:bg-blue-700/80"
+                  className="flex items-center justify-center gap-1.5 w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-70"
                 >
                   {uploadingDoc ? (
                     <>
@@ -297,8 +305,8 @@ const LectureSidebar = ({
                     </>
                   ) : (
                     <>
-                      <Upload className="w-3.5 h-3.5" />
-                      <span>Upload</span>
+                      <Upload className="w-4 h-4" />
+                      <span>Upload Document</span>
                     </>
                   )}
                 </button>
@@ -310,30 +318,29 @@ const LectureSidebar = ({
                 uploadedDocuments.map((doc) => (
                   <div
                     key={doc._id}
-                    className="flex items-center justify-between bg-slate-800/70 p-3.5 rounded-lg border border-slate-700/50 hover:border-slate-600/50 transition-all group"
+                    className="flex items-center justify-between bg-white p-3.5 rounded-lg border border-blue-100 hover:border-blue-200 transition-all group shadow-sm"
                   >
                     <a
-                      href={doc.url}
+                      href={doc.fileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300 flex items-center gap-2 flex-1 truncate transition-colors"
+                      className="text-blue-600 hover:text-blue-800 flex items-center gap-2 flex-1 truncate transition-colors"
                     >
                       <FileText className="w-4 h-4 flex-shrink-0" />
-                      <span className="truncate">{doc.name}</span>
+                      <span className="truncate">{doc.fileName}</span>
                     </a>
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-1">
                       <a
-                        href={doc.url}
+                        href={doc.fileUrl}
                         download
-                        className="text-slate-400 hover:text-white p-1.5 rounded-md hover:bg-slate-700/70 transition-colors"
-                        onClick={(e) => e.stopPropagation()}
+                        className="text-gray-600 hover:text-blue-600 p-1.5 rounded-md hover:bg-blue-50 transition-colors"
                       >
                         <Download className="w-4 h-4" />
                       </a>
                       {isInstructor && (
                         <button
                           onClick={() => deleteDocument(doc._id)}
-                          className="text-slate-400 hover:text-red-400 p-1.5 rounded-md hover:bg-slate-700/70 transition-colors ml-1"
+                          className="text-gray-600 hover:text-red-600 p-1.5 rounded-md hover:bg-red-50 transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -342,7 +349,7 @@ const LectureSidebar = ({
                   </div>
                 ))
               ) : (
-                <div className="text-center py-6 bg-slate-800/30 rounded-xl border border-slate-700/40 text-slate-400">
+                <div className="text-center py-6 bg-gray-50 rounded-xl border border-gray-200 text-gray-500">
                   <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p>No documents uploaded</p>
                 </div>
@@ -353,14 +360,14 @@ const LectureSidebar = ({
           {/* Recording Links */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-white flex items-center gap-2">
-                <Video className="w-5 h-5 text-emerald-400" />
+              <h3 className="text-lg font-medium text-gray-800 flex items-center gap-2">
+                <Video className="w-5 h-5 text-green-600" />
                 Recordings
               </h3>
               {isInstructor && (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="p-2 bg-emerald-900/30 hover:bg-emerald-900/50 text-emerald-400 rounded-lg transition-colors border border-emerald-900/50"
+                  className="p-2 bg-green-50 hover:bg-green-100 text-green-600 rounded-lg transition-colors border border-green-200"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -368,19 +375,19 @@ const LectureSidebar = ({
             </div>
 
             {isInstructor && isEditing && (
-              <div className="bg-slate-800/80 p-4 rounded-lg mb-4 space-y-3 border border-slate-700/70">
+              <div className="bg-white p-4 rounded-lg mb-4 space-y-3 border border-green-100 shadow-sm">
                 <input
                   type="text"
                   value={recordingLink}
                   onChange={(e) => setRecordingLink(e.target.value)}
                   placeholder="Enter recording URL"
-                  className="w-full bg-slate-900/80 p-3 rounded-md text-white border border-slate-700 focus:border-emerald-700 outline-none transition-colors"
+                  className="w-full bg-white p-3 rounded-md text-gray-700 border border-gray-200 focus:border-green-500 outline-none transition-colors"
                 />
                 <div className="flex gap-2">
                   <button
                     onClick={handleRecordingUpdate}
                     disabled={uploadingRec || !recordingLink}
-                    className="flex items-center justify-center gap-1.5 flex-1 py-2.5 bg-gradient-to-r from-emerald-700 to-teal-700 hover:from-emerald-600 hover:to-teal-600 text-white rounded-lg transition-all disabled:opacity-70 disabled:from-slate-700 disabled:to-slate-700"
+                    className="flex items-center justify-center gap-1.5 flex-1 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all disabled:opacity-70 disabled:bg-gray-400"
                   >
                     {uploadingRec ? (
                       <>
@@ -399,7 +406,7 @@ const LectureSidebar = ({
                       setIsEditing(false);
                       setRecordingLink('');
                     }}
-                    className="flex items-center justify-center gap-1.5 flex-1 py-2.5 bg-rose-800/80 hover:bg-rose-700 text-white rounded-lg transition-colors"
+                    className="flex items-center justify-center gap-1.5 flex-1 py-2.5 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-colors"
                   >
                     <X className="w-4 h-4" />
                     <span>Cancel</span>
@@ -413,13 +420,13 @@ const LectureSidebar = ({
                 uploadedRecordingLink.map((rec) => (
                   <div
                     key={rec._id}
-                    className="flex items-center justify-between bg-slate-800/70 p-3.5 rounded-lg border border-slate-700/50 hover:border-slate-600/50 transition-all group"
+                    className="flex items-center justify-between bg-white p-3.5 rounded-lg border border-green-100 hover:border-green-200 transition-all group shadow-sm"
                   >
                     <a
                       href={rec.recording.startsWith('http') ? rec.recording : `https://${rec.recording}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-emerald-400 hover:text-emerald-300 flex items-center gap-2 flex-1 truncate transition-colors"
+                      className="text-green-600 hover:text-green-800 flex items-center gap-2 flex-1 truncate transition-colors"
                     >
                       <Video className="w-4 h-4 flex-shrink-0" />
                       <span>Watch Recording</span>
@@ -427,7 +434,7 @@ const LectureSidebar = ({
                     {isInstructor && (
                       <button
                         onClick={() => deleteRecordingLink(rec._id)}
-                        className="text-slate-400 hover:text-red-400 p-1.5 rounded-md hover:bg-slate-700/70 transition-colors"
+                        className="text-gray-600 hover:text-red-600 p-1.5 rounded-md hover:bg-red-50 transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -435,7 +442,7 @@ const LectureSidebar = ({
                   </div>
                 ))
               ) : (
-                <div className="text-center py-6 bg-slate-800/30 rounded-xl border border-slate-700/40 text-slate-400">
+                <div className="text-center py-6 bg-gray-50 rounded-xl border border-gray-200 text-gray-500">
                   <Video className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p>No recordings available</p>
                 </div>

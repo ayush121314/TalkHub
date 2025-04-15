@@ -83,43 +83,43 @@ const ProfileForm = ({ onClose, user, onUpdate }) => {
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="w-full max-w-2xl bg-gray-800 text-white rounded-xl p-6 max-h-[80vh] overflow-y-auto">
-                <h2 className="text-xl font-semibold border-b border-gray-700 pb-4">Update Profile</h2>
+            <div className="w-full max-w-2xl bg-white text-gray-800 rounded-xl p-6 max-h-[80vh] overflow-y-auto shadow-lg border border-blue-100">
+                <h2 className="text-xl font-semibold border-b border-gray-200 pb-4">Update Profile</h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="flex flex-col items-center space-y-4">
-                        <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-700">
+                        <div className="w-32 h-32 rounded-full overflow-hidden bg-blue-50 border-4 border-blue-100 shadow-md">
                             {preview ? (
                                 <img src={preview} alt="Preview" className="w-full h-full object-cover" />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-4xl">
+                                <div className="w-full h-full flex items-center justify-center text-4xl text-blue-500">
                                     {user?.name?.charAt(0)?.toUpperCase()}
                                 </div>
                             )}
                         </div>
                         <div className="flex space-x-4">
                             <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" id="profile-image" />
-                            <label htmlFor="profile-image" className="px-4 py-2 bg-purple-600 rounded-lg cursor-pointer hover:bg-purple-700 transition-colors">
+                            <label htmlFor="profile-image" className="px-4 py-2 bg-indigo-600 rounded-lg cursor-pointer hover:bg-indigo-700 transition-colors text-white shadow-sm">
                                 Choose Profile Picture
                             </label>
                             {preview && (
-                                <button type="button" onClick={handleRemoveImage} className="px-4 py-2 bg-red-600 rounded-lg text-white hover:bg-red-700 transition-colors">
+                                <button type="button" onClick={handleRemoveImage} className="px-4 py-2 bg-red-500 rounded-lg text-white hover:bg-red-600 transition-colors shadow-sm">
                                     Remove Profile Picture
                                 </button>
                             )}
                         </div>
                     </div>
                     <div className="space-y-4">
-                        <input type="url" placeholder="LinkedIn Profile URL" value={formData.linkedinProfile} onChange={(e) => setFormData({ ...formData, linkedinProfile: e.target.value })} className="w-full p-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                        <input type="url" placeholder="Personal Website URL" value={formData.personalWebsite} onChange={(e) => setFormData({ ...formData, personalWebsite: e.target.value })} className="w-full p-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                        <input type="text" placeholder="Organization" value={formData.organization} onChange={(e) => setFormData({ ...formData, organization: e.target.value })} className="w-full p-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                        <textarea placeholder="Speaker Bio" value={formData.speakerBio} onChange={(e) => setFormData({ ...formData, speakerBio: e.target.value })} className="w-full p-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 min-h-[100px]" />
-                        <input type="url" placeholder="Social Media Handle (1)" value={formData.socialMediaHandle1} onChange={(e) => setFormData({ ...formData, socialMediaHandle1: e.target.value })} className="w-full p-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                        <input type="url" placeholder="Social Media Handle (2)" value={formData.socialMediaHandle2} onChange={(e) => setFormData({ ...formData, socialMediaHandle2: e.target.value })} className="w-full p-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500" />
-                        <textarea placeholder="Additional Information" value={formData.additionalInfo} onChange={(e) => setFormData({ ...formData, additionalInfo: e.target.value })} className="w-full p-3 bg-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 min-h-[100px]" />
+                        <input type="url" placeholder="LinkedIn Profile URL" value={formData.linkedinProfile} onChange={(e) => setFormData({ ...formData, linkedinProfile: e.target.value })} className="w-full p-3 bg-blue-50 rounded-lg focus:ring-2 focus:ring-indigo-500 border border-blue-100 text-gray-700" />
+                        <input type="url" placeholder="Personal Website URL" value={formData.personalWebsite} onChange={(e) => setFormData({ ...formData, personalWebsite: e.target.value })} className="w-full p-3 bg-blue-50 rounded-lg focus:ring-2 focus:ring-indigo-500 border border-blue-100 text-gray-700" />
+                        <input type="text" placeholder="Organization" value={formData.organization} onChange={(e) => setFormData({ ...formData, organization: e.target.value })} className="w-full p-3 bg-blue-50 rounded-lg focus:ring-2 focus:ring-indigo-500 border border-blue-100 text-gray-700" />
+                        <textarea placeholder="Speaker Bio" value={formData.speakerBio} onChange={(e) => setFormData({ ...formData, speakerBio: e.target.value })} className="w-full p-3 bg-blue-50 rounded-lg focus:ring-2 focus:ring-indigo-500 border border-blue-100 text-gray-700 min-h-[100px]" />
+                        <input type="url" placeholder="Social Media Handle (1)" value={formData.socialMediaHandle1} onChange={(e) => setFormData({ ...formData, socialMediaHandle1: e.target.value })} className="w-full p-3 bg-blue-50 rounded-lg focus:ring-2 focus:ring-indigo-500 border border-blue-100 text-gray-700" />
+                        <input type="url" placeholder="Social Media Handle (2)" value={formData.socialMediaHandle2} onChange={(e) => setFormData({ ...formData, socialMediaHandle2: e.target.value })} className="w-full p-3 bg-blue-50 rounded-lg focus:ring-2 focus:ring-indigo-500 border border-blue-100 text-gray-700" />
+                        <textarea placeholder="Additional Information" value={formData.additionalInfo} onChange={(e) => setFormData({ ...formData, additionalInfo: e.target.value })} className="w-full p-3 bg-blue-50 rounded-lg focus:ring-2 focus:ring-indigo-500 border border-blue-100 text-gray-700 min-h-[100px]" />
                     </div>
                     <div className="flex justify-end space-x-4">
-                        <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-600 rounded-lg hover:bg-gray-700 transition-colors">Cancel</button>
-                        <button type="submit" disabled={loading} className="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50">
+                        <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors shadow-sm">Cancel</button>
+                        <button type="submit" disabled={loading} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 shadow-sm">
                             {loading ? 'Updating...' : 'Update Profile'}
                         </button>
                     </div>

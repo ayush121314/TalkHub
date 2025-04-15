@@ -48,7 +48,7 @@ const Comment = ({
   
   return (
     <div className={`comment-container ${isReply ? 'ml-8 mt-3' : 'mt-6'}`}>
-      <div className="bg-slate-800/60 rounded-xl p-4 backdrop-blur-sm border border-slate-700/50">
+      <div className="bg-white rounded-xl p-4 shadow-sm border border-blue-100">
         {/* Comment Header */}
         <div className="flex items-start space-x-3">
           {/* User Avatar */}
@@ -57,11 +57,11 @@ const Comment = ({
               <img 
                 src={comment.user.profile.profilePic} 
                 alt={comment.user.name || 'User'}
-                className="w-10 h-10 rounded-full object-cover border border-indigo-500/30"
+                className="w-10 h-10 rounded-full object-cover border border-blue-200"
               />
             ) : (
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-900/60 to-purple-900/60 rounded-full flex items-center justify-center border border-indigo-500/30">
-                <User className="w-5 h-5 text-indigo-300" />
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center border border-blue-200">
+                <User className="w-5 h-5 text-indigo-500" />
               </div>
             )}
           </div>
@@ -69,10 +69,10 @@ const Comment = ({
           {/* Comment Metadata */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-semibold text-white truncate">
+              <h4 className="text-sm font-semibold text-gray-800 truncate">
                 {comment.user.name || 'Anonymous User'}
               </h4>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-gray-500">
                 {formatDistanceToNow(creationDate, { addSuffix: true })}
               </p>
             </div>
@@ -83,7 +83,7 @@ const Comment = ({
                 <textarea
                   value={editContent}
                   onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white resize-none"
+                  className="w-full px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 text-gray-700 resize-none"
                   rows={3}
                   required
                 />
@@ -94,20 +94,20 @@ const Comment = ({
                       setIsEditing(false);
                       setEditContent(comment.content || '');
                     }}
-                    className="px-3 py-1 text-xs bg-slate-800 text-slate-300 rounded-md hover:bg-slate-700"
+                    className="px-3 py-1 text-xs bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-3 py-1 text-xs bg-indigo-700 text-white rounded-md hover:bg-indigo-600"
+                    className="px-3 py-1 text-xs bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
                   >
                     Save
                   </button>
                 </div>
               </form>
             ) : (
-              <div className="mt-1 text-sm text-slate-300 whitespace-pre-wrap break-words">
+              <div className="mt-1 text-sm text-gray-700 whitespace-pre-wrap break-words">
                 {comment.content || ''}
               </div>
             )}
@@ -120,7 +120,7 @@ const Comment = ({
             {!isReply && (
               <button
                 onClick={() => setIsReplying(!isReplying)}
-                className="flex items-center text-xs text-slate-400 hover:text-indigo-400 transition-colors"
+                className="flex items-center text-xs text-gray-500 hover:text-indigo-600 transition-colors"
               >
                 <MessageCircle className="w-3.5 h-3.5 mr-1" />
                 Reply
@@ -134,7 +134,7 @@ const Comment = ({
                     setIsEditing(true);
                     setEditContent(comment.content || '');
                   }}
-                  className="flex items-center text-xs text-slate-400 hover:text-amber-400 transition-colors"
+                  className="flex items-center text-xs text-gray-500 hover:text-amber-600 transition-colors"
                 >
                   <Edit2 className="w-3.5 h-3.5 mr-1" />
                   Edit
@@ -142,7 +142,7 @@ const Comment = ({
                 
                 <button
                   onClick={() => onDelete(comment._id)}
-                  className="flex items-center text-xs text-slate-400 hover:text-red-400 transition-colors"
+                  className="flex items-center text-xs text-gray-500 hover:text-red-600 transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5 mr-1" />
                   Delete
@@ -153,7 +153,7 @@ const Comment = ({
             {comment.replies && comment.replies.length > 0 && (
               <button
                 onClick={toggleReplies}
-                className="flex items-center text-xs text-slate-400 hover:text-indigo-400 transition-colors ml-auto"
+                className="flex items-center text-xs text-gray-500 hover:text-indigo-600 transition-colors ml-auto"
               >
                 <CornerDownRight className="w-3.5 h-3.5 mr-1" />
                 {showReplies ? 'Hide' : 'Show'} {comment.replies.length} {comment.replies.length === 1 ? 'reply' : 'replies'}
@@ -169,7 +169,7 @@ const Comment = ({
               value={replyContent}
               onChange={(e) => setReplyContent(e.target.value)}
               placeholder="Write a reply.."
-              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white resize-none"
+              className="w-full px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 text-gray-700 resize-none"
               rows={2}
               required
             />
@@ -180,13 +180,13 @@ const Comment = ({
                   setIsReplying(false);
                   setReplyContent('');
                 }}
-                className="px-3 py-1 text-xs bg-slate-800 text-slate-300 rounded-md hover:bg-slate-700"
+                className="px-3 py-1 text-xs bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-3 py-1 text-xs bg-indigo-700 text-white rounded-md hover:bg-indigo-600"
+                className="px-3 py-1 text-xs bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
               >
                 Reply
               </button>
@@ -197,7 +197,7 @@ const Comment = ({
       
       {/* Replies */}
       {showReplies && comment.replies && comment.replies.length > 0 && (
-        <div className="replies-container pl-4 border-l border-slate-700/50 mt-2 ml-5">
+        <div className="replies-container pl-4 border-l border-blue-200 mt-2 ml-5">
           {comment.replies.map(reply => (
             <Comment
               key={reply._id}

@@ -136,11 +136,11 @@ const Dashboard = () => {
         setActiveTab(tab);
         setIsSidebarOpen(false);
       }}
-      className={`w-full text-left p-4 flex items-center space-x-3 hover:bg-gray-700 rounded-lg transition-colors ${activeTab === tab ? 'bg-gray-700' : ''
+      className={`w-full text-left p-4 flex items-center space-x-3 hover:bg-gray-50 rounded-lg transition-colors ${activeTab === tab ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
         }`}
     >
       <span className="text-xl">{icon}</span>
-      <span className="text-gray-300">{label}</span>
+      <span>{label}</span>
     </button>
   );
 
@@ -162,18 +162,18 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50">
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 w-full bg-gray-800 p-4 flex justify-between items-center z-40">
+      <div className="md:hidden fixed top-0 w-full bg-white shadow-sm p-4 flex justify-between items-center z-40">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="text-white hover:text-purple-400 transition-colors"
+          className="text-gray-700 hover:text-blue-600 transition-colors"
         >
           ☰
         </button>
         <button
           onClick={() => setShowRequestForm(true)}
-          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-500 text-white rounded-lg hover:opacity-90 transition-colors shadow-sm"
         >
           ➕ Schedule Talk
         </button>
@@ -181,15 +181,15 @@ const Dashboard = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 w-64 bg-gray-800 transform transition-transform duration-300 ease-in-out z-50 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed inset-y-0 left-0 w-64 bg-white shadow-md transform transition-transform duration-300 ease-in-out z-50 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           } md:translate-x-0`}
       >
         {/* Profile Section */}
-        <div className="p-6 border-b border-gray-700">
+        <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
           <div className="flex flex-col items-center space-y-4">
             {/* Clickable Profile Icon */}
             <div
-              className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-r from-purple-500 to-blue-500 cursor-pointer"
+              className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 cursor-pointer shadow-md"
               onClick={handleProfileClick}
             >
               {userProfile?.profile?.profilePic ? (
@@ -206,15 +206,15 @@ const Dashboard = () => {
             </div>
 
             <div className="text-center">
-              <h2 className="text-white font-semibold text-lg">{user?.name}</h2>
-              <p className="text-gray-400 text-sm">{user?.email}</p>
-              <p className="text-gray-400 text-sm mt-1">🎓 {user?.rollNumber}</p>
+              <h2 className="text-gray-800 font-semibold text-lg">{user?.name}</h2>
+              <p className="text-gray-500 text-sm">{user?.email}</p>
+              <p className="text-gray-500 text-sm mt-1">🎓 {user?.rollNumber}</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="p-4 space-y-2">
+        <nav className="p-4 space-y-2 bg-gradient-to-b from-white to-blue-50">
           <TabButton icon="📅" label="Upcoming Lectures" tab="upcoming" />
           <TabButton icon="⏰" label="Past Lectures" tab="past" />
           <TabButton icon="👥" label="My Scheduled Talks" tab="scheduled" />
@@ -223,10 +223,10 @@ const Dashboard = () => {
         </nav>
 
         {/* Logout Button */}
-        <div className="absolute bottom-0 w-full p-4 border-t border-gray-700">
+        <div className="absolute bottom-0 w-full p-4 border-t border-gray-100 bg-white">
           <button
             onClick={logout}
-            className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-600/30 text-red-400 rounded-lg hover:bg-red-600/40 transition-colors"
+            className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -239,7 +239,7 @@ const Dashboard = () => {
       {/* Overlay for mobile sidebar */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/20 z-40 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
@@ -250,7 +250,7 @@ const Dashboard = () => {
         <div className="hidden md:flex justify-between items-center mb-8">
           <button
             onClick={() => setShowRequestForm(true)}
-            className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:opacity-90 transition-opacity shadow-lg"
+            className="px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:opacity-90 transition-opacity shadow-md"
           >
             ➕ Schedule New Talk
           </button>
@@ -266,8 +266,8 @@ const Dashboard = () => {
 
         {/* Profile Tab */}
         {activeTab === 'profile' && (
-          <div className="max-w-2xl mx-auto bg-gray-800 rounded-xl p-6">
-            <h2 className="text-2xl font-bold text-white mb-6 text-center">Profile Information</h2>
+          <div className="max-w-2xl mx-auto bg-white rounded-xl p-6 shadow-md border border-blue-100">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Profile Information</h2>
 
             {/* Profile Image Section */}
             {userProfile?.profile?.profilePic ? (
@@ -275,12 +275,12 @@ const Dashboard = () => {
                 <img
                   src={userProfile.profile.profilePic}
                   alt="Profile"
-                  className="w-32 h-32 rounded-full object-cover border-4 border-purple-500"
+                  className="w-32 h-32 rounded-full object-cover border-4 border-indigo-500 shadow-md"
                 />
               </div>
             ) : (
               <div className="flex justify-center mb-6">
-                <div className="w-32 h-32 flex items-center justify-center rounded-full bg-gray-700 text-4xl font-bold text-white">
+                <div className="w-32 h-32 flex items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 text-4xl font-bold text-white shadow-md">
                   {userProfile?.name?.charAt(0)?.toUpperCase()}
                 </div>
               </div>
@@ -290,83 +290,83 @@ const Dashboard = () => {
               <div className="space-y-4">
                 {/* Bio */}
                 {userProfile.profile?.speakerBio && userProfile.profile?.speakerBio!=="null" && userProfile.profile.speakerBio.trim() !== "" && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-purple-400">Bio</h3>
-                    <p className="text-gray-300">{userProfile.profile.speakerBio}</p>
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <h3 className="text-lg font-semibold text-indigo-700">Bio</h3>
+                    <p className="text-gray-700 mt-1">{userProfile.profile.speakerBio}</p>
                   </div>
                 )}
 
                 {/* Organization (Fix Added) */}
                 {userProfile.profile?.organization && userProfile.profile?.organization!=="null" && userProfile.profile.organization.trim() !== "" && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-purple-400">Organization</h3>
-                    <p className="text-gray-300">{userProfile.profile.organization}</p>
+                  <div className="p-4 bg-indigo-50 rounded-lg">
+                    <h3 className="text-lg font-semibold text-indigo-700">Organization</h3>
+                    <p className="text-gray-700 mt-1">{userProfile.profile.organization}</p>
                   </div>
                 )}
 
                 {/* LinkedIn */}
                 {userProfile.profile?.linkedinProfile && userProfile.profile?.linkedinProfile!=="null" && userProfile.profile.linkedinProfile.trim() !== "" && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-purple-400">LinkedIn</h3>
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <h3 className="text-lg font-semibold text-indigo-700">LinkedIn</h3>
                     <a
                       href={userProfile.profile.linkedinProfile}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-400 hover:underline"
+                      className="text-blue-600 hover:underline inline-flex items-center mt-1"
                     >
-                      View Profile
+                      View Profile <span className="ml-1">→</span>
                     </a>
                   </div>
                 )}
 
                 {/* Personal Website */}
                 {userProfile.profile?.personalWebsite && userProfile.profile?.personalWebsite!=="null" && userProfile.profile.personalWebsite.trim() !== "" && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-purple-400">Website</h3>
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <h3 className="text-lg font-semibold text-indigo-700">Website</h3>
                     <a
                       href={userProfile.profile.personalWebsite}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-400 hover:underline"
+                      className="text-blue-600 hover:underline inline-flex items-center mt-1"
                     >
-                      Visit Website
+                      Visit Website <span className="ml-1">→</span>
                     </a>
                   </div>
                 )}
 
                 {userProfile.profile?.socialMediaHandle1 && userProfile.profile?.socialMediaHandle1!=="null" && userProfile.profile.socialMediaHandle1.trim() !== "" && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-purple-400">Social Media Handle (1)</h3>
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <h3 className="text-lg font-semibold text-indigo-700">Social Media Handle (1)</h3>
                     <a
                       href={userProfile.profile.socialMediaHandle1}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-400 hover:underline"
+                      className="text-blue-600 hover:underline inline-flex items-center mt-1"
                     >
-                      Visit
+                      Visit <span className="ml-1">→</span>
                     </a>
                   </div>
                 )}
 
                 {userProfile.profile?.socialMediaHandle2 && userProfile.profile?.socialMediaHandle2!=="null" && userProfile.profile.socialMediaHandle2.trim() !== "" && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-purple-400">Social Media Handle (2)</h3>
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <h3 className="text-lg font-semibold text-indigo-700">Social Media Handle (2)</h3>
                     <a
                       href={userProfile.profile.socialMediaHandle2}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-400 hover:underline"
+                      className="text-blue-600 hover:underline inline-flex items-center mt-1"
                     >
-                      Visit
+                      Visit <span className="ml-1">→</span>
                     </a>
                   </div>
                 )}
 
                 {/* Additional Info */}
                 {userProfile.profile?.additionalInfo && userProfile.profile?.additionalInfo!=="null" && userProfile.profile.additionalInfo.trim() !== "" && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-purple-400">Additional Information</h3>
-                    <p className="text-gray-300">{userProfile.profile.additionalInfo}</p>
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <h3 className="text-lg font-semibold text-indigo-700">Additional Information</h3>
+                    <p className="text-gray-700 mt-1">{userProfile.profile.additionalInfo}</p>
                   </div>
                 )}
               </div>
@@ -376,7 +376,7 @@ const Dashboard = () => {
 
             <button
               onClick={() => setShowProfileForm(true)}
-              className="mt-6 px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
+              className="mt-6 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:opacity-90 transition-colors shadow-md"
             >
               Edit Profile
             </button>
@@ -400,8 +400,8 @@ const Dashboard = () => {
             {/* Loading state for Upcoming lectures */}
             {activeTab === 'upcoming' && loading && (
               <div className="col-span-full flex flex-col items-center justify-center py-16">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-400 mb-4"></div>
-                <p className="text-lg text-indigo-300">Loading upcoming lectures...</p>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-500 mb-4"></div>
+                <p className="text-lg text-indigo-500">Loading upcoming lectures...</p>
               </div>
             )}
 
@@ -419,8 +419,8 @@ const Dashboard = () => {
             {/* Loading state for Past lectures */}
             {activeTab === 'past' && loading && (
               <div className="col-span-full flex flex-col items-center justify-center py-16">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-400 mb-4"></div>
-                <p className="text-lg text-indigo-300">Loading past lectures...</p>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-500 mb-4"></div>
+                <p className="text-lg text-indigo-500">Loading past lectures...</p>
               </div>
             )}
 
@@ -438,8 +438,8 @@ const Dashboard = () => {
             {/* Loading state for Scheduled talks */}
             {activeTab === 'scheduled' && loading && (
               <div className="col-span-full flex flex-col items-center justify-center py-16">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-400 mb-4"></div>
-                <p className="text-lg text-indigo-300">Loading your scheduled talks...</p>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-500 mb-4"></div>
+                <p className="text-lg text-indigo-500">Loading your scheduled talks...</p>
               </div>
             )}
 
@@ -456,18 +456,33 @@ const Dashboard = () => {
 
             {/* Empty States - Only show these when not loading */}
             {activeTab === 'upcoming' && !loading && upcomingLectures.length === 0 && (
-              <div className="col-span-full text-center py-12 text-gray-400">
-                No upcoming lectures scheduled
+              <div className="col-span-full text-center py-12 bg-white rounded-xl shadow-sm border border-blue-100 p-8">
+                <div className="text-indigo-400 text-5xl mb-4">📅</div>
+                <p className="text-gray-600 text-lg">No upcoming lectures scheduled</p>
+                <button
+                  onClick={() => setShowRequestForm(true)}
+                  className="mt-4 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg text-sm hover:opacity-90"
+                >
+                  Schedule a Talk
+                </button>
               </div>
             )}
             {activeTab === 'past' && !loading && pastLectures.length === 0 && (
-              <div className="col-span-full text-center py-12 text-gray-400">
-                No past lectures available
+              <div className="col-span-full text-center py-12 bg-white rounded-xl shadow-sm border border-blue-100 p-8">
+                <div className="text-indigo-400 text-5xl mb-4">⏰</div>
+                <p className="text-gray-600 text-lg">No past lectures available</p>
               </div>
             )}
             {activeTab === 'scheduled' && !loading && scheduledTalks.length === 0 && (
-              <div className="col-span-full text-center py-12 text-gray-400">
-                You haven't scheduled any talks yet
+              <div className="col-span-full text-center py-12 bg-white rounded-xl shadow-sm border border-blue-100 p-8">
+                <div className="text-indigo-400 text-5xl mb-4">👥</div>
+                <p className="text-gray-600 text-lg">You haven't scheduled any talks yet</p>
+                <button
+                  onClick={() => setShowRequestForm(true)}
+                  className="mt-4 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg text-sm hover:opacity-90"
+                >
+                  Schedule a Talk
+                </button>
               </div>
             )}
           </div>
@@ -478,7 +493,7 @@ const Dashboard = () => {
       <div className="md:hidden fixed bottom-6 right-6">
         <button
           onClick={() => setShowRequestForm(true)}
-          className="p-4 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 transition-colors"
+          className="p-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full shadow-lg hover:opacity-90 transition-colors"
         >
           ➕
         </button>
@@ -486,7 +501,7 @@ const Dashboard = () => {
 
       {/* Notification Toast */}
       {notificationMessage && (
-        <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-xl shadow-lg animate-fade-in">
+        <div className="fixed bottom-4 right-4 bg-white text-gray-800 px-6 py-3 rounded-xl shadow-lg animate-fade-in border border-green-200">
           {notificationMessage}
         </div>
       )}

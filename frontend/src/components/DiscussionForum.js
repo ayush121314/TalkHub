@@ -306,30 +306,30 @@ const DiscussionForum = ({ lectureId }) => {
   // If we're still loading and haven't encountered an error yet
   if (loading && !error) {
     return (
-      <div className="discussion-forum-container bg-gradient-to-br from-slate-900 to-slate-900/70 backdrop-blur-sm rounded-3xl p-8 border border-indigo-900/30 overflow-hidden relative mt-6">
+      <div className="discussion-forum-container bg-gradient-to-br from-white to-blue-50 rounded-3xl p-8 border border-blue-100 overflow-hidden relative mt-6 shadow-md">
         <div className="text-center py-8">
           <div className="inline-block w-6 h-6 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-2 text-slate-400">Loading comments...</p>
+          <p className="mt-2 text-gray-500">Loading comments...</p>
         </div>
       </div>
     );
   }
   
   return (
-    <div className="discussion-forum-container bg-gradient-to-br from-slate-900 to-slate-900/70 backdrop-blur-sm rounded-3xl p-8 border border-indigo-900/30 overflow-hidden relative mt-6">
-      <div className="absolute -right-24 -top-24 w-64 h-64 bg-indigo-600/10 rounded-full blur-3xl"></div>
-      <div className="absolute -left-24 -bottom-24 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl"></div>
+    <div className="discussion-forum-container bg-gradient-to-br from-white to-blue-50 rounded-3xl p-8 border border-blue-100 overflow-hidden relative mt-6 shadow-md">
+      <div className="absolute -right-24 -top-24 w-64 h-64 bg-indigo-100 rounded-full blur-3xl"></div>
+      <div className="absolute -left-24 -bottom-24 w-64 h-64 bg-purple-100 rounded-full blur-3xl"></div>
       
       <div className="relative">
         <div className="flex items-center gap-3 mb-6">
-          <MessageSquare className="h-6 w-6 text-indigo-400" />
-          <h2 className="text-2xl font-bold text-white">Discussion Forum</h2>
+          <MessageSquare className="h-6 w-6 text-indigo-500" />
+          <h2 className="text-2xl font-bold text-gray-800">Discussion Forum</h2>
         </div>
         
         {/* Error Message */}
         {error && (
-          <div className="bg-red-900/20 border border-red-800/50 text-red-200 px-4 py-3 rounded-lg mb-6 flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-red-400" />
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 flex items-center gap-2">
+            <AlertCircle className="w-5 h-5 text-red-500" />
             <p>{error}</p>
           </div>
         )}
@@ -344,11 +344,11 @@ const DiscussionForum = ({ lectureId }) => {
                   <img 
                     src={user.profilePic} 
                     alt={user.name}
-                    className="w-10 h-10 rounded-full object-cover border border-indigo-500/30"
+                    className="w-10 h-10 rounded-full object-cover border border-blue-200"
                   />
                 ) : (
-                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-900/60 to-purple-900/60 rounded-full flex items-center justify-center border border-indigo-500/30">
-                    <Plus className="w-5 h-5 text-indigo-300" />
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center border border-blue-200">
+                    <Plus className="w-5 h-5 text-indigo-500" />
                   </div>
                 )}
               </div>
@@ -359,14 +359,14 @@ const DiscussionForum = ({ lectureId }) => {
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Share your thoughts or ask questions about this lecture..."
-                  className="w-full px-4 py-3 bg-slate-800/60 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white resize-none"
+                  className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 resize-none"
                   rows={3}
                   required
                 />
                 <div className="flex justify-end mt-3">
                   <button
                     type="submit"
-                    className="px-5 py-2 bg-indigo-700 hover:bg-indigo-600 text-white rounded-lg transition-colors flex items-center gap-2"
+                    className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors flex items-center gap-2 shadow-sm"
                   >
                     <MessageSquare className="w-4 h-4" />
                     Post Comment
@@ -376,15 +376,15 @@ const DiscussionForum = ({ lectureId }) => {
             </div>
           </form>
         ) : isUserAuthenticated && !isValidId && !error ? (
-          <div className="bg-slate-800/60 rounded-xl p-4 text-center mb-8 border border-slate-700/50">
-            <p className="text-slate-300">
+          <div className="bg-white rounded-xl p-4 text-center mb-8 border border-blue-200 shadow-sm">
+            <p className="text-gray-600">
               Comments are temporarily unavailable for this lecture.
             </p>
           </div>
         ) : !isUserAuthenticated && !error ? (
-          <div className="bg-slate-800/60 rounded-xl p-4 text-center mb-8 border border-slate-700/50">
-            <p className="text-slate-300">
-              Please <a href="/login" className="text-indigo-400 hover:text-indigo-300">login</a> to participate in the discussion.
+          <div className="bg-white rounded-xl p-4 text-center mb-8 border border-blue-200 shadow-sm">
+            <p className="text-gray-600">
+              Please <a href="/login" className="text-indigo-600 hover:text-indigo-500">login</a> to participate in the discussion.
             </p>
           </div>
         ) : null}
@@ -402,9 +402,9 @@ const DiscussionForum = ({ lectureId }) => {
               />
             ))
           ) : !error ? (
-            <div className="text-center py-8 border border-dashed border-slate-700/50 rounded-xl bg-slate-800/30">
-              <MessageSquare className="w-8 h-8 text-slate-500 mx-auto mb-2" />
-              <p className="text-slate-400">No comments yet. Be the first to start the discussion!</p>
+            <div className="text-center py-8 border border-dashed border-blue-200 rounded-xl bg-white">
+              <MessageSquare className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+              <p className="text-gray-500">No comments yet. Be the first to start the discussion!</p>
             </div>
           ) : null}
         </div>

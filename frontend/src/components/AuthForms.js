@@ -60,25 +60,25 @@ export const AuthForms = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-500 via-black to-slate-500 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-blue-50 p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="max-w-md w-full bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-8 relative overflow-hidden"
+        className="max-w-md w-full bg-white shadow-md border border-blue-100 rounded-xl p-8 relative overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent" />
         
         <div className="text-center relative z-10">
           <motion.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent tracking-tight"
+            className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent tracking-tight"
           >
             {isLogin ? 'Welcome Back' : 'Create Account'}
           </motion.h2>
-          <p className="text-gray-300/90 mt-3 font-light">
+          <p className="text-gray-600 mt-3 font-light">
             {isLogin ? 'Continue your learning journey' : 'Start your educational adventure'}
           </p>
         </div>
@@ -89,7 +89,7 @@ export const AuthForms = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="bg-red-400/20 text-red-200 px-4 py-3 rounded-lg mt-6 border border-red-400/30 backdrop-blur-sm"
+              className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mt-6 border border-red-100"
             >
               ⚠️ {error || authError}
             </motion.div>
@@ -106,14 +106,14 @@ export const AuthForms = () => {
                 exit={{ opacity: 0, x: -20 }}
               >
                 <div className="group">
-                  <label className="block text-gray-300/90 text-sm font-medium mb-2 ml-1">
+                  <label className="block text-gray-700 text-sm font-medium mb-2 ml-1">
                     Full Name
                   </label>
                   <input
                     name="name"
                     type="text"
                     required
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-purple-300/30 outline-none transition-all duration-300 placeholder:text-gray-400/60 text-gray-100"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-300 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-300 placeholder:text-gray-400 text-gray-800"
                     placeholder="Alex Johnson"
                     value={formData.name}
                     onChange={handleChange}
@@ -124,14 +124,14 @@ export const AuthForms = () => {
           </AnimatePresence>
 
           <div className="group">
-            <label className="block text-gray-300/90 text-sm font-medium mb-2 ml-1">
+            <label className="block text-gray-700 text-sm font-medium mb-2 ml-1">
               Email address
             </label>
             <input
               name="email"
               type="email"
               required
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-purple-300/30 outline-none transition-all duration-300 placeholder:text-gray-400/60 text-gray-100"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-300 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-300 placeholder:text-gray-400 text-gray-800"
               placeholder="alex@university.edu"
               value={formData.email}
               onChange={handleChange}
@@ -139,14 +139,14 @@ export const AuthForms = () => {
           </div>
 
           <div className="group">
-            <label className="block text-gray-300/90 text-sm font-medium mb-2 ml-1">
+            <label className="block text-gray-700 text-sm font-medium mb-2 ml-1">
               Password
             </label>
             <input
               name="password"
               type="password"
               required
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-purple-300/30 outline-none transition-all duration-300 placeholder:text-gray-400/60 text-gray-100"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-300 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-300 placeholder:text-gray-400 text-gray-800"
               placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
@@ -163,12 +163,12 @@ export const AuthForms = () => {
                 className="space-y-6"
               >
                 <div className="relative group">
-                  <label className="block text-gray-300/90 text-sm font-medium mb-2 ml-1">
+                  <label className="block text-gray-700 text-sm font-medium mb-2 ml-1">
                     Role
                   </label>
                   <select
                     name="role"
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-purple-300/30 outline-none transition-all duration-300 appearance-none text-gray-100"
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-300 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-300 appearance-none text-gray-800"
                     value={formData.role}
                     onChange={handleChange}
                   >
@@ -190,12 +190,12 @@ export const AuthForms = () => {
         type="button"
         onClick={handleOtpRequest}
         disabled={isSendingOtp}
-        className="w-full py-3 px-6 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-gray-100 transition-all duration-300 flex items-center justify-center gap-2 hover:gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full py-3 px-6 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl text-gray-700 transition-all duration-300 flex items-center justify-center gap-2 hover:gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSendingOtp ? (
           <>
             <svg 
-              className="animate-spin h-5 w-5 text-white" 
+              className="animate-spin h-5 w-5 text-gray-700" 
               xmlns="http://www.w3.org/2000/svg" 
               fill="none" 
               viewBox="0 0 24 24"
@@ -231,7 +231,7 @@ export const AuthForms = () => {
           name="otp"
           type="text"
           required
-          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-white/20 outline-none transition-all duration-300 placeholder:text-gray-400/60 text-gray-100"
+          className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-300 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-300 placeholder:text-gray-400 text-gray-800"
           placeholder="Enter 6-digit OTP"
           value={formData.otp}
           onChange={handleChange}
@@ -240,7 +240,7 @@ export const AuthForms = () => {
           type="button"
           onClick={handleOtpRequest}
           disabled={isSendingOtp}
-          className="mt-2 text-sm text-purple-400 hover:text-purple-300 disabled:opacity-50"
+          className="mt-2 text-sm text-blue-600 hover:text-blue-700 disabled:opacity-50"
         >
           {isSendingOtp ? 'Resending...' : 'Resend OTP'}
         </button>
@@ -256,7 +256,7 @@ export const AuthForms = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full py-4 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-500 hover:to-blue-400 rounded-xl text-lg font-semibold text-white transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="w-full py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 rounded-xl text-lg font-semibold text-white transition-all duration-300 shadow-md"
           >
             {isLogin ? 'Sign In' : 'Get Started'}
           </motion.button>
@@ -266,7 +266,7 @@ export const AuthForms = () => {
             <div className="text-center mt-4">
               <button
                 onClick={() => window.location.href = '/forgot-password'}
-                className="text-purple-400 hover:text-purple-300 transition-colors duration-300 text-sm"
+                className="text-blue-600 hover:text-blue-700 transition-colors duration-300 text-sm"
               >
                 Forgot your password?
               </button>
@@ -277,12 +277,12 @@ export const AuthForms = () => {
         <motion.div className="text-center mt-6 relative z-10">
           <button
             onClick={() => setIsLogin(!isLogin)}
-            className="text-gray-300/90 hover:text-white transition-colors duration-300 font-light text-sm"
+            className="text-gray-600 hover:text-gray-800 transition-colors duration-300 font-light text-sm"
           >
             {isLogin ? 
               "Don't have an account? " : 
               "Already have an account? "}
-            <span className="font-medium bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="font-medium bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               {isLogin ? 'Register now' : 'Sign in'}
             </span>
           </button>

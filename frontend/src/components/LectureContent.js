@@ -30,9 +30,9 @@ const LectureContent = ({ lecture, openModal }) => {
   // Ensure we have a lecture object
   if (!lecture) {
     return (
-      <div className="bg-gradient-to-br from-slate-900 to-slate-900/70 backdrop-blur-sm rounded-3xl p-8 border border-indigo-900/30 overflow-hidden relative mt-6">
+      <div className="bg-white shadow-md rounded-xl p-8 border border-blue-100 overflow-hidden relative mt-6">
         <div className="text-center">
-          <p className="text-slate-300">Loading lecture information...</p>
+          <p className="text-gray-500">Loading lecture information...</p>
         </div>
       </div>
     );
@@ -66,18 +66,18 @@ const LectureContent = ({ lecture, openModal }) => {
   return (
     <>
       {/* About This Lecture */}
-      <div className="bg-gradient-to-br from-slate-900 to-slate-900/70 backdrop-blur-sm rounded-3xl p-8 border border-indigo-900/30 shadow-xl overflow-hidden relative">
-        <div className="absolute -right-24 -top-24 w-64 h-64 bg-indigo-600/10 rounded-full blur-3xl"></div>
-        <div className="absolute -left-24 -bottom-24 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl"></div>
+      <div className="bg-white shadow-md rounded-xl p-8 border border-blue-100 overflow-hidden relative">
+        <div className="absolute -right-24 -top-24 w-64 h-64 bg-blue-100 rounded-full blur-3xl"></div>
+        <div className="absolute -left-24 -bottom-24 w-64 h-64 bg-indigo-100 rounded-full blur-3xl"></div>
         
         <div className="relative">
           <div className="flex items-center gap-3 mb-6">
-            <BookOpen className="h-6 w-6 text-indigo-400" />
-            <h2 className="text-2xl font-bold text-white">About This Lecture</h2>
+            <BookOpen className="h-6 w-6 text-blue-600" />
+            <h2 className="text-2xl font-bold text-gray-800">About This Lecture</h2>
           </div>
           
-          <div className="prose prose-invert prose-lg max-w-none">
-            <p className="text-slate-300 whitespace-pre-wrap leading-relaxed">{lecture.description}</p>
+          <div className="prose max-w-none">
+            <p className="text-gray-600 whitespace-pre-wrap leading-relaxed">{lecture.description}</p>
           </div>
         </div>
       </div>
@@ -86,20 +86,20 @@ const LectureContent = ({ lecture, openModal }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Prerequisites Section */}
         {lecture.prerequisites?.length > 0 && (
-          <div className="bg-gradient-to-br from-slate-900 to-slate-900/70 backdrop-blur-sm rounded-2xl p-6 border border-indigo-900/30 overflow-hidden relative group hover:border-indigo-800/50 transition-all">
-            <div className="absolute -right-24 -top-24 w-64 h-64 bg-indigo-600/5 rounded-full blur-3xl group-hover:bg-indigo-600/10 transition-all"></div>
+          <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative group hover:border-blue-200 transition-all">
+            <div className="absolute -right-24 -top-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl group-hover:bg-blue-100 transition-all"></div>
             
             <div className="relative">
               <div className="flex items-center gap-3 mb-4">
-                <Layers className="h-5 w-5 text-indigo-400" />
-                <h3 className="text-xl font-bold text-white">Prerequisites</h3>
+                <Layers className="h-5 w-5 text-blue-600" />
+                <h3 className="text-xl font-bold text-gray-800">Prerequisites</h3>
               </div>
               
               <ul className="space-y-3">
                 {lecture.prerequisites.map((prereq, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <div className="text-indigo-400 mt-1.5">•</div>
-                    <p className="text-slate-300">{prereq}</p>
+                    <div className="text-blue-500 mt-1.5">•</div>
+                    <p className="text-gray-600">{prereq}</p>
                   </li>
                 ))}
               </ul>
@@ -109,20 +109,20 @@ const LectureContent = ({ lecture, openModal }) => {
 
         {/* Topics Section */}
         {lecture.tags?.length > 0 && (
-          <div className="bg-gradient-to-br from-slate-900 to-slate-900/70 backdrop-blur-sm rounded-2xl p-6 border border-indigo-900/30 overflow-hidden relative group hover:border-indigo-800/50 transition-all">
-            <div className="absolute -right-24 -top-24 w-64 h-64 bg-purple-600/5 rounded-full blur-3xl group-hover:bg-purple-600/10 transition-all"></div>
+          <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative group hover:border-blue-200 transition-all">
+            <div className="absolute -right-24 -top-24 w-64 h-64 bg-indigo-50 rounded-full blur-3xl group-hover:bg-indigo-100 transition-all"></div>
             
             <div className="relative">
               <div className="flex items-center gap-3 mb-4">
-                <Tag className="h-5 w-5 text-purple-400" />
-                <h3 className="text-xl font-bold text-white">Topics</h3>
+                <Tag className="h-5 w-5 text-indigo-600" />
+                <h3 className="text-xl font-bold text-gray-800">Topics</h3>
               </div>
               
               <div className="flex flex-wrap gap-2">
                 {lecture.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1.5 bg-purple-900/30 text-purple-200 rounded-full text-sm font-medium border border-purple-800/30 hover:bg-purple-900/40 transition-colors cursor-default"
+                    className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm font-medium border border-blue-200 hover:bg-blue-100 transition-colors cursor-default"
                   >
                     {tag}
                   </span>
@@ -136,23 +136,23 @@ const LectureContent = ({ lecture, openModal }) => {
       {/* Instructor Preview Section */}
       {instructorData && (
         <div 
-          className="bg-gradient-to-br from-slate-900 to-slate-900/70 backdrop-blur-sm rounded-3xl p-8 border border-indigo-900/30 overflow-hidden relative group hover:border-indigo-800/50 transition-all cursor-pointer"
+          className="bg-white shadow-md rounded-xl p-8 border border-blue-100 overflow-hidden relative group hover:border-blue-200 transition-all cursor-pointer"
           onClick={handleViewInstructorProfile}
         >
-          <div className="absolute -right-24 -top-24 w-64 h-64 bg-indigo-600/5 rounded-full blur-3xl group-hover:bg-indigo-600/10 transition-all"></div>
-          <div className="absolute -left-24 -bottom-24 w-64 h-64 bg-purple-600/5 rounded-full blur-3xl group-hover:bg-purple-600/10 transition-all"></div>
+          <div className="absolute -right-24 -top-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl group-hover:bg-blue-100 transition-all"></div>
+          <div className="absolute -left-24 -bottom-24 w-64 h-64 bg-indigo-50 rounded-full blur-3xl group-hover:bg-indigo-100 transition-all"></div>
           
           <div className="relative">
             <div className="flex items-center gap-3 mb-6">
-              <Award className="h-6 w-6 text-amber-400" />
-              <h2 className="text-2xl font-bold text-white">Your Instructor</h2>
+              <Award className="h-6 w-6 text-amber-500" />
+              <h2 className="text-2xl font-bold text-gray-800">Your Instructor</h2>
             </div>
             
             <div className="flex flex-col md:flex-row items-center gap-6">
               {/* Instructor Image */}
               <div className="relative">
                 {instructorData?.profilePic ? (
-                  <div className="w-28 h-28 rounded-2xl overflow-hidden border-2 border-indigo-500/30 shadow-lg shadow-indigo-900/20">
+                  <div className="w-28 h-28 rounded-2xl overflow-hidden border-2 border-blue-200 shadow-md">
                     <img 
                       src={instructorData.profilePic} 
                       alt={instructorData.name}
@@ -160,26 +160,26 @@ const LectureContent = ({ lecture, openModal }) => {
                     />
                   </div>
                 ) : (
-                  <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border-2 border-indigo-500/30 flex items-center justify-center shadow-lg shadow-indigo-900/20">
-                    <UserCircle className="w-14 h-14 text-indigo-400" />
+                  <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-200 border-2 border-blue-200 flex items-center justify-center shadow-md">
+                    <UserCircle className="w-14 h-14 text-blue-600" />
                   </div>
                 )}
-                <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-slate-900" />
+                <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white" />
               </div>
               
               {/* Instructor Info */}
               <div className="md:flex-1 text-center md:text-left">
-                <h3 className="text-xl font-bold text-white mb-1">{instructorData.name}</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-1">{instructorData.name}</h3>
                 {instructorData.title && (
-                  <p className="text-indigo-300 font-medium mb-1">{instructorData.title}</p>
+                  <p className="text-blue-600 font-medium mb-1">{instructorData.title}</p>
                 )}
                 {instructorData.organization && instructorData.organization !== 'null' && (
-                  <p className="text-slate-400 text-sm">{instructorData.organization}</p>
+                  <p className="text-gray-500 text-sm">{instructorData.organization}</p>
                 )}
                 
                 {/* Preview of bio if available */}
                 {instructorData.speakerBio && instructorData.speakerBio !== 'null' && (
-                  <div className="mt-3 text-slate-300 text-sm line-clamp-2">
+                  <div className="mt-3 text-gray-600 text-sm line-clamp-2">
                     {instructorData.speakerBio}
                   </div>
                 )}
@@ -187,7 +187,7 @@ const LectureContent = ({ lecture, openModal }) => {
               
               {/* View Profile Button */}
               <div className="md:self-center mt-4 md:mt-0">
-                <button className="px-4 py-2 bg-indigo-900/40 hover:bg-indigo-800/60 text-indigo-300 rounded-lg border border-indigo-700/50 transition-all flex items-center gap-2 group">
+                <button className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg border border-blue-200 transition-all flex items-center gap-2 group">
                   <span>View Profile</span>
                 </button>
               </div>

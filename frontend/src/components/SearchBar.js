@@ -31,7 +31,7 @@ const SearchBar = ({ onSearch, className }) => {
         <input
           ref={inputRef}
           type="text"
-          className="w-full rounded-lg bg-gray-700 text-white border border-gray-600 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm pr-10"
+          className="w-full rounded-lg bg-white text-gray-700 border border-blue-200 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm pr-10 shadow-sm"
           placeholder="Search talks..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -40,7 +40,7 @@ const SearchBar = ({ onSearch, className }) => {
         {query && (
           <button
             onClick={handleClear}
-            className="absolute right-14 text-gray-400 hover:text-white flex items-center justify-center h-full px-2"
+            className="absolute right-14 text-gray-400 hover:text-gray-600 flex items-center justify-center h-full px-2"
             type="button"
             aria-label="Clear search"
           >
@@ -51,7 +51,7 @@ const SearchBar = ({ onSearch, className }) => {
         )}
         <button
           onClick={handleSearch}
-          className="ml-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg px-4 py-2 transition-colors flex items-center justify-center"
+          className="ml-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 transition-colors flex items-center justify-center shadow-sm"
           type="button"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -102,25 +102,25 @@ const ForgotPassword = () => {
   };
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-500 via-black to-slate-500 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="max-w-md w-full bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-8 relative overflow-hidden"
+        className="max-w-md w-full bg-white border border-blue-100 shadow-lg rounded-2xl p-8 relative overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent" />
         
         <div className="text-center relative z-10">
           <motion.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent tracking-tight"
+            className="text-4xl font-bold text-gray-800 tracking-tight"
           >
             Reset Password
           </motion.h2>
-          <p className="text-gray-300/90 mt-3 font-light">
+          <p className="text-gray-600 mt-3 font-light">
             {currentStep === 1 && "Enter your email to receive an OTP"}
             {currentStep === 2 && "Enter the OTP sent to your email"}
             {currentStep === 3 && "Create a new password"}
@@ -134,8 +134,8 @@ const ForgotPassword = () => {
               <React.Fragment key={step}>
                 <div className={`rounded-full w-8 h-8 flex items-center justify-center ${
                   currentStep >= step 
-                    ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white' 
-                    : 'bg-white/10 text-gray-400'
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-gray-100 text-gray-400'
                 }`}>
                   {currentStep > step ? (
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,7 +147,7 @@ const ForgotPassword = () => {
                 </div>
                 {step < 3 && (
                   <div className={`w-10 h-0.5 ${
-                    currentStep > step ? 'bg-gradient-to-r from-purple-500 to-blue-500' : 'bg-white/10'
+                    currentStep > step ? 'bg-blue-600' : 'bg-gray-200'
                   }`} />
                 )}
               </React.Fragment>
@@ -161,7 +161,7 @@ const ForgotPassword = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="bg-red-400/20 text-red-200 px-4 py-3 rounded-lg mt-6 border border-red-400/30 backdrop-blur-sm"
+              className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mt-6 border border-red-200 shadow-sm"
             >
               ⚠️ {error}
             </motion.div>
@@ -172,7 +172,7 @@ const ForgotPassword = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="bg-green-400/20 text-green-200 px-4 py-3 rounded-lg mt-6 border border-green-400/30 backdrop-blur-sm"
+              className="bg-green-50 text-green-600 px-4 py-3 rounded-lg mt-6 border border-green-200 shadow-sm"
             >
               ✅ {success}
             </motion.div>
@@ -191,14 +191,14 @@ const ForgotPassword = () => {
               onSubmit={handleSubmitEmail}
             >
               <div className="group">
-                <label className="block text-gray-300/90 text-sm font-medium mb-2 ml-1">
+                <label className="block text-gray-700 text-sm font-medium mb-2 ml-1">
                   Email address
                 </label>
                 <input
                   name="email"
                   type="email"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-purple-300/30 outline-none transition-all duration-300 placeholder:text-gray-400/60 text-gray-100"
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300/50 outline-none transition-all duration-300 placeholder:text-gray-400 text-gray-700 shadow-sm"
                   placeholder="your@email.com"
                   value={formData.email}
                   onChange={handleChange}
@@ -210,7 +210,7 @@ const ForgotPassword = () => {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-4 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-500 hover:to-blue-400 rounded-xl text-lg font-semibold text-white transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-70"
+                className="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-xl text-lg font-semibold text-white transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-70"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center">
@@ -227,7 +227,7 @@ const ForgotPassword = () => {
                 <button
                   type="button"
                   onClick={() => navigate('/')}
-                  className="text-gray-300/90 hover:text-white transition-colors duration-300 text-sm"
+                  className="text-blue-600 hover:text-blue-800 transition-colors duration-300 text-sm"
                 >
                   Back to login
                 </button>
@@ -246,25 +246,25 @@ const ForgotPassword = () => {
               onSubmit={handleVerifyOtp}
             >
               <div className="group">
-                <label className="block text-gray-300/90 text-sm font-medium mb-2 ml-1">
+                <label className="block text-gray-700 text-sm font-medium mb-2 ml-1">
                   Enter OTP
                 </label>
                 <input
                   name="otp"
                   type="text"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-purple-300/30 outline-none transition-all duration-300 placeholder:text-gray-400/60 text-gray-100"
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300/50 outline-none transition-all duration-300 placeholder:text-gray-400 text-gray-700 shadow-sm"
                   placeholder="6-digit OTP"
                   value={formData.otp}
                   onChange={handleChange}
                 />
-                <p className="mt-2 text-sm text-gray-400">
+                <p className="mt-2 text-sm text-gray-500">
                   Didn't receive the code?{' '}
                   <button
                     type="button"
                     onClick={resendOtp}
                     disabled={isLoading}
-                    className="text-purple-400 hover:text-purple-300 disabled:opacity-50"
+                    className="text-blue-600 hover:text-blue-800 disabled:opacity-50"
                   >
                     Resend OTP
                   </button>
@@ -276,7 +276,7 @@ const ForgotPassword = () => {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-4 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-500 hover:to-blue-400 rounded-xl text-lg font-semibold text-white transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-70"
+                className="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-xl text-lg font-semibold text-white transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-70"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center">
@@ -293,7 +293,7 @@ const ForgotPassword = () => {
                 <button
                   type="button"
                   onClick={() => setCurrentStep(1)}
-                  className="text-gray-300/90 hover:text-white transition-colors duration-300 text-sm"
+                  className="text-blue-600 hover:text-blue-800 transition-colors duration-300 text-sm"
                 >
                   Back to email
                 </button>
@@ -312,14 +312,14 @@ const ForgotPassword = () => {
               onSubmit={handleResetPassword}
             >
               <div className="group">
-                <label className="block text-gray-300/90 text-sm font-medium mb-2 ml-1">
+                <label className="block text-gray-700 text-sm font-medium mb-2 ml-1">
                   New Password
                 </label>
                 <input
                   name="newPassword"
                   type="password"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-purple-300/30 outline-none transition-all duration-300 placeholder:text-gray-400/60 text-gray-100"
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300/50 outline-none transition-all duration-300 placeholder:text-gray-400 text-gray-700 shadow-sm"
                   placeholder="••••••••"
                   value={formData.newPassword}
                   onChange={handleChange}
@@ -327,14 +327,14 @@ const ForgotPassword = () => {
               </div>
               
               <div className="group">
-                <label className="block text-gray-300/90 text-sm font-medium mb-2 ml-1">
+                <label className="block text-gray-700 text-sm font-medium mb-2 ml-1">
                   Confirm New Password
                 </label>
                 <input
                   name="confirmPassword"
                   type="password"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-white/20 focus:ring-2 focus:ring-purple-300/30 outline-none transition-all duration-300 placeholder:text-gray-400/60 text-gray-100"
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-300/50 outline-none transition-all duration-300 placeholder:text-gray-400 text-gray-700 shadow-sm"
                   placeholder="••••••••"
                   value={formData.confirmPassword}
                   onChange={handleChange}
@@ -346,7 +346,7 @@ const ForgotPassword = () => {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-4 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-500 hover:to-blue-400 rounded-xl text-lg font-semibold text-white transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-70"
+                className="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-xl text-lg font-semibold text-white transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-70"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center">
@@ -363,7 +363,7 @@ const ForgotPassword = () => {
                 <button
                   type="button"
                   onClick={() => setCurrentStep(2)}
-                  className="text-gray-300/90 hover:text-white transition-colors duration-300 text-sm"
+                  className="text-blue-600 hover:text-blue-800 transition-colors duration-300 text-sm"
                 >
                   Back to OTP verification
                 </button>

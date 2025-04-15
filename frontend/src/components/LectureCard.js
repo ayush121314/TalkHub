@@ -24,24 +24,24 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
   // Status color based on lecture availability or request status
   const getStatusColor = () => {
     if (isTalkRequest) {
-      return lecture.status === 'pending' ? "bg-yellow-600" : 
-             lecture.status === 'rejected' ? "bg-red-600" : "bg-green-600";
+      return lecture.status === 'pending' ? "bg-amber-500" : 
+             lecture.status === 'rejected' ? "bg-red-500" : "bg-emerald-500";
     }
     
-    if (isPast) return "bg-slate-600";
-    if (lecture.registeredCount >= lecture.capacity) return "bg-rose-600";
-    return "bg-emerald-600";
+    if (isPast) return "bg-gray-500";
+    if (lecture.registeredCount >= lecture.capacity) return "bg-red-500";
+    return "bg-emerald-500";
   };
   
   // Progress bar color based on capacity
   const getProgressColor = () => {
     if (isTalkRequest) {
-      return lecture.status === 'pending' ? "bg-yellow-500" : 
-             lecture.status === 'rejected' ? "bg-red-500" : "bg-green-500";
+      return lecture.status === 'pending' ? "bg-amber-500" : 
+             lecture.status === 'rejected' ? "bg-red-500" : "bg-emerald-500";
     }
     
-    if (isPast) return "bg-slate-600";
-    if (lecture.registeredCount >= lecture.capacity) return "bg-rose-600";
+    if (isPast) return "bg-gray-500";
+    if (lecture.registeredCount >= lecture.capacity) return "bg-red-500";
     if (capacityPercentage > 70) return "bg-amber-500";
     return "bg-emerald-500";
   };
@@ -55,67 +55,55 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
           onClick(lecture.id);
         }
       }}
-      className={`bg-slate-900 rounded-xl shadow-xl overflow-hidden ${
-        isTalkRequest && lecture.status === 'rejected' ? 'cursor-default opacity-80' : 'cursor-pointer hover:border-sky-700'
-      } transition-all border border-slate-800`}
+      className={`bg-white rounded-xl shadow-md overflow-hidden ${
+        isTalkRequest && lecture.status === 'rejected' ? 'cursor-default opacity-80' : 'cursor-pointer hover:shadow-lg'
+      } transition-all border border-blue-100`}
     >
       {/* Header with improved gradient */}
-      <div className={`relative bg-gradient-to-r ${
-        isTalkRequest && lecture.status === 'pending' ? 'from-yellow-800 to-orange-800' :
-        isTalkRequest && lecture.status === 'rejected' ? 'from-red-800 to-rose-800' :
-        'from-sky-800 to-violet-800'
+      <div className={`relative ${
+        isTalkRequest && lecture.status === 'pending' ? 'bg-gradient-to-br from-amber-50 to-amber-100' :
+        isTalkRequest && lecture.status === 'rejected' ? 'bg-gradient-to-br from-red-50 to-red-100' :
+        isPast ? 'bg-gradient-to-br from-gray-50 to-blue-100' : 
+        'bg-gradient-to-br from-blue-50 to-indigo-100'
       } p-5`}>
-        {/* Status ribbon */}
-        <div className="absolute -right-12 top-6 transform rotate-45">
-          <div className={`w-40 text-center py-1 text-xs font-bold text-white ${getStatusColor()}`}>
+        {/* Mode badge - top left, like in the example */}
+        <div className="flex items-center justify-between mb-2">
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium shadow-sm ${
+            lecture.mode === 'online' ? 'bg-blue-100 text-blue-700' : 'bg-indigo-100 text-indigo-700'
+          }`}>
+            {lecture.mode === 'online' ? <Video size={12} className="mr-1" /> : <MapPin size={12} className="mr-1" />}
+            {lecture.mode === 'online' ? 'Online' : 'In-Person'}
+          </span>
+          
+          {/* Status badge - using the "COMPLETED" style from example */}
+          <div className={`px-2.5 py-0.5 rounded-full text-xs font-medium shadow-sm 
+            ${isPast ? 'bg-gray-100 text-gray-600' : 
+              lecture.registeredCount >= lecture.capacity ? 'bg-red-100 text-red-600' : 
+              'bg-emerald-100 text-emerald-600'}`}>
             {getStatusLabel()}
           </div>
         </div>
 
-        {/* Title and mode */}
-        <div className="mb-5">
-          <div className="flex items-center gap-2 mb-2">
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              lecture.mode === 'online' ? 'bg-sky-900 text-sky-300' : 'bg-violet-900 text-violet-300'
-            }`}>
-              {lecture.mode === 'online' ? <Video size={12} className="mr-1" /> : <MapPin size={12} className="mr-1" />}
-              {lecture.mode === 'online' ? 'Online' : 'In-Person'}
-            </span>
-            
-            {/* Display request status icon */}
-            {isTalkRequest && (
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                ${lecture.status === 'pending' ? 'bg-yellow-900 text-yellow-300' : 
-                  lecture.status === 'rejected' ? 'bg-red-900 text-red-300' : 
-                  'bg-green-900 text-green-300'}`}>
-                {lecture.status === 'pending' ? 
-                  <><HourglassIcon size={12} className="mr-1" /> Pending</> : 
-                  lecture.status === 'rejected' ? 
-                  <><XCircle size={12} className="mr-1" /> Rejected</> : 
-                  <><Check size={12} className="mr-1" /> Approved</>}
-              </span>
-            )}
-          </div>
-          <h3 className="text-xl font-bold text-white tracking-tight line-clamp-2">{lecture.title}</h3>
-        </div>
+        {/* Title with proper spacing */}
+        <h3 className="text-xl font-bold text-gray-800 mb-4 line-clamp-2">{lecture.title}</h3>
         
-        {/* Instructor and time info */}
-        <div className="flex items-center text-white mb-4">
-          <div className="h-8 w-8 rounded-full bg-sky-900 flex items-center justify-center mr-2">
-            <User size={16} className="text-sky-300" />
+        {/* Instructor and time info - rearranged like in the example */}
+        <div className="flex items-center text-gray-700 mb-4">
+          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center mr-2 shadow-sm">
+            <User size={16} className="text-white" />
           </div>
           <span className="font-medium">{lecture.instructor}</span>
         </div>
         
-        <div className="grid grid-cols-2 gap-3 text-sm text-white/90">
-          <div className="flex items-center gap-2 bg-slate-900/20 p-2 rounded-md">
-            <Calendar size={14} className="text-sky-300" /> 
+        <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
+          <div className="flex items-center gap-2 bg-white bg-opacity-70 p-2 rounded-md shadow-sm">
+            <Calendar size={14} className="text-blue-600" /> 
             {new Date(lecture.date).toLocaleDateString('en-US', {
               month: 'short', day: 'numeric'
             })}
           </div>
-          <div className="flex items-center gap-2 bg-slate-900/20 p-2 rounded-md">
-            <Clock size={14} className="text-sky-300" /> 
+          <div className="flex items-center gap-2 bg-white bg-opacity-70 p-2 rounded-md shadow-sm">
+            <Clock size={14} className="text-blue-600" /> 
             {lecture.time} 
           </div>
         </div>
@@ -123,7 +111,7 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
 
       {/* Capacity bar with improved styling - only show for non-past lectures */}
       {!isPast && (
-        <div className="w-full h-2 bg-slate-800">
+        <div className="w-full h-2 bg-gray-100">
           <div 
             className={`h-full ${getProgressColor()} transition-all duration-300`}
             style={{ width: isTalkRequest ? (lecture.status === 'pending' ? '50%' : lecture.status === 'rejected' ? '100%' : '100%') : `${capacityPercentage}%` }}
@@ -132,101 +120,95 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
       )}
 
       {/* Content section with improved layout */}
-      <div className="p-5">
-        {/* Tags row with enhanced styling */}
+      <div className="p-5 bg-gradient-to-br from-white to-blue-50">
+        {/* Tags row with enhanced styling - similar to example */}
         {lecture.tags && lecture.tags.length > 0 && (
           <div className="mb-4">
             {/* Tags header */}
             <div className="flex items-center mb-2">
-              <div className="w-1 h-4 bg-gradient-to-b from-sky-400 to-violet-500 rounded-full mr-2"></div>
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Topics</span>
+              <div className="w-1 h-4 bg-gradient-to-b from-blue-400 to-indigo-500 rounded-full mr-2 shadow-sm"></div>
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Topics</span>
             </div>
             
             {/* Tags container with enhanced visual appeal */}
             <div className="flex flex-wrap gap-2">
-              {lecture.tags.map((tag, index) => (
+              {lecture.tags.slice(0, 3).map((tag, index) => (
                 <span 
                   key={index} 
-                  className="px-3 py-1 bg-slate-800/70 text-slate-300 text-xs rounded-full border border-slate-700 
-                            hover:bg-slate-700 hover:border-slate-600 hover:text-white hover:shadow-md 
-                            transition-all duration-200 ease-in-out backdrop-blur-sm"
+                  className="px-3 py-1 bg-white text-gray-700 text-xs rounded-full border border-blue-200 
+                            hover:bg-blue-50 hover:border-blue-300 hover:text-indigo-800 
+                            transition-all duration-200 ease-in-out shadow-sm"
                 >
-                  {tag}
+                  {tag.length > 15 ? `${tag.substring(0, 15)}...` : tag}
                 </span>
               ))}
+              {lecture.tags.length > 3 && (
+                <span className="px-3 py-1 bg-white text-gray-500 text-xs rounded-full border border-blue-200 shadow-sm">
+                  +{lecture.tags.length - 3} more
+                </span>
+              )}
             </div>
           </div>
         )}
         
-        {/* Admin message for rejected requests */}
-        {isTalkRequest && lecture.status === 'rejected' && lecture.adminMessage && (
-          <div className="mb-4 p-3 bg-red-900/30 border border-red-900 rounded-lg">
-            <div className="flex items-center text-red-400 mb-1">
-              <AlertTriangle size={14} className="mr-1" />
-              <span className="text-xs font-semibold">Admin Feedback</span>
-            </div>
-            <p className="text-red-100 text-sm">{lecture.adminMessage}</p>
-          </div>
-        )}
-        
-        {/* Description with improved text styling */}
-        <p className="text-slate-300 text-sm leading-relaxed mb-5 line-clamp-3">
-          {lecture.description}
+        {/* Description - minimal as requested */}
+        <p className="text-gray-600 text-sm leading-relaxed mb-5 line-clamp-2 bg-white bg-opacity-80 p-3 rounded-lg shadow-sm h-20 overflow-hidden">
+          {lecture.description.length > 150 ? `${lecture.description.substring(0, 150)}...` : lecture.description}
         </p>
         
-        {/* Info cards grid with consistent styling */}
+        {/* Info cards grid with consistent styling - organized like the example */}
         <div className="grid grid-cols-2 gap-3 mb-5">
           {/* Location card */}
-          <div className="bg-slate-800/50 rounded-lg p-3 flex items-start hover:bg-slate-800 transition-colors">
-            <div className="h-8 w-8 rounded-full bg-violet-900/30 flex items-center justify-center mr-2 flex-shrink-0">
+          <div className="bg-white rounded-lg p-3 flex items-start hover:bg-blue-50 transition-colors shadow-sm border border-blue-100">
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center mr-2 flex-shrink-0 shadow-sm">
               {lecture.mode === 'online' ? 
-                <Video size={16} className="text-violet-400" /> : 
-                <MapPin size={16} className="text-violet-400" />
+                <Video size={16} className="text-white" /> : 
+                <MapPin size={16} className="text-white" />
               }
             </div>
             <div>
-              <div className="text-xs text-slate-400 mb-0.5">Location</div>
-              <div className="text-sm text-slate-200 line-clamp-2">{lecture.venue || 'Online'}</div>
+              <div className="text-xs text-gray-500 mb-0.5">Location</div>
+              <div className="text-sm text-gray-800 line-clamp-2">{lecture.venue || 'Online'}</div>
             </div>
           </div>
           
           {/* Duration card */}
-          <div className="bg-slate-800/50 rounded-lg p-3 flex items-start hover:bg-slate-800 transition-colors">
-            <div className="h-8 w-8 rounded-full bg-sky-900/30 flex items-center justify-center mr-2 flex-shrink-0">
-              <Clock size={16} className="text-sky-400" /> 
+          <div className="bg-white rounded-lg p-3 flex items-start hover:bg-blue-50 transition-colors shadow-sm border border-blue-100">
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mr-2 flex-shrink-0 shadow-sm">
+              <Clock size={16} className="text-white" /> 
             </div>
             <div>
-              <div className="text-xs text-slate-400 mb-0.5">Duration</div>
-              <div className="text-sm text-slate-200">
+              <div className="text-xs text-gray-500 mb-0.5">Duration</div>
+              <div className="text-sm text-gray-800">
                 {lecture.duration || 60} mins
               </div>
             </div>
           </div>
         </div>
         
-        {/* Capacity indicator - only for non-past lectures and non-requests */}
-        {!isTalkRequest && !isPast ? (
-          <div className="flex justify-between items-center mb-4 text-xs">
-            <div className="text-slate-400">Capacity</div>
-            <div className="text-slate-300 font-medium">
-              {lecture.registeredCount} / {lecture.capacity}
-            </div>
-          </div>
-        ) : !isTalkRequest && isPast ? (
-          <div className="flex justify-between items-center mb-4 text-xs">
-            <div className="text-slate-400">Live Attendees</div>
-            <div className="text-slate-300 font-medium flex items-center">
-              <Users size={14} className="text-sky-400 mr-1" /> 
+        {/* Attendees counter - matching the example */}
+        {!isTalkRequest && isPast ? (
+          <div className="flex justify-between items-center mb-4 text-xs bg-white p-2 rounded-lg shadow-sm">
+            <div className="text-gray-500">Live Attendees</div>
+            <div className="text-gray-800 font-medium flex items-center">
+              <Users size={14} className="text-blue-600 mr-1" /> 
               {lecture.registeredCount || 0}
             </div>
           </div>
+        ) : !isTalkRequest && !isPast ? (
+          <div className="flex justify-between items-center mb-4 text-xs bg-white p-2 rounded-lg shadow-sm">
+            <div className="text-gray-500">Capacity</div>
+            <div className="text-gray-800 font-medium">
+              {lecture.registeredCount} / {lecture.capacity}
+            </div>
+          </div>
         ) : (
-          <div className="flex justify-between items-center mb-4 text-xs">
-            <div className="text-slate-400">Status</div>
+          <div className="flex justify-between items-center mb-4 text-xs bg-white p-2 rounded-lg shadow-sm">
+            <div className="text-gray-500">Status</div>
             <div className={`font-medium flex items-center
-              ${lecture.status === 'pending' ? 'text-yellow-300' : 
-                lecture.status === 'rejected' ? 'text-red-300' : 
-                'text-green-300'}`}>
+              ${lecture.status === 'pending' ? 'text-amber-600' : 
+                lecture.status === 'rejected' ? 'text-red-600' : 
+                'text-emerald-600'}`}>
               {lecture.status === 'pending' ? 
                 <><HourglassIcon size={14} className="mr-1" /> Waiting for approval</> : 
                 lecture.status === 'rejected' ? 
@@ -236,12 +218,12 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
           </div>
         )}
        
-        {/* Action button with improved styling */}
+        {/* Action button with improved styling - matching the example style */}
         {isPast && lecture.recording ? (
           <a
             href={lecture.recording}
             onClick={(e) => e.stopPropagation()}
-            className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-gradient-to-r from-sky-600 to-violet-600 hover:from-sky-500 hover:to-violet-500 text-white rounded-lg font-medium transition-all shadow-lg"
+            className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-lg font-medium transition-all shadow-md"
           >
             <BookOpen size={16} />
             Watch Recording
@@ -250,10 +232,10 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
           <button
             className={`flex items-center justify-center gap-2 w-full py-2.5 px-4 ${
               isUserRegistered
-                ? 'bg-green-600/80 text-white' 
+                ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white' 
                 : lecture.registeredCount >= lecture.capacity 
-                ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' 
-                : 'bg-gradient-to-r from-sky-600 to-violet-600 hover:from-sky-500 hover:to-violet-500 text-white shadow-lg'
+                ? 'bg-gray-300 text-gray-600 hover:bg-gray-400' 
+                : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-md'
             } rounded-lg font-medium transition-all`}
             disabled={isUserRegistered || lecture.registeredCount >= lecture.capacity}
           >
@@ -277,10 +259,10 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
         ) : isTalkRequest && (
           <div 
             className={`flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg font-medium ${
-              lecture.status === 'pending' ? 'bg-yellow-600/80 text-white' : 
-              lecture.status === 'rejected' ? 'bg-slate-700 text-slate-300' : 
-              'bg-green-600/80 text-white'
-            }`}
+              lecture.status === 'pending' ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white' : 
+              lecture.status === 'rejected' ? 'bg-gray-300 text-gray-600' : 
+              'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white'
+            } shadow-md`}
           >
             {lecture.status === 'pending' ? (
               <>
