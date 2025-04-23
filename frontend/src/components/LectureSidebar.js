@@ -332,7 +332,10 @@ const LectureSidebar = ({
                     <div className="flex items-center gap-1">
                       <a
                         href={doc.fileUrl}
-                        download
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.open(doc.fileUrl, '_blank');
+                        }}
                         className="text-gray-600 hover:text-blue-600 p-1.5 rounded-md hover:bg-blue-50 transition-colors"
                       >
                         <Download className="w-4 h-4" />
