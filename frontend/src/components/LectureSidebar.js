@@ -321,25 +321,30 @@ const LectureSidebar = ({
                     className="flex items-center justify-between bg-white p-3.5 rounded-lg border border-blue-100 hover:border-blue-200 transition-all group shadow-sm"
                   >
                     <a
-                      href={doc.fileUrl}
+                      href={doc.url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-800 flex items-center gap-2 flex-1 truncate transition-colors"
                     >
                       <FileText className="w-4 h-4 flex-shrink-0" />
-                      <span className="truncate">{doc.fileName}</span>
+                      <span className="truncate">{doc.name}</span>
                     </a>
                     <div className="flex items-center gap-1">
-                      <a
-                        href={doc.fileUrl}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          window.open(doc.fileUrl, '_blank');
+                      <button
+                        onClick={() => {
+                          console.log('Download button clicked');
+                          console.log('Document URL:', doc.url);
+                          console.log('Document object:', doc);
+                          try {
+                            window.open(doc.url, '_blank');
+                          } catch (error) {
+                            console.error('Error opening URL:', error);
+                          }
                         }}
                         className="text-gray-600 hover:text-blue-600 p-1.5 rounded-md hover:bg-blue-50 transition-colors"
                       >
                         <Download className="w-4 h-4" />
-                      </a>
+                      </button>
                       {isInstructor && (
                         <button
                           onClick={() => deleteDocument(doc._id)}
