@@ -215,8 +215,8 @@ const Dashboard = () => {
 
         {/* Navigation */}
         <nav className="p-4 space-y-2 bg-gradient-to-b from-white to-blue-50">
-          <TabButton icon="📅" label="Upcoming Lectures" tab="upcoming" />
-          <TabButton icon="⏰" label="Past Lectures" tab="past" />
+          <TabButton icon="📅" label="Upcoming Talks" tab="upcoming" />
+          <TabButton icon="⏰" label="Past Talks" tab="past" />
           <TabButton icon="👥" label="My Scheduled Talks" tab="scheduled" />
           <TabButton icon="👤" label="My Profile" tab="profile" />
           {searchQuery && <TabButton icon="🔍" label="Search Results" tab="search" />}
