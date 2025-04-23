@@ -16,7 +16,12 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
              lecture.status === 'rejected' ? "REJECTED" : "APPROVED";
     }
     
-    if (isPast) return "COMPLETED";
+    // Check if lecture is past or completed
+    const currentDate = new Date();
+    const lectureDate = new Date(lecture.date);
+    const isPastOrCompleted = lectureDate < currentDate || lecture.status === 'completed';
+    
+    if (isPastOrCompleted) return "COMPLETED";
     if (lecture.registeredCount >= lecture.capacity) return "FULL";
     return "AVAILABLE";
   };
@@ -28,6 +33,7 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
              lecture.status === 'rejected' ? "bg-red-500" : "bg-emerald-500";
     }
     
+    if (lecture.status === 'completed') return "bg-gray-500";
     if (isPast) return "bg-gray-500";
     if (lecture.registeredCount >= lecture.capacity) return "bg-red-500";
     return "bg-emerald-500";
@@ -40,6 +46,7 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
              lecture.status === 'rejected' ? "bg-red-500" : "bg-emerald-500";
     }
     
+    if (lecture.status === 'completed') return "bg-gray-500";
     if (isPast) return "bg-gray-500";
     if (lecture.registeredCount >= lecture.capacity) return "bg-red-500";
     if (capacityPercentage > 70) return "bg-amber-500";
@@ -75,11 +82,12 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
             {lecture.mode === 'online' ? 'Online' : 'In-Person'}
           </span>
           
-          {/* Status badge - using the "COMPLETED" style from example */}
-          <div className={`px-2.5 py-0.5 rounded-full text-xs font-medium shadow-sm 
-            ${isPast ? 'bg-gray-100 text-gray-600' : 
-              lecture.registeredCount >= lecture.capacity ? 'bg-red-100 text-red-600' : 
-              'bg-emerald-100 text-emerald-600'}`}>
+          {/* Status badge */}
+          <div className={`px-2.5 py-0.5 rounded-full text-xs font-medium shadow-sm ${
+            lecture.status === 'completed' || isPast ? 'bg-gray-100 text-gray-600' : 
+            lecture.registeredCount >= lecture.capacity ? 'bg-red-100 text-red-600' : 
+            'bg-emerald-100 text-emerald-600'
+          }`}>
             {getStatusLabel()}
           </div>
         </div>
@@ -219,7 +227,7 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
         )}
        
         {/* Action button with improved styling - matching the example style */}
-        {isPast && lecture.recording ? (
+        {(isPast || lecture.status === 'completed') && lecture.recording ? (
           <a
             href={lecture.recording}
             onClick={(e) => e.stopPropagation()}
@@ -228,7 +236,7 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
             <BookOpen size={16} />
             Watch Recording
           </a>
-        ) : !isPast && !isTalkRequest ? (
+        ) : !(isPast || lecture.status === 'completed') && !isTalkRequest ? (
           <button
             className={`flex items-center justify-center gap-2 w-full py-2.5 px-4 ${
               isUserRegistered
@@ -256,7 +264,12 @@ const LectureCard = ({ lecture, isPast, onClick, isUserRegistered }) => {
               </>
             )}
           </button>
-        ) : isTalkRequest && (
+        ) : !isTalkRequest ? (
+          <div className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-gray-200 text-gray-600 rounded-lg font-medium">
+            <Check size={16} />
+            Completed
+          </div>
+        ) : (
           <div 
             className={`flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg font-medium ${
               lecture.status === 'pending' ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white' : 

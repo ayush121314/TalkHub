@@ -73,7 +73,7 @@ const LectureContent = ({ lecture, openModal }) => {
         <div className="relative">
           <div className="flex items-center gap-3 mb-6">
             <BookOpen className="h-6 w-6 text-blue-600" />
-            <h2 className="text-2xl font-bold text-gray-800">About This Lecture</h2>
+            <h2 className="text-2xl font-bold text-gray-800">About This Talk</h2>
           </div>
           
           <div className="prose max-w-none">
