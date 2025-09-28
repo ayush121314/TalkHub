@@ -1,10 +1,9 @@
 const User = require('../models/User');
+const Otp = require('../models/Otp');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const otpStore = {};
-const resetOtpStore = {}; // Separate store for password reset OTPs
 const VALID_EMAIL_DOMAIN = '@lnmiit.ac.in';
 
 // Set up Nodemailer transporter
@@ -37,10 +36,13 @@ const authController = {
       }*/
 
       // OTP validation (check if OTP matches and is valid)
-      if (otpStore[email] !== otp) {
+      const otpRecord = await Otp.findOne({ email, type: 'registration' });
+      if (!otpRecord || otpRecord.otp !== otp) {
         return res.status(400).json({ message: 'Invalid or expired OTP' });
       }
-      delete otpStore[email]; // Clear OTP after validation
+      
+      // Clear OTP after validation
+      await Otp.deleteOne({ email, type: 'registration' });
 
       // Hash password
       const salt = await bcrypt.genSalt(10);
@@ -162,8 +164,12 @@ const authController = {
     const otp = crypto.randomInt(100000, 999999).toString(); // Generate OTP
 
     try {
-      // Save OTP temporarily (you can replace this with a more persistent storage like a database)
-      otpStore[email] = otp;
+      // Save OTP to database with automatic expiry
+      await Otp.findOneAndUpdate(
+        { email, type: 'registration' },
+        { email, otp, type: 'registration' },
+        { upsert: true, new: true }
+      );
 
       // Send OTP via email using Nodemailer
       const mailOptions = {
@@ -221,11 +227,12 @@ const authController = {
       // Generate OTP
       const otp = crypto.randomInt(100000, 999999).toString();
       
-      // Store OTP with expiry (5 minutes)
-      resetOtpStore[email] = {
-        otp,
-        expiry: Date.now() + 5 * 60 * 1000 // 5 minutes in milliseconds
-      };
+      // Store OTP in database with automatic expiry
+      await Otp.findOneAndUpdate(
+        { email, type: 'password_reset' },
+        { email, otp, type: 'password_reset' },
+        { upsert: true, new: true }
+      );
       
       // Send OTP via email
       const mailOptions = {
@@ -268,19 +275,13 @@ const authController = {
       const { email, otp } = req.body;
       
       // Check if OTP exists and is valid
-      const resetData = resetOtpStore[email];
-      if (!resetData) {
+      const otpRecord = await Otp.findOne({ email, type: 'password_reset' });
+      if (!otpRecord) {
         return res.status(400).json({ message: 'No OTP request found', valid: false });
       }
       
-      // Check if OTP has expired
-      if (Date.now() > resetData.expiry) {
-        delete resetOtpStore[email]; // Clean up expired OTP
-        return res.status(400).json({ message: 'OTP has expired', valid: false });
-      }
-      
       // Check if OTP matches
-      if (resetData.otp !== otp) {
+      if (otpRecord.otp !== otp) {
         return res.status(400).json({ message: 'Invalid OTP', valid: false });
       }
       
@@ -298,19 +299,13 @@ const authController = {
       const { email, otp, newPassword } = req.body;
       
       // Check if OTP exists and is valid
-      const resetData = resetOtpStore[email];
-      if (!resetData) {
+      const otpRecord = await Otp.findOne({ email, type: 'password_reset' });
+      if (!otpRecord) {
         return res.status(400).json({ message: 'No OTP request found' });
       }
       
-      // Check if OTP has expired
-      if (Date.now() > resetData.expiry) {
-        delete resetOtpStore[email]; // Clean up expired OTP
-        return res.status(400).json({ message: 'OTP has expired' });
-      }
-      
       // Check if OTP matches
-      if (resetData.otp !== otp) {
+      if (otpRecord.otp !== otp) {
         return res.status(400).json({ message: 'Invalid OTP' });
       }
       
@@ -329,7 +324,7 @@ const authController = {
       await user.save();
       
       // Clean up used OTP
-      delete resetOtpStore[email];
+      await Otp.deleteOne({ email, type: 'password_reset' });
       
       // Send confirmation email
       const mailOptions = {
