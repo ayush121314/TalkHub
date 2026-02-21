@@ -21,9 +21,9 @@ const authController = {
       const { name, email, password, role, otp } = req.body;
 
       // Validate email domain
-      if (!email.endsWith(VALID_EMAIL_DOMAIN)) {
-        return res.status(403).json({ message: `Unauthorized email domain. Only ${VALID_EMAIL_DOMAIN} allowed.` });
-      }
+      // if (!email.endsWith(VALID_EMAIL_DOMAIN)) {
+      //   return res.status(403).json({ message: `Unauthorized email domain. Only ${VALID_EMAIL_DOMAIN} allowed.` });
+      // }
 
       // Check if user exists
       const existingUser = await User.findOne({ email });
@@ -157,9 +157,9 @@ const authController = {
     const { email } = req.body;
 
     // Validate email domain
-    if (!email.endsWith(VALID_EMAIL_DOMAIN)) {
-      return res.status(403).json({ message: `Unauthorized email domain. Only ${VALID_EMAIL_DOMAIN} allowed.` });
-    }
+    // if (!email.endsWith(VALID_EMAIL_DOMAIN)) {
+    //   return res.status(403).json({ message: `Unauthorized email domain. Only ${VALID_EMAIL_DOMAIN} allowed.` });
+    // }
 
     const otp = crypto.randomInt(100000, 999999).toString(); // Generate OTP
 
