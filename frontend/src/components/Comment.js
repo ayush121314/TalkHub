@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MessageCircle, Edit2, Trash2, CornerDownRight, User } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from './AuthContext';
 
-const Comment = ({ 
-  comment, 
-  onReply, 
-  onEdit, 
-  onDelete, 
-  isReply = false 
+const Comment = ({
+  comment,
+  onReply,
+  onEdit,
+  onDelete,
+  isReply = false
 }) => {
   // Call all hooks at the top level, before any conditional returns
   const { user } = useAuth();
@@ -17,7 +17,7 @@ const Comment = ({
   const [replyContent, setReplyContent] = useState('');
   const [editContent, setEditContent] = useState(comment?.content || '');
   const [showReplies, setShowReplies] = useState(true);
-  
+
   // Safety check after hooks
   if (!comment || !comment.user) {
     console.error("Invalid comment data received:", comment);
@@ -25,27 +25,27 @@ const Comment = ({
   }
 
   const isAuthor = user && user.userId === comment.user._id;
-  
+
   const handleReplySubmit = (e) => {
     e.preventDefault();
     onReply(comment._id, replyContent);
     setReplyContent('');
     setIsReplying(false);
   };
-  
+
   const handleEditSubmit = (e) => {
     e.preventDefault();
     onEdit(comment._id, editContent);
     setIsEditing(false);
   };
-  
+
   const toggleReplies = () => {
     setShowReplies(!showReplies);
   };
-  
+
   // Safe access to creation date
   const creationDate = comment.createdAt ? new Date(comment.createdAt) : new Date();
-  
+
   return (
     <div className={`comment-container ${isReply ? 'ml-8 mt-3' : 'mt-6'}`}>
       <div className="bg-white rounded-xl p-4 shadow-sm border border-blue-100">
@@ -54,8 +54,8 @@ const Comment = ({
           {/* User Avatar */}
           <div className="flex-shrink-0">
             {comment.user.profile?.profilePic ? (
-              <img 
-                src={comment.user.profile.profilePic} 
+              <img
+                src={comment.user.profile.profilePic}
                 alt={comment.user.name || 'User'}
                 className="w-10 h-10 rounded-full object-cover border border-blue-200"
               />
@@ -65,7 +65,7 @@ const Comment = ({
               </div>
             )}
           </div>
-          
+
           {/* Comment Metadata */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
@@ -76,7 +76,7 @@ const Comment = ({
                 {formatDistanceToNow(creationDate, { addSuffix: true })}
               </p>
             </div>
-            
+
             {/* Comment Content */}
             {isEditing ? (
               <form onSubmit={handleEditSubmit} className="mt-2">
@@ -113,7 +113,7 @@ const Comment = ({
             )}
           </div>
         </div>
-        
+
         {/* Comment Actions */}
         {!isEditing && (
           <div className="mt-3 flex items-center space-x-4">
@@ -126,7 +126,7 @@ const Comment = ({
                 Reply
               </button>
             )}
-            
+
             {isAuthor && (
               <>
                 <button
@@ -139,7 +139,7 @@ const Comment = ({
                   <Edit2 className="w-3.5 h-3.5 mr-1" />
                   Edit
                 </button>
-                
+
                 <button
                   onClick={() => onDelete(comment._id)}
                   className="flex items-center text-xs text-gray-500 hover:text-red-600 transition-colors"
@@ -149,7 +149,7 @@ const Comment = ({
                 </button>
               </>
             )}
-            
+
             {comment.replies && comment.replies.length > 0 && (
               <button
                 onClick={toggleReplies}
@@ -161,7 +161,7 @@ const Comment = ({
             )}
           </div>
         )}
-        
+
         {/* Reply Form */}
         {isReplying && (
           <form onSubmit={handleReplySubmit} className="mt-3">
@@ -194,7 +194,7 @@ const Comment = ({
           </form>
         )}
       </div>
-      
+
       {/* Replies */}
       {showReplies && comment.replies && comment.replies.length > 0 && (
         <div className="replies-container pl-4 border-l border-blue-200 mt-2 ml-5">

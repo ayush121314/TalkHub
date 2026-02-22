@@ -5,23 +5,23 @@ import Comment from './Comment';
 
 const DiscussionForum = ({ lectureId }) => {
   console.log("DiscussionForum rendered with lectureId:", lectureId);
-  
+
   const { user, isAuthenticated } = useAuth();
   console.log("Auth state in DiscussionForum:", { user, isAuthenticated });
-  
+
   // Direct check for token as fallback
   const hasToken = !!localStorage.getItem('token');
   console.log("JWT exists in localStorage:", hasToken);
-  
+
   // Use either context auth or direct token check
   const isUserAuthenticated = isAuthenticated || hasToken;
   console.log("Final authentication state:", isUserAuthenticated);
-  
+
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // Validate lectureId
   const isValidId = lectureId && (
     // MongoDB ObjectId is 24 hex characters
@@ -29,7 +29,7 @@ const DiscussionForum = ({ lectureId }) => {
     // Or might be an auto-generated UUID
     (typeof lectureId === 'string' && lectureId.length > 8)
   );
-  
+
   const fetchComments = async () => {
     if (!isValidId) {
       console.error("Invalid lecture ID format:", lectureId);
@@ -37,19 +37,19 @@ const DiscussionForum = ({ lectureId }) => {
       setLoading(false);
       return;
     }
-    
+
     console.log("Attempting to fetch comments for lectureId:", lectureId);
     try {
       setLoading(true);
       setError(null);
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
       const response = await fetch(`${apiUrl}/api/comments/lecture/${lectureId}`);
-      
+
       if (!response.ok) {
         console.error("Error response from API:", response.status, response.statusText);
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log("Comments fetched successfully:", data);
       setComments(data.comments || []);
@@ -60,7 +60,8 @@ const DiscussionForum = ({ lectureId }) => {
       setLoading(false);
     }
   };
-  
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     console.log("useEffect triggered with lectureId:", lectureId);
     if (isValidId) {
@@ -75,7 +76,7 @@ const DiscussionForum = ({ lectureId }) => {
       }
     }
   }, [lectureId, isValidId]);
-  
+
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
@@ -83,14 +84,14 @@ const DiscussionForum = ({ lectureId }) => {
       setError("Cannot post comments: Invalid lecture ID");
       return;
     }
-    
+
     // Check if token is available
     const token = localStorage.getItem('token');
     if (!token) {
       setError("Authentication required. Please log in again.");
       return;
     }
-    
+
     try {
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
       const response = await fetch(
@@ -104,7 +105,7 @@ const DiscussionForum = ({ lectureId }) => {
           body: JSON.stringify({ content: newComment })
         }
       );
-      
+
       if (!response.ok) {
         // Check for authentication issues
         if (response.status === 401) {
@@ -113,7 +114,7 @@ const DiscussionForum = ({ lectureId }) => {
         }
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log("Comment posted successfully:", data);
       setComments([data.comment, ...comments]);
@@ -123,20 +124,20 @@ const DiscussionForum = ({ lectureId }) => {
       setError('Failed to post your comment. Please try again.');
     }
   };
-  
+
   const handleReply = async (parentCommentId, content) => {
     if (!isValidId) {
       setError("Cannot post reply: Invalid lecture ID");
       return;
     }
-    
+
     // Check if token is available
     const token = localStorage.getItem('token');
     if (!token) {
       setError("Authentication required. Please log in again.");
       return;
     }
-    
+
     try {
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
       const response = await fetch(
@@ -147,13 +148,13 @@ const DiscussionForum = ({ lectureId }) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             content,
-            parentCommentId 
+            parentCommentId
           })
         }
       );
-      
+
       if (!response.ok) {
         // Check for authentication issues
         if (response.status === 401) {
@@ -162,10 +163,10 @@ const DiscussionForum = ({ lectureId }) => {
         }
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log("Reply posted successfully:", data);
-      
+
       // Update the parent comment's replies
       const updatedComments = comments.map(comment => {
         if (comment._id === parentCommentId) {
@@ -176,14 +177,14 @@ const DiscussionForum = ({ lectureId }) => {
         }
         return comment;
       });
-      
+
       setComments(updatedComments);
     } catch (err) {
       console.error('Error posting reply:', err);
       setError('Failed to post your reply. Please try again.');
     }
   };
-  
+
   const handleEditComment = async (commentId, content) => {
     // Check if token is available
     const token = localStorage.getItem('token');
@@ -191,7 +192,7 @@ const DiscussionForum = ({ lectureId }) => {
       setError("Authentication required. Please log in again.");
       return;
     }
-    
+
     try {
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
       const response = await fetch(
@@ -205,7 +206,7 @@ const DiscussionForum = ({ lectureId }) => {
           body: JSON.stringify({ content })
         }
       );
-      
+
       if (!response.ok) {
         // Check for authentication issues
         if (response.status === 401) {
@@ -214,51 +215,51 @@ const DiscussionForum = ({ lectureId }) => {
         }
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log("Comment edited successfully:", data);
-      
+
       // Update comments or replies based on the edited comment
       const updatedComments = comments.map(comment => {
         // If this is the comment that was edited
         if (comment._id === commentId) {
           return data.comment;
         }
-        
+
         // Check if it's in replies
         if (comment.replies && comment.replies.length > 0) {
-          const updatedReplies = comment.replies.map(reply => 
+          const updatedReplies = comment.replies.map(reply =>
             reply._id === commentId ? data.comment : reply
           );
-          
+
           return {
             ...comment,
             replies: updatedReplies
           };
         }
-        
+
         return comment;
       });
-      
+
       setComments(updatedComments);
     } catch (err) {
       console.error('Error editing comment:', err);
       setError('Failed to edit your comment. Please try again.');
     }
   };
-  
+
   const handleDeleteComment = async (commentId) => {
     if (!window.confirm('Are you sure you want to delete this comment?')) {
       return;
     }
-    
+
     // Check if token is available
     const token = localStorage.getItem('token');
     if (!token) {
       setError("Authentication required. Please log in again.");
       return;
     }
-    
+
     try {
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
       const response = await fetch(
@@ -270,7 +271,7 @@ const DiscussionForum = ({ lectureId }) => {
           }
         }
       );
-      
+
       if (!response.ok) {
         // Check for authentication issues
         if (response.status === 401) {
@@ -279,12 +280,12 @@ const DiscussionForum = ({ lectureId }) => {
         }
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      
+
       console.log("Comment deleted successfully");
-      
+
       // Handle deleting comments or replies
       const updatedComments = comments.filter(comment => comment._id !== commentId);
-      
+
       // Also check if it's a reply in any comments
       const commentsWithUpdatedReplies = updatedComments.map(comment => {
         if (comment.replies && comment.replies.length > 0) {
@@ -295,14 +296,14 @@ const DiscussionForum = ({ lectureId }) => {
         }
         return comment;
       });
-      
+
       setComments(commentsWithUpdatedReplies);
     } catch (err) {
       console.error('Error deleting comment:', err);
       setError('Failed to delete your comment. Please try again.');
     }
   };
-  
+
   // If we're still loading and haven't encountered an error yet
   if (loading && !error) {
     return (
@@ -314,18 +315,18 @@ const DiscussionForum = ({ lectureId }) => {
       </div>
     );
   }
-  
+
   return (
     <div className="discussion-forum-container bg-gradient-to-br from-white to-blue-50 rounded-3xl p-8 border border-blue-100 overflow-hidden relative mt-6 shadow-md">
       <div className="absolute -right-24 -top-24 w-64 h-64 bg-indigo-100 rounded-full blur-3xl"></div>
       <div className="absolute -left-24 -bottom-24 w-64 h-64 bg-purple-100 rounded-full blur-3xl"></div>
-      
+
       <div className="relative">
         <div className="flex items-center gap-3 mb-6">
           <MessageSquare className="h-6 w-6 text-indigo-500" />
           <h2 className="text-2xl font-bold text-gray-800">Discussion Forum</h2>
         </div>
-        
+
         {/* Error Message */}
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 flex items-center gap-2">
@@ -333,7 +334,7 @@ const DiscussionForum = ({ lectureId }) => {
             <p>{error}</p>
           </div>
         )}
-        
+
         {/* New Comment Form - only show if no errors and valid ID */}
         {isUserAuthenticated && isValidId && !error ? (
           <form onSubmit={handleCommentSubmit} className="mb-8">
@@ -341,8 +342,8 @@ const DiscussionForum = ({ lectureId }) => {
               {/* User Avatar */}
               <div className="flex-shrink-0">
                 {user && user.profilePic ? (
-                  <img 
-                    src={user.profilePic} 
+                  <img
+                    src={user.profilePic}
                     alt={user.name}
                     className="w-10 h-10 rounded-full object-cover border border-blue-200"
                   />
@@ -352,7 +353,7 @@ const DiscussionForum = ({ lectureId }) => {
                   </div>
                 )}
               </div>
-              
+
               {/* Comment Input */}
               <div className="flex-1">
                 <textarea
@@ -388,7 +389,7 @@ const DiscussionForum = ({ lectureId }) => {
             </p>
           </div>
         ) : null}
-        
+
         {/* Comments List */}
         <div className="comments-container">
           {!error && comments && comments.length > 0 ? (

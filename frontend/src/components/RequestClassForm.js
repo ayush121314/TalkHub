@@ -19,7 +19,7 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
     tags: '',
   });
 
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [showCalendar] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

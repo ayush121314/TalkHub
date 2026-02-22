@@ -26,13 +26,12 @@ const Dashboard = () => {
   const [userProfile, setUserProfile] = useState(null);
 
   // Search state using custom hook
-  const { 
-    searchResults, 
-    searchQuery, 
-    loading: isSearching, 
-    error: searchError, 
-    searchLectures, 
-    clearSearch 
+  const {
+    searchResults,
+    searchQuery,
+    loading: isSearching,
+    error: searchError,
+    searchLectures,
   } = useSearch();
 
   const navigate = useNavigate();
@@ -48,6 +47,7 @@ const Dashboard = () => {
     localStorage.setItem('activeTab', activeTab);
   }, [activeTab]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchLectureData();
   }, []);
@@ -72,6 +72,7 @@ const Dashboard = () => {
       }
     };
     fetchUserProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -254,7 +255,7 @@ const Dashboard = () => {
           >
             ➕ Schedule New Talk
           </button>
-          
+
           {/* Search Bar */}
           <SearchBar onSearch={handleSearch} className="w-1/2 max-w-lg" />
         </div>
@@ -289,7 +290,7 @@ const Dashboard = () => {
             {userProfile ? (
               <div className="space-y-4">
                 {/* Bio */}
-                {userProfile.profile?.speakerBio && userProfile.profile?.speakerBio!=="null" && userProfile.profile.speakerBio.trim() !== "" && (
+                {userProfile.profile?.speakerBio && userProfile.profile?.speakerBio !== "null" && userProfile.profile.speakerBio.trim() !== "" && (
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <h3 className="text-lg font-semibold text-indigo-700">Bio</h3>
                     <p className="text-gray-700 mt-1">{userProfile.profile.speakerBio}</p>
@@ -297,7 +298,7 @@ const Dashboard = () => {
                 )}
 
                 {/* Organization (Fix Added) */}
-                {userProfile.profile?.organization && userProfile.profile?.organization!=="null" && userProfile.profile.organization.trim() !== "" && (
+                {userProfile.profile?.organization && userProfile.profile?.organization !== "null" && userProfile.profile.organization.trim() !== "" && (
                   <div className="p-4 bg-indigo-50 rounded-lg">
                     <h3 className="text-lg font-semibold text-indigo-700">Organization</h3>
                     <p className="text-gray-700 mt-1">{userProfile.profile.organization}</p>
@@ -305,7 +306,7 @@ const Dashboard = () => {
                 )}
 
                 {/* LinkedIn */}
-                {userProfile.profile?.linkedinProfile && userProfile.profile?.linkedinProfile!=="null" && userProfile.profile.linkedinProfile.trim() !== "" && (
+                {userProfile.profile?.linkedinProfile && userProfile.profile?.linkedinProfile !== "null" && userProfile.profile.linkedinProfile.trim() !== "" && (
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <h3 className="text-lg font-semibold text-indigo-700">LinkedIn</h3>
                     <a
@@ -320,7 +321,7 @@ const Dashboard = () => {
                 )}
 
                 {/* Personal Website */}
-                {userProfile.profile?.personalWebsite && userProfile.profile?.personalWebsite!=="null" && userProfile.profile.personalWebsite.trim() !== "" && (
+                {userProfile.profile?.personalWebsite && userProfile.profile?.personalWebsite !== "null" && userProfile.profile.personalWebsite.trim() !== "" && (
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <h3 className="text-lg font-semibold text-indigo-700">Website</h3>
                     <a
@@ -334,7 +335,7 @@ const Dashboard = () => {
                   </div>
                 )}
 
-                {userProfile.profile?.socialMediaHandle1 && userProfile.profile?.socialMediaHandle1!=="null" && userProfile.profile.socialMediaHandle1.trim() !== "" && (
+                {userProfile.profile?.socialMediaHandle1 && userProfile.profile?.socialMediaHandle1 !== "null" && userProfile.profile.socialMediaHandle1.trim() !== "" && (
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <h3 className="text-lg font-semibold text-indigo-700">Social Media Handle (1)</h3>
                     <a
@@ -348,7 +349,7 @@ const Dashboard = () => {
                   </div>
                 )}
 
-                {userProfile.profile?.socialMediaHandle2 && userProfile.profile?.socialMediaHandle2!=="null" && userProfile.profile.socialMediaHandle2.trim() !== "" && (
+                {userProfile.profile?.socialMediaHandle2 && userProfile.profile?.socialMediaHandle2 !== "null" && userProfile.profile.socialMediaHandle2.trim() !== "" && (
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <h3 className="text-lg font-semibold text-indigo-700">Social Media Handle (2)</h3>
                     <a
@@ -363,7 +364,7 @@ const Dashboard = () => {
                 )}
 
                 {/* Additional Info */}
-                {userProfile.profile?.additionalInfo && userProfile.profile?.additionalInfo!=="null" && userProfile.profile.additionalInfo.trim() !== "" && (
+                {userProfile.profile?.additionalInfo && userProfile.profile?.additionalInfo !== "null" && userProfile.profile.additionalInfo.trim() !== "" && (
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <h3 className="text-lg font-semibold text-indigo-700">Additional Information</h3>
                     <p className="text-gray-700 mt-1">{userProfile.profile.additionalInfo}</p>
@@ -407,11 +408,11 @@ const Dashboard = () => {
 
             {/* Display Upcoming Lectures */}
             {activeTab === 'upcoming' && !loading && upcomingLectures.map((lecture) => (
-              <LectureCard 
-                key={lecture.id} 
-                lecture={lecture} 
-                isPast={false} 
-                onClick={handleLectureClick} 
+              <LectureCard
+                key={lecture.id}
+                lecture={lecture}
+                isPast={false}
+                onClick={handleLectureClick}
                 isUserRegistered={lecture.isRegistered || false}
               />
             ))}
@@ -426,12 +427,12 @@ const Dashboard = () => {
 
             {/* Display Past Lectures */}
             {activeTab === 'past' && !loading && pastLectures.map((lecture) => (
-              <LectureCard 
-                key={lecture.id} 
-                lecture={lecture} 
-                isPast={true} 
+              <LectureCard
+                key={lecture.id}
+                lecture={lecture}
+                isPast={true}
                 onClick={handleLectureClick}
-                isUserRegistered={lecture.isRegistered || false} 
+                isUserRegistered={lecture.isRegistered || false}
               />
             ))}
 
@@ -445,12 +446,12 @@ const Dashboard = () => {
 
             {/* Display Scheduled Talks */}
             {activeTab === 'scheduled' && !loading && scheduledTalks.map((lecture) => (
-              <LectureCard 
-                key={lecture.id} 
-                lecture={lecture} 
-                isPast={false} 
+              <LectureCard
+                key={lecture.id}
+                lecture={lecture}
+                isPast={false}
                 onClick={handleLectureClick}
-                isUserRegistered={lecture.isRegistered || false} 
+                isUserRegistered={lecture.isRegistered || false}
               />
             ))}
 
