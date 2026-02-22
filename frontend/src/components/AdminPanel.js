@@ -50,6 +50,7 @@ const AdminPanel = () => {
     };
 
     checkAdminStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   // Fetch data based on active tab
@@ -61,6 +62,7 @@ const AdminPanel = () => {
     } else if (activeTab === 'requests') {
       fetchTalkRequests();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   const fetchDashboardStats = async () => {
@@ -515,9 +517,9 @@ const AdminPanel = () => {
                             </div>
                             <div>
                               <span className={`px-2 py-1 rounded text-xs ${lecture.status === 'pending' ? 'bg-yellow-900/50 text-yellow-400' :
-                                  lecture.status === 'scheduled' || lecture.status === 'approved' ?
-                                    new Date(lecture.date) < new Date() ? 'bg-blue-900/50 text-blue-400' : 'bg-green-900/50 text-green-400' :
-                                    'bg-red-900/50 text-red-400'
+                                lecture.status === 'scheduled' || lecture.status === 'approved' ?
+                                  new Date(lecture.date) < new Date() ? 'bg-blue-900/50 text-blue-400' : 'bg-green-900/50 text-green-400' :
+                                  'bg-red-900/50 text-red-400'
                                 }`}>
                                 {lecture.status === 'scheduled' && new Date(lecture.date) < new Date() ? 'completed' : lecture.status}
                               </span>
@@ -543,8 +545,8 @@ const AdminPanel = () => {
                             </div>
                             <div>
                               <span className={`px-2 py-1 rounded text-xs ${request.status === 'pending' ? 'bg-yellow-900/50 text-yellow-400' :
-                                  request.status === 'approved' ? 'bg-green-900/50 text-green-400' :
-                                    'bg-red-900/50 text-red-400'
+                                request.status === 'approved' ? 'bg-green-900/50 text-green-400' :
+                                  'bg-red-900/50 text-red-400'
                                 }`}>
                                 {request.status}
                               </span>
@@ -568,8 +570,8 @@ const AdminPanel = () => {
                             </div>
                             <div>
                               <span className={`px-2 py-1 rounded text-xs ${user.role === 'admin' ? 'bg-purple-900/50 text-purple-400' :
-                                  user.role === 'professor' ? 'bg-blue-900/50 text-blue-400' :
-                                    'bg-green-900/50 text-green-400'
+                                user.role === 'professor' ? 'bg-blue-900/50 text-blue-400' :
+                                  'bg-green-900/50 text-green-400'
                                 }`}>
                                 {user.role}
                               </span>
@@ -612,8 +614,8 @@ const AdminPanel = () => {
                         <td className="px-4 py-3 text-white">{user.email}</td>
                         <td className="px-4 py-3">
                           <span className={`px-2 py-1 rounded text-xs ${user.role === 'admin' ? 'bg-purple-900/50 text-purple-400' :
-                              user.role === 'professor' ? 'bg-blue-900/50 text-blue-400' :
-                                'bg-green-900/50 text-green-400'
+                            user.role === 'professor' ? 'bg-blue-900/50 text-blue-400' :
+                              'bg-green-900/50 text-green-400'
                             }`}>
                             {user.role}
                           </span>
@@ -662,9 +664,9 @@ const AdminPanel = () => {
                         </td>
                         <td className="px-4 py-3">
                           <span className={`px-2 py-1 rounded text-xs ${lecture.status === 'pending' ? 'bg-yellow-900/50 text-yellow-400' :
-                              lecture.status === 'scheduled' || lecture.status === 'approved' ?
-                                new Date(lecture.date) < new Date() ? 'bg-blue-900/50 text-blue-400' : 'bg-green-900/50 text-green-400' :
-                                'bg-red-900/50 text-red-400'
+                            lecture.status === 'scheduled' || lecture.status === 'approved' ?
+                              new Date(lecture.date) < new Date() ? 'bg-blue-900/50 text-blue-400' : 'bg-green-900/50 text-green-400' :
+                              'bg-red-900/50 text-red-400'
                             }`}>
                             {lecture.status === 'scheduled' && new Date(lecture.date) < new Date() ? 'completed' : lecture.status}
                           </span>
@@ -724,13 +726,13 @@ const AdminPanel = () => {
               <div className="grid grid-cols-1 gap-6">
                 {talkRequests.map(request => (
                   <div key={request._id} className={`bg-gray-700 rounded-xl overflow-hidden border ${request.status === 'pending' ? 'border-yellow-700' :
-                      request.status === 'approved' ? 'border-green-700' :
-                        'border-red-700'
+                    request.status === 'approved' ? 'border-green-700' :
+                      'border-red-700'
                     }`}>
                     {/* Request header */}
                     <div className={`p-4 ${request.status === 'pending' ? 'bg-yellow-900/20' :
-                        request.status === 'approved' ? 'bg-green-900/20' :
-                          'bg-red-900/20'
+                      request.status === 'approved' ? 'bg-green-900/20' :
+                        'bg-red-900/20'
                       }`}>
                       <div className="flex justify-between items-start">
                         <div>
@@ -740,8 +742,8 @@ const AdminPanel = () => {
                           </p>
                         </div>
                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${request.status === 'pending' ? 'bg-yellow-700/50 text-yellow-300' :
-                            request.status === 'approved' ? 'bg-green-700/50 text-green-300' :
-                              'bg-red-700/50 text-red-300'
+                          request.status === 'approved' ? 'bg-green-700/50 text-green-300' :
+                            'bg-red-700/50 text-red-300'
                           }`}>
                           {request.status.toUpperCase()}
                         </span>

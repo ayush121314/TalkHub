@@ -61,7 +61,6 @@ const DiscussionForum = ({ lectureId }) => {
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     console.log("useEffect triggered with lectureId:", lectureId);
     if (isValidId) {
@@ -75,6 +74,7 @@ const DiscussionForum = ({ lectureId }) => {
         setError('No lecture ID available');
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lectureId, isValidId]);
 
   const handleCommentSubmit = async (e) => {

@@ -47,9 +47,9 @@ const Dashboard = () => {
     localStorage.setItem('activeTab', activeTab);
   }, [activeTab]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchLectureData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
