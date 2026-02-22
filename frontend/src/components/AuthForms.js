@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Mail, Lock, User, ArrowRight, Loader } from 'react-feather';
+import { ChevronDown, Mail, Lock, User, ArrowRight } from 'react-feather';
 // Import SVG illustrations
 import loginIllustration from '../assets/login-illustration.svg';
 import registerIllustration from '../assets/register-illustration.svg';
 
 export const AuthForms = () => {
   const { login, register, sendOtp, error: authError } = useAuth();
-  
+
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
@@ -52,7 +52,7 @@ export const AuthForms = () => {
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
-    
+
     try {
       if (isLogin) {
         await login(formData.email, formData.password);
@@ -68,7 +68,7 @@ export const AuthForms = () => {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-tr from-gray-100 to-blue-50 p-4 sm:p-6">
       <div className="absolute top-0 right-0 w-1/3 h-screen bg-indigo-50 z-0"></div>
-      
+
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -295,7 +295,7 @@ export const AuthForms = () => {
 
         {/* Illustration Section */}
         <AnimatePresence mode="wait" initial={false}>
-          <motion.div 
+          <motion.div
             key={isLogin ? "login-ill" : "register-ill"}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -310,14 +310,14 @@ export const AuthForms = () => {
                 transition={{ duration: 0.5 }}
                 className="w-full max-w-md"
               >
-                <img 
-                  src={isLogin ? loginIllustration : registerIllustration} 
-                  alt={isLogin ? "Login Illustration" : "Register Illustration"} 
+                <img
+                  src={isLogin ? loginIllustration : registerIllustration}
+                  alt={isLogin ? "Login Illustration" : "Register Illustration"}
                   className="w-full h-auto"
                 />
               </motion.div>
             </div>
-            
+
             {/* Brand overlay */}
             <div className="absolute bottom-8 left-0 right-0 text-center">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
@@ -325,7 +325,7 @@ export const AuthForms = () => {
               </h2>
               <p className="text-blue-700 mt-1 text-sm">Connect and communicate</p>
             </div>
-            
+
             {/* Decorative elements */}
             <div className="absolute top-10 right-10 w-20 h-20 rounded-full bg-blue-200 opacity-20"></div>
             <div className="absolute bottom-20 left-10 w-16 h-16 rounded-full bg-indigo-300 opacity-20"></div>

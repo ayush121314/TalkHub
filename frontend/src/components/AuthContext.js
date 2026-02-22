@@ -6,7 +6,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
   const navigate = useNavigate();
-  
+
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -18,14 +18,14 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
         return;
       }
-      
+
       try {
         const response = await fetch(`${apiUrl}/api/auth/validate`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
-        
+
         if (response.ok) {
           const data = await response.json();
           setUser(data.user);
@@ -38,11 +38,12 @@ export const AuthProvider = ({ children }) => {
         console.error('Token validation error:', err);
         localStorage.removeItem('token');
       }
-      
+
       setIsLoading(false);
     };
 
     validateToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleRoleNavigation = (role) => {
@@ -116,10 +117,10 @@ export const AuthProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
-      
+
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
-      
+
       return true;
     } catch (err) {
       setError(err.message);
@@ -135,17 +136,17 @@ export const AuthProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
-      
+
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
-      
+
       return true;
     } catch (err) {
       setError(err.message);
       throw err;
     }
   };
-  
+
   // New function to verify OTP for password reset
   const verifyOtp = async (email, otp) => {
     try {
@@ -154,17 +155,17 @@ export const AuthProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp })
       });
-      
+
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
-      
+
       return data.valid;
     } catch (err) {
       setError(err.message);
       throw err;
     }
   };
-  
+
   // New function to reset password with OTP verification
   const resetPassword = async (email, otp, newPassword) => {
     try {
@@ -173,10 +174,10 @@ export const AuthProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp, newPassword })
       });
-      
+
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
-      
+
       return true;
     } catch (err) {
       setError(err.message);

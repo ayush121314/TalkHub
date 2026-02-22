@@ -17,7 +17,7 @@ const AdminPanel = () => {
   const [rejectionMessage, setRejectionMessage] = useState('');
   const [showRejectionModal, setShowRejectionModal] = useState(false);
   const [currentRequestId, setCurrentRequestId] = useState(null);
-  
+
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
@@ -39,7 +39,7 @@ const AdminPanel = () => {
           navigate('/student');
           return;
         }
-        
+
         // If admin validated, fetch dashboard stats
         fetchDashboardStats();
       } catch (error) {
@@ -48,7 +48,7 @@ const AdminPanel = () => {
         navigate('/student');
       }
     };
-    
+
     checkAdminStatus();
   }, [navigate]);
 
@@ -143,12 +143,12 @@ const AdminPanel = () => {
     try {
       const token = localStorage.getItem('token');
       let url = `${apiUrl}/api/admin/talk-requests`;
-      
+
       // Add status filter if provided
       if (statusFilter) {
         url += `?status=${statusFilter}`;
       }
-      
+
       const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -161,19 +161,18 @@ const AdminPanel = () => {
       }
 
       const data = await response.json();
-      
+
       // Filter requests based on status and limit
-      let filteredRequests = [...data];
-      
+
       // Always show all pending requests
       const pendingRequests = data.filter(req => req.status === 'pending');
-      
+
       // For non-pending requests, only show the latest 10
       const nonPendingRequests = data
         .filter(req => req.status !== 'pending')
         .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
         .slice(0, 10);
-      
+
       // If we're filtering by a specific status other than pending, use that filter
       if (statusFilter && statusFilter !== 'pending') {
         setTalkRequests(nonPendingRequests.filter(req => req.status === statusFilter));
@@ -183,7 +182,7 @@ const AdminPanel = () => {
         // Otherwise combine pending with latest 10 non-pending
         setTalkRequests([...pendingRequests, ...nonPendingRequests]);
       }
-      
+
       setLoading(false);
     } catch (error) {
       console.error('Error fetching talk requests:', error);
@@ -202,9 +201,9 @@ const AdminPanel = () => {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           requestId,
-          message: 'Your talk request has been approved.' 
+          message: 'Your talk request has been approved.'
         })
       });
 
@@ -216,7 +215,7 @@ const AdminPanel = () => {
       await fetchTalkRequests();
       // Refresh dashboard stats to update counts
       await fetchDashboardStats();
-      
+
       showNotification('Talk request approved successfully');
     } catch (error) {
       console.error('Error approving talk request:', error);
@@ -253,9 +252,9 @@ const AdminPanel = () => {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           requestId: currentRequestId,
-          message: rejectionMessage 
+          message: rejectionMessage
         })
       });
 
@@ -267,7 +266,7 @@ const AdminPanel = () => {
       await fetchTalkRequests();
       // Refresh dashboard stats to update counts
       await fetchDashboardStats();
-      
+
       showNotification('Talk request rejected');
       closeRejectionModal();
     } catch (error) {
@@ -278,6 +277,7 @@ const AdminPanel = () => {
     }
   };
 
+  // eslint-disable-next-line no-unused-vars
   const updateLectureStatus = async (lectureId, status, message = '') => {
     // Ask for confirmation if cancelling a talk
     if (status === 'cancelled') {
@@ -286,7 +286,7 @@ const AdminPanel = () => {
       }
       message = 'This talk has been cancelled by an administrator.';
     }
-    
+
     try {
       setActionLoading(true);
       const token = localStorage.getItem('token');
@@ -392,19 +392,19 @@ const AdminPanel = () => {
           <TabButton icon="📊" label="Dashboard" tab="dashboard" />
           <TabButton icon="👥" label="Manage Users" tab="users" />
           <TabButton icon="🗣️" label="Manage Talks" tab="talks" />
-          <TabButton 
-            icon="🔔" 
+          <TabButton
+            icon="🔔"
             label={
               <>
-                Talk Requests 
+                Talk Requests
                 {dashboardStats && dashboardStats.stats?.lectures?.pending > 0 && (
                   <span className="ml-2 px-2 py-0.5 bg-yellow-500 text-black text-xs rounded-full font-bold">
                     {dashboardStats.stats.lectures.pending}
                   </span>
                 )}
               </>
-            } 
-            tab="requests" 
+            }
+            tab="requests"
           />
         </nav>
 
@@ -480,7 +480,7 @@ const AdminPanel = () => {
                 <span className="ml-2 text-gray-400">pending approval</span>
               </div>
               {dashboardStats.stats.lectures.pending > 0 && (
-                <button 
+                <button
                   onClick={() => setActiveTab('requests')}
                   className="mt-2 text-sm text-orange-300 hover:text-orange-200 underline"
                 >
@@ -492,8 +492,8 @@ const AdminPanel = () => {
             {/* Recent Activity */}
             <div className="bg-gray-800 p-6 rounded-xl col-span-full">
               <h3 className="text-lg font-semibold text-white mb-4">Recent Activity</h3>
-              
-              {dashboardStats.recentActivity.lectures.length === 0 && 
+
+              {dashboardStats.recentActivity.lectures.length === 0 &&
                 dashboardStats.recentActivity.users.length === 0 ? (
                 <div className="text-center py-8 text-gray-400">
                   No recent activity to display
@@ -514,12 +514,11 @@ const AdminPanel = () => {
                               </p>
                             </div>
                             <div>
-                              <span className={`px-2 py-1 rounded text-xs ${
-                                lecture.status === 'pending' ? 'bg-yellow-900/50 text-yellow-400' :
-                                lecture.status === 'scheduled' || lecture.status === 'approved' ? 
-                                  new Date(lecture.date) < new Date() ? 'bg-blue-900/50 text-blue-400' : 'bg-green-900/50 text-green-400' :
-                                'bg-red-900/50 text-red-400'
-                              }`}>
+                              <span className={`px-2 py-1 rounded text-xs ${lecture.status === 'pending' ? 'bg-yellow-900/50 text-yellow-400' :
+                                  lecture.status === 'scheduled' || lecture.status === 'approved' ?
+                                    new Date(lecture.date) < new Date() ? 'bg-blue-900/50 text-blue-400' : 'bg-green-900/50 text-green-400' :
+                                    'bg-red-900/50 text-red-400'
+                                }`}>
                                 {lecture.status === 'scheduled' && new Date(lecture.date) < new Date() ? 'completed' : lecture.status}
                               </span>
                             </div>
@@ -528,7 +527,7 @@ const AdminPanel = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Recent Talk Requests */}
                   {dashboardStats.recentActivity.requests && dashboardStats.recentActivity.requests.length > 0 && (
                     <div>
@@ -543,11 +542,10 @@ const AdminPanel = () => {
                               </p>
                             </div>
                             <div>
-                              <span className={`px-2 py-1 rounded text-xs ${
-                                request.status === 'pending' ? 'bg-yellow-900/50 text-yellow-400' :
-                                request.status === 'approved' ? 'bg-green-900/50 text-green-400' :
-                                'bg-red-900/50 text-red-400'
-                              }`}>
+                              <span className={`px-2 py-1 rounded text-xs ${request.status === 'pending' ? 'bg-yellow-900/50 text-yellow-400' :
+                                  request.status === 'approved' ? 'bg-green-900/50 text-green-400' :
+                                    'bg-red-900/50 text-red-400'
+                                }`}>
                                 {request.status}
                               </span>
                             </div>
@@ -556,7 +554,7 @@ const AdminPanel = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Recent Users */}
                   {dashboardStats.recentActivity.users.length > 0 && (
                     <div>
@@ -569,11 +567,10 @@ const AdminPanel = () => {
                               <p className="text-sm text-gray-400">{user.email}</p>
                             </div>
                             <div>
-                              <span className={`px-2 py-1 rounded text-xs ${
-                                user.role === 'admin' ? 'bg-purple-900/50 text-purple-400' :
-                                user.role === 'professor' ? 'bg-blue-900/50 text-blue-400' :
-                                'bg-green-900/50 text-green-400'
-                              }`}>
+                              <span className={`px-2 py-1 rounded text-xs ${user.role === 'admin' ? 'bg-purple-900/50 text-purple-400' :
+                                  user.role === 'professor' ? 'bg-blue-900/50 text-blue-400' :
+                                    'bg-green-900/50 text-green-400'
+                                }`}>
                                 {user.role}
                               </span>
                             </div>
@@ -592,7 +589,7 @@ const AdminPanel = () => {
         {activeTab === 'users' && !loading && (
           <div className="bg-gray-800 p-6 rounded-xl">
             <h3 className="text-lg font-semibold text-white mb-4">Manage Users</h3>
-            
+
             {users.length === 0 ? (
               <div className="text-center py-8 text-gray-400">
                 No users found
@@ -614,11 +611,10 @@ const AdminPanel = () => {
                         <td className="px-4 py-3 text-white">{user.name}</td>
                         <td className="px-4 py-3 text-white">{user.email}</td>
                         <td className="px-4 py-3">
-                          <span className={`px-2 py-1 rounded text-xs ${
-                            user.role === 'admin' ? 'bg-purple-900/50 text-purple-400' :
-                            user.role === 'professor' ? 'bg-blue-900/50 text-blue-400' :
-                            'bg-green-900/50 text-green-400'
-                          }`}>
+                          <span className={`px-2 py-1 rounded text-xs ${user.role === 'admin' ? 'bg-purple-900/50 text-purple-400' :
+                              user.role === 'professor' ? 'bg-blue-900/50 text-blue-400' :
+                                'bg-green-900/50 text-green-400'
+                            }`}>
                             {user.role}
                           </span>
                         </td>
@@ -638,7 +634,7 @@ const AdminPanel = () => {
         {activeTab === 'talks' && !loading && (
           <div className="bg-gray-800 p-6 rounded-xl">
             <h3 className="text-lg font-semibold text-white mb-4">Manage Talks</h3>
-            
+
             {lectures.length === 0 ? (
               <div className="text-center py-8 text-gray-400">
                 No lectures found
@@ -665,12 +661,11 @@ const AdminPanel = () => {
                           {new Date(lecture.date).toLocaleDateString()}
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`px-2 py-1 rounded text-xs ${
-                            lecture.status === 'pending' ? 'bg-yellow-900/50 text-yellow-400' :
-                            lecture.status === 'scheduled' || lecture.status === 'approved' ? 
-                              new Date(lecture.date) < new Date() ? 'bg-blue-900/50 text-blue-400' : 'bg-green-900/50 text-green-400' :
-                            'bg-red-900/50 text-red-400'
-                          }`}>
+                          <span className={`px-2 py-1 rounded text-xs ${lecture.status === 'pending' ? 'bg-yellow-900/50 text-yellow-400' :
+                              lecture.status === 'scheduled' || lecture.status === 'approved' ?
+                                new Date(lecture.date) < new Date() ? 'bg-blue-900/50 text-blue-400' : 'bg-green-900/50 text-green-400' :
+                                'bg-red-900/50 text-red-400'
+                            }`}>
                             {lecture.status === 'scheduled' && new Date(lecture.date) < new Date() ? 'completed' : lecture.status}
                           </span>
                         </td>
@@ -690,25 +685,25 @@ const AdminPanel = () => {
               <h3 className="text-lg font-semibold text-white">Manage Talk Requests</h3>
               <div className="flex items-center">
                 <span className="text-sm text-gray-400 mr-2">Filter:</span>
-                <button 
+                <button
                   onClick={() => fetchTalkRequests()}
                   className="px-3 py-1 text-sm bg-gray-700 text-white rounded-l-md hover:bg-gray-600"
                 >
                   All
                 </button>
-                <button 
+                <button
                   onClick={() => fetchTalkRequests('pending')}
                   className="px-3 py-1 text-sm bg-yellow-700/50 text-yellow-300 hover:bg-yellow-700"
                 >
                   Pending
                 </button>
-                <button 
+                <button
                   onClick={() => fetchTalkRequests('approved')}
                   className="px-3 py-1 text-sm bg-green-700/50 text-green-300 hover:bg-green-700"
                 >
                   Approved
                 </button>
-                <button 
+                <button
                   onClick={() => fetchTalkRequests('rejected')}
                   className="px-3 py-1 text-sm bg-red-700/50 text-red-300 rounded-r-md hover:bg-red-700"
                 >
@@ -716,11 +711,11 @@ const AdminPanel = () => {
                 </button>
               </div>
             </div>
-            
+
             <p className="text-sm text-gray-400 mb-4">
               Showing all pending requests and the latest 10 approved/rejected requests.
             </p>
-            
+
             {talkRequests.length === 0 ? (
               <div className="text-center py-8 text-gray-400">
                 No talk requests found
@@ -728,17 +723,15 @@ const AdminPanel = () => {
             ) : (
               <div className="grid grid-cols-1 gap-6">
                 {talkRequests.map(request => (
-                  <div key={request._id} className={`bg-gray-700 rounded-xl overflow-hidden border ${
-                    request.status === 'pending' ? 'border-yellow-700' :
-                    request.status === 'approved' ? 'border-green-700' :
-                    'border-red-700'
-                  }`}>
-                    {/* Request header */}
-                    <div className={`p-4 ${
-                      request.status === 'pending' ? 'bg-yellow-900/20' :
-                      request.status === 'approved' ? 'bg-green-900/20' :
-                      'bg-red-900/20'
+                  <div key={request._id} className={`bg-gray-700 rounded-xl overflow-hidden border ${request.status === 'pending' ? 'border-yellow-700' :
+                      request.status === 'approved' ? 'border-green-700' :
+                        'border-red-700'
                     }`}>
+                    {/* Request header */}
+                    <div className={`p-4 ${request.status === 'pending' ? 'bg-yellow-900/20' :
+                        request.status === 'approved' ? 'bg-green-900/20' :
+                          'bg-red-900/20'
+                      }`}>
                       <div className="flex justify-between items-start">
                         <div>
                           <h3 className="text-white text-xl font-bold">{request.title}</h3>
@@ -746,16 +739,15 @@ const AdminPanel = () => {
                             By {request.requestedBy?.name || 'Unknown'} ({request.requestedBy?.email})
                           </p>
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          request.status === 'pending' ? 'bg-yellow-700/50 text-yellow-300' :
-                          request.status === 'approved' ? 'bg-green-700/50 text-green-300' :
-                          'bg-red-700/50 text-red-300'
-                        }`}>
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${request.status === 'pending' ? 'bg-yellow-700/50 text-yellow-300' :
+                            request.status === 'approved' ? 'bg-green-700/50 text-green-300' :
+                              'bg-red-700/50 text-red-300'
+                          }`}>
                           {request.status.toUpperCase()}
                         </span>
                       </div>
                     </div>
-                    
+
                     {/* Request body */}
                     <div className="p-4">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -774,19 +766,19 @@ const AdminPanel = () => {
                           <span className="text-white">{request.mode}</span>
                         </div>
                       </div>
-                      
+
                       <div className="mb-4">
                         <span className="text-gray-400 text-xs block mb-1">Description</span>
                         <p className="text-white text-sm">{request.description}</p>
                       </div>
-                      
+
                       {request.tags && request.tags.length > 0 && (
                         <div className="mb-4">
                           <span className="text-gray-400 text-xs block mb-1">Tags</span>
                           <div className="flex flex-wrap gap-2">
                             {request.tags.map((tag, index) => (
-                              <span 
-                                key={index} 
+                              <span
+                                key={index}
                                 className="px-2 py-1 bg-gray-800 text-gray-300 text-xs rounded-full"
                               >
                                 {tag}
@@ -795,18 +787,18 @@ const AdminPanel = () => {
                           </div>
                         </div>
                       )}
-                      
+
                       {/* Admin actions for pending requests */}
                       {request.status === 'pending' && (
                         <div className="flex justify-end space-x-3 mt-4">
-                          <button 
+                          <button
                             onClick={() => openRejectionModal(request._id)}
                             className="px-4 py-2 bg-red-600/30 text-red-300 rounded-lg hover:bg-red-600/50 transition-colors"
                             disabled={actionLoading}
                           >
                             Reject
                           </button>
-                          <button 
+                          <button
                             onClick={() => approveTalkRequest(request._id)}
                             className="px-4 py-2 bg-green-600/30 text-green-300 rounded-lg hover:bg-green-600/50 transition-colors"
                             disabled={actionLoading}
@@ -815,7 +807,7 @@ const AdminPanel = () => {
                           </button>
                         </div>
                       )}
-                      
+
                       {/* Admin message for rejected requests */}
                       {request.status === 'rejected' && request.adminMessage && (
                         <div className="mt-4 p-3 bg-red-900/30 border border-red-900 rounded-lg">
@@ -855,7 +847,7 @@ const AdminPanel = () => {
           <div className="bg-gray-800 rounded-xl p-6 w-full max-w-md">
             <h3 className="text-xl font-bold text-white mb-4">Reject Talk Request</h3>
             <p className="text-gray-300 mb-4">Please provide a reason for rejecting this talk request:</p>
-            
+
             <textarea
               value={rejectionMessage}
               onChange={(e) => setRejectionMessage(e.target.value)}
@@ -863,7 +855,7 @@ const AdminPanel = () => {
               placeholder="Enter rejection reason..."
               required
             />
-            
+
             <div className="flex justify-end space-x-3">
               <button
                 onClick={closeRejectionModal}
