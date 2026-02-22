@@ -1,8 +1,7 @@
 import React from 'react';
-import { 
-  Box, 
-  Typography, 
-  CircularProgress, 
+import {
+  Box,
+  Typography,
   Alert,
   AlertTitle,
   List,
@@ -11,12 +10,12 @@ import {
 } from '@mui/material';
 import LectureCard from './LectureCard';
 
-const SearchResults = ({ 
-  results, 
-  loading, 
-  error, 
-  onClick, 
-  query 
+const SearchResults = ({
+  results,
+  loading,
+  error,
+  onClick,
+  query
 }) => {
   if (loading) {
     return (
@@ -31,14 +30,14 @@ const SearchResults = ({
   if (error) {
     return (
       <Box sx={{ mt: 2, mb: 3 }}>
-        <Alert 
-          severity="error" 
+        <Alert
+          severity="error"
           sx={{ mb: 2 }}
         >
           <AlertTitle>Search Error</AlertTitle>
           {error}
         </Alert>
-        
+
         <Box sx={{ mt: 3, pl: 2 }}>
           <Typography variant="h6" gutterBottom>
             Troubleshooting Tips:
@@ -70,8 +69,8 @@ const SearchResults = ({
       <Box sx={{ mt: 2 }}>
         <Alert severity="info">
           <AlertTitle>No Results Found</AlertTitle>
-          {query ? 
-            `No lectures match your search for "${query}". Try different keywords or check for typos.` : 
+          {query ?
+            `No lectures match your search for "${query}". Try different keywords or check for typos.` :
             'Please enter a search term to find lectures.'}
         </Alert>
       </Box>
@@ -85,12 +84,12 @@ const SearchResults = ({
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {results.map(lecture => (
-          <LectureCard 
-            key={lecture.id} 
-            lecture={lecture} 
-            isPast={lecture.isPast} 
+          <LectureCard
+            key={lecture.id}
+            lecture={lecture}
+            isPast={lecture.isPast}
             onClick={onClick}
-            isUserRegistered={lecture.isRegistered || false} 
+            isUserRegistered={lecture.isRegistered || false}
           />
         ))}
       </div>

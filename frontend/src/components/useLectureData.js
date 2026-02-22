@@ -17,6 +17,7 @@ const useLectureData = (lectureId) => {
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
 
   // Fetch lecture details and resources when lectureId changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (lectureId) {
       fetchLectureDetails();
@@ -46,7 +47,7 @@ const useLectureData = (lectureId) => {
   const loadDocumentsAndLinks = async () => {
     try {
       const token = localStorage.getItem('token');
-      
+
       // Fetch documents
       const docsResponse = await fetch(`${apiUrl}/api/docs/documents`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -122,7 +123,7 @@ const useLectureData = (lectureId) => {
     try {
       setUploadingRec(true);
       setError(null);
-    
+
       const token = localStorage.getItem('token');
       const response = await fetch(`${apiUrl}/api/recordings/upload`, {
         method: 'POST',

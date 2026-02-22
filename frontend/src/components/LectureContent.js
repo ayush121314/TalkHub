@@ -1,15 +1,12 @@
 import React, { useEffect } from 'react';
-import { 
-  BookOpen, 
-  Tag, 
-  AlertTriangle, 
-  Video, 
-  FileText, 
+import {
+  BookOpen,
+  Tag,
+  AlertTriangle,
+  Video,
   UserCircle,
-  Star,
   Award,
   MessageCircle,
-  Link,
   Layers
 } from 'lucide-react';
 import InstructorProfile from './InstructorProfile';
@@ -20,7 +17,7 @@ const LectureContent = ({ lecture, openModal }) => {
   useEffect(() => {
     console.log("Lecture object:", lecture);
     console.log("Lecture ID:", lecture?._id);
-    
+
     // Enhanced debugging
     if (!lecture?._id) {
       console.error("Missing lecture ID in lecture object:", lecture);
@@ -69,13 +66,13 @@ const LectureContent = ({ lecture, openModal }) => {
       <div className="bg-white shadow-md rounded-xl p-8 border border-blue-100 overflow-hidden relative">
         <div className="absolute -right-24 -top-24 w-64 h-64 bg-blue-100 rounded-full blur-3xl"></div>
         <div className="absolute -left-24 -bottom-24 w-64 h-64 bg-indigo-100 rounded-full blur-3xl"></div>
-        
+
         <div className="relative">
           <div className="flex items-center gap-3 mb-6">
             <BookOpen className="h-6 w-6 text-blue-600" />
             <h2 className="text-2xl font-bold text-gray-800">About This Talk</h2>
           </div>
-          
+
           <div className="prose max-w-none">
             <p className="text-gray-600 whitespace-pre-wrap leading-relaxed">{lecture.description}</p>
           </div>
@@ -88,13 +85,13 @@ const LectureContent = ({ lecture, openModal }) => {
         {lecture.prerequisites?.length > 0 && (
           <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative group hover:border-blue-200 transition-all">
             <div className="absolute -right-24 -top-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl group-hover:bg-blue-100 transition-all"></div>
-            
+
             <div className="relative">
               <div className="flex items-center gap-3 mb-4">
                 <Layers className="h-5 w-5 text-blue-600" />
                 <h3 className="text-xl font-bold text-gray-800">Prerequisites</h3>
               </div>
-              
+
               <ul className="space-y-3">
                 {lecture.prerequisites.map((prereq, index) => (
                   <li key={index} className="flex items-start gap-3">
@@ -111,13 +108,13 @@ const LectureContent = ({ lecture, openModal }) => {
         {lecture.tags?.length > 0 && (
           <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative group hover:border-blue-200 transition-all">
             <div className="absolute -right-24 -top-24 w-64 h-64 bg-indigo-50 rounded-full blur-3xl group-hover:bg-indigo-100 transition-all"></div>
-            
+
             <div className="relative">
               <div className="flex items-center gap-3 mb-4">
                 <Tag className="h-5 w-5 text-indigo-600" />
                 <h3 className="text-xl font-bold text-gray-800">Topics</h3>
               </div>
-              
+
               <div className="flex flex-wrap gap-2">
                 {lecture.tags.map((tag, index) => (
                   <span
@@ -135,26 +132,26 @@ const LectureContent = ({ lecture, openModal }) => {
 
       {/* Instructor Preview Section */}
       {instructorData && (
-        <div 
+        <div
           className="bg-white shadow-md rounded-xl p-8 border border-blue-100 overflow-hidden relative group hover:border-blue-200 transition-all cursor-pointer"
           onClick={handleViewInstructorProfile}
         >
           <div className="absolute -right-24 -top-24 w-64 h-64 bg-blue-50 rounded-full blur-3xl group-hover:bg-blue-100 transition-all"></div>
           <div className="absolute -left-24 -bottom-24 w-64 h-64 bg-indigo-50 rounded-full blur-3xl group-hover:bg-indigo-100 transition-all"></div>
-          
+
           <div className="relative">
             <div className="flex items-center gap-3 mb-6">
               <Award className="h-6 w-6 text-amber-500" />
               <h2 className="text-2xl font-bold text-gray-800">Your Instructor</h2>
             </div>
-            
+
             <div className="flex flex-col md:flex-row items-center gap-6">
               {/* Instructor Image */}
               <div className="relative">
                 {instructorData?.profilePic ? (
                   <div className="w-28 h-28 rounded-2xl overflow-hidden border-2 border-blue-200 shadow-md">
-                    <img 
-                      src={instructorData.profilePic} 
+                    <img
+                      src={instructorData.profilePic}
                       alt={instructorData.name}
                       className="w-full h-full object-cover"
                     />
@@ -166,7 +163,7 @@ const LectureContent = ({ lecture, openModal }) => {
                 )}
                 <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white" />
               </div>
-              
+
               {/* Instructor Info */}
               <div className="md:flex-1 text-center md:text-left">
                 <h3 className="text-xl font-bold text-gray-800 mb-1">{instructorData.name}</h3>
@@ -176,7 +173,7 @@ const LectureContent = ({ lecture, openModal }) => {
                 {instructorData.organization && instructorData.organization !== 'null' && (
                   <p className="text-gray-500 text-sm">{instructorData.organization}</p>
                 )}
-                
+
                 {/* Preview of bio if available */}
                 {instructorData.speakerBio && instructorData.speakerBio !== 'null' && (
                   <div className="mt-3 text-gray-600 text-sm line-clamp-2">
@@ -184,7 +181,7 @@ const LectureContent = ({ lecture, openModal }) => {
                   </div>
                 )}
               </div>
-              
+
               {/* View Profile Button */}
               <div className="md:self-center mt-4 md:mt-0">
                 <button className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg border border-blue-200 transition-all flex items-center gap-2 group">
@@ -195,7 +192,7 @@ const LectureContent = ({ lecture, openModal }) => {
           </div>
         </div>
       )}
-      
+
       {/* Discussion Forum Section */}
       {console.log("About to render DiscussionForum, lectureId:", lectureId)}
       {lectureId ? (
@@ -211,38 +208,38 @@ const LectureContent = ({ lecture, openModal }) => {
           </p>
         </div>
       )}
-      
+
       {/* Cancelled Notice */}
       {lecture.status === 'cancelled' && (
         <div className="bg-gradient-to-br from-rose-900/50 to-red-900/50 backdrop-blur-sm rounded-3xl p-8 border border-red-800/50 shadow-xl overflow-hidden relative">
           <div className="absolute -right-24 -top-24 w-64 h-64 bg-red-600/10 rounded-full blur-3xl"></div>
-          
+
           <div className="relative">
             <div className="flex items-center gap-3 mb-4">
               <AlertTriangle className="h-6 w-6 text-red-400" />
               <h2 className="text-xl font-bold text-white">Lecture Cancelled</h2>
             </div>
-            
+
             <p className="text-red-200">This lecture has been cancelled. Please check other available lectures.</p>
           </div>
         </div>
       )}
-      
+
       {/* Recording Section for completed lectures */}
       {lecture.recording && lecture.status === 'completed' && (
         <div className="bg-gradient-to-br from-emerald-900/30 to-teal-900/30 backdrop-blur-sm rounded-3xl p-8 border border-emerald-900/30 shadow-xl overflow-hidden relative">
           <div className="absolute -right-24 -top-24 w-64 h-64 bg-emerald-600/10 rounded-full blur-3xl"></div>
-          
+
           <div className="relative">
             <div className="flex items-center gap-3 mb-6">
               <Video className="h-6 w-6 text-emerald-400" />
               <h2 className="text-2xl font-bold text-white">Lecture Recording</h2>
             </div>
-            
+
             <p className="text-slate-300 mb-6">
               The recording for this completed lecture is now available. You can watch it anytime at your convenience.
             </p>
-            
+
             <a
               href={lecture.recording}
               target="_blank"

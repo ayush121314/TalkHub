@@ -30,23 +30,18 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDate = tomorrow.toISOString().split('T')[0];
 
-  const handleDateClick = (e) => {
-    e.preventDefault();
-    setShowCalendar(true);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const selectedDate = new Date(formData.date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     if (selectedDate <= today) {
       alert('Please select a future date for the lecture.');
       return;
     }
-    
+
     try {
       setIsSubmitting(true);
       const token = localStorage.getItem('token');
@@ -64,13 +59,13 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
           prerequisites: formData.prerequisites.split(',').map((prereq) => prereq.trim()),
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to submit talk request');
       }
-  
+
       const data = await response.json();
-      
+
       // Create a new object with the necessary structure expected by the Dashboard
       const newTalkRequest = {
         id: data.talkRequest.id,
@@ -87,7 +82,7 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
         status: 'pending',
         isRequest: true
       };
-      
+
       onSubmit(newTalkRequest);
     } catch (err) {
       console.error('Failed to submit talk request:', err);
@@ -121,8 +116,8 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
             colorScheme: 'dark'
           }}
         />
-        <FaCalendarAlt 
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" 
+        <FaCalendarAlt
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
           size={20}
         />
       </div>
@@ -147,13 +142,13 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
   );
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50"
       onClick={handleOutsideClick}
     >
-      <form 
+      <form
         ref={formRef}
-        onSubmit={handleSubmit} 
+        onSubmit={handleSubmit}
         className="bg-gray-900 rounded-2xl p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900"
         onClick={(e) => e.stopPropagation()}
       >
@@ -266,8 +261,8 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
                   className="w-full p-4 pl-12 border rounded-xl bg-gray-800 border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out"
                   required
                 />
-                <FaClock 
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white pointer-events-none" 
+                <FaClock
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white pointer-events-none"
                   size={20}
                 />
               </div>
@@ -348,9 +343,8 @@ const NewRequestClassForm = ({ onClose, onSubmit }) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:opacity-90 transition-colors ${
-                isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
-              }`}
+              className={`px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:opacity-90 transition-colors ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
+                }`}
             >
               {isSubmitting ? 'Submitting...' : 'Submit Request'}
             </button>

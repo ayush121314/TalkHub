@@ -1,10 +1,9 @@
 import React from 'react';
-import { 
-  FileText, 
-  Video, 
-  Plus, 
-  Trash2, 
-  UserCircle, 
+import {
+  FileText,
+  Video,
+  Plus,
+  Trash2,
   Link as LinkIcon,
   Users,
   Check,
@@ -42,38 +41,38 @@ const LectureSidebar = ({
     lecture.status === 'scheduled' &&
     new Date(lecture.date) > new Date();
   const isInstructor = user.name === lecture.instructor?.name;
-  
+
   // Check if lecture is past
   const isPastLecture = new Date(lecture.date) < new Date();
 
   // Function to format countdown time
   const getCountdown = () => {
     if (!lecture.date) return { days: 0, hours: 0, minutes: 0 };
-    
+
     const now = new Date();
     const lectureDate = new Date(lecture.date);
-    
+
     // Parse the time string (assuming format like "10:00 AM")
     const [time, period] = lecture.time.split(' ');
     const [timeHours, timeMinutes] = time.split(':').map(Number);
     const adjustedHours = period === 'PM' && timeHours !== 12 ? timeHours + 12 : timeHours;
-    
+
     // Set the time on the lecture date
     lectureDate.setHours(adjustedHours, timeMinutes, 0, 0);
-    
+
     // Calculate the difference in milliseconds
     let diff = lectureDate - now;
     if (diff < 0) return { days: 0, hours: 0, minutes: 0 };
-    
+
     // Convert to days, hours, minutes
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     diff -= days * (1000 * 60 * 60 * 24);
-    
+
     const hours = Math.floor(diff / (1000 * 60 * 60));
     diff -= hours * (1000 * 60 * 60);
-    
+
     const minutes = Math.floor(diff / (1000 * 60));
-    
+
     return { days, hours, minutes };
   };
 
@@ -85,7 +84,7 @@ const LectureSidebar = ({
       {!isPastLecture && countdown.days + countdown.hours + countdown.minutes > 0 && (
         <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative">
           <div className="absolute -right-20 -top-20 w-40 h-40 bg-blue-100 rounded-full blur-3xl"></div>
-          
+
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
@@ -93,7 +92,7 @@ const LectureSidebar = ({
                 Starting In
               </h2>
             </div>
-            
+
             <div className="grid grid-cols-3 gap-2 text-center">
               <div className="bg-blue-50 rounded-xl p-3">
                 <div className="text-3xl font-bold text-gray-800">{countdown.days}</div>
@@ -116,7 +115,7 @@ const LectureSidebar = ({
       {lecture.mode === 'online' && lecture.meetLink && isUserRegistered && !isPastLecture && (
         <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative">
           <div className="absolute -right-20 -top-20 w-40 h-40 bg-blue-100 rounded-full blur-3xl"></div>
-          
+
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
@@ -124,7 +123,7 @@ const LectureSidebar = ({
                 Meeting Link
               </h2>
             </div>
-            
+
             <a
               href={lecture.meetLink}
               target="_blank"
@@ -141,7 +140,7 @@ const LectureSidebar = ({
       {!isPastLecture ? (
         <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative">
           <div className="absolute -right-20 -top-20 w-40 h-40 bg-blue-100 rounded-full blur-3xl"></div>
-          
+
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
@@ -149,7 +148,7 @@ const LectureSidebar = ({
                 Registration
               </h2>
             </div>
-            
+
             {/* Capacity bar */}
             <div className="mb-4">
               <div className="flex justify-between text-xs mb-1">
@@ -157,24 +156,23 @@ const LectureSidebar = ({
                 <span className="text-gray-800 font-medium">{lecture.registeredUsers?.length || 0} / {lecture.capacity}</span>
               </div>
               <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div 
+                <div
                   className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-300"
                   style={{ width: `${Math.min(100, (lecture.registeredUsers?.length || 0) / lecture.capacity * 100)}%` }}
                 />
               </div>
             </div>
-            
+
             {isRegistrationOpen ? (
               <button
                 onClick={handleRegistration}
                 disabled={isUserRegistered || registrationLoading}
-                className={`w-full px-4 py-3.5 rounded-xl font-medium text-white flex items-center justify-center gap-2 ${
-                  isUserRegistered
+                className={`w-full px-4 py-3.5 rounded-xl font-medium text-white flex items-center justify-center gap-2 ${isUserRegistered
                     ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 cursor-default'
                     : registrationLoading
-                    ? 'bg-gray-300 cursor-wait'
-                    : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 shadow-md'
-                } transition-all`}
+                      ? 'bg-gray-300 cursor-wait'
+                      : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-90 shadow-md'
+                  } transition-all`}
               >
                 {registrationLoading ? (
                   <>
@@ -215,7 +213,7 @@ const LectureSidebar = ({
       ) : (
         <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative">
           <div className="absolute -right-20 -top-20 w-40 h-40 bg-blue-50 rounded-full blur-3xl"></div>
-          
+
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
@@ -223,7 +221,7 @@ const LectureSidebar = ({
                 Attendance
               </h2>
             </div>
-            
+
             <div className="bg-blue-50 rounded-xl p-5">
               <div className="flex flex-col items-center">
                 <div className="text-4xl font-bold text-gray-800 mb-1">
@@ -232,7 +230,7 @@ const LectureSidebar = ({
                 <div className="text-blue-600">Live Attendees</div>
               </div>
             </div>
-            
+
             {isUserRegistered && (
               <div className="mt-4 bg-green-50 border border-green-200 rounded-xl p-3 flex items-center gap-2 justify-center text-green-600">
                 <Check className="w-4 h-4" />
@@ -246,7 +244,7 @@ const LectureSidebar = ({
       {/* Resources Section */}
       <div className="bg-white shadow-md rounded-xl p-6 border border-blue-100 overflow-hidden relative">
         <div className="absolute -right-20 -top-20 w-40 h-40 bg-blue-50 rounded-full blur-3xl"></div>
-        
+
         <div className="relative space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-800">Resources</h2>
