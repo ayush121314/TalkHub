@@ -17,12 +17,12 @@ const useLectureData = (lectureId) => {
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4040';
 
   // Fetch lecture details and resources when lectureId changes
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (lectureId) {
       fetchLectureDetails();
       loadDocumentsAndLinks();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lectureId]);
 
   const fetchLectureDetails = async () => {
